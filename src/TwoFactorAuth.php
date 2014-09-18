@@ -58,7 +58,7 @@ class TwoFactorAuth {
     {
         $secretkey = $this->base32Decode($secret);
         
-        $ts = "\0\0\0\0".pack('N*', $this->getTimeSlice($this->getTime($time)));    // Pack time into binary string
+        $ts = "\0\0\0\0" . pack('N*', $this->getTimeSlice($this->getTime($time)));    // Pack time into binary string
         $hm = hash_hmac($this->algorithm, $ts, $secretkey, true);                   // Hash it with users secret key
         $hashpart = substr($hm, ord(substr($hm, -1)) & 0x0F, 4);                    // Use last nibble of result as index/offset and grab 4 bytes of the result
         $value = unpack('N', $hashpart);                                            // Unpack binary value
@@ -88,7 +88,10 @@ class TwoFactorAuth {
         if (!is_int($size) || $size < 0)
             throw new  Exception('Size must be int > 0');
         
-        return 'data:image/png;base64,'.base64_encode($this->qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
+        return 'data:'
+            . $this->qrcodeprovider->getMimeType()
+            . ';base64,'
+            . base64_encode($this->qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
     }
     
     private function getTime($time) {
@@ -134,6 +137,7 @@ class TwoFactorAuth {
 interface IQRCodeProvider
 {
 	public function getQRCodeImage($qrtext, $size);
+    public function getMimeType();
 }
 
 class GoogleQRCodeProvider implements IQRCodeProvider {
@@ -146,12 +150,18 @@ class GoogleQRCodeProvider implements IQRCodeProvider {
         $this->verifyssl = $verifyssl;
     }
     
+    public function getMimeType() {
+        return 'image/png';
+    }
+    
     public function getQRCodeImage($qrtext, $size) {
         return $this->get_content($this->getUrl($qrtext, $size));
     }
     
     public function getUrl($qrtext, $size) {
-        return 'https://chart.googleapis.com/chart?chs='.$size.'x'.$size.'&chld=M|0&cht=qr&chl='.rawurlencode($qrtext);
+        return 'https://chart.googleapis.com/chart?chs='
+            . $size . 'x' . $size
+            . '&chld=M|0&cht=qr&chl=' . rawurlencode($qrtext);
     }
 
     private function get_content($url){
