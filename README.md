@@ -4,7 +4,7 @@ PHP class for two-factor authorization using [TOTP](http://en.wikipedia.org/wiki
 
 ## Requirements
 
-* Tested on PHP5.4
+* Tested on PHP 5.3 and 5.4
 * [cURL](http://php.net/manual/en/book.curl.php) when using the default `GoogleQRCodeProvider` but you can provide your own QR-code provider.
 
 

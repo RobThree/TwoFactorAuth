@@ -34,11 +34,10 @@ class TwoFactorAuth {
         if (!($qrcodeprovider instanceof IQRCodeProvider))
             throw new Exception('QRCodeProvider must implement IQRCodeProvider');
         
-        $this->qrcodeprovider = new GoogleQRCodeProvider();
+        $this->qrcodeprovider = $qrcodeprovider;
         
         self::$_base32 = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=');
-        for ($i = 0; $i < sizeof(self::$_base32); $i++)
-            self::$_base32lookup[self::$_base32[$i]] = $i;
+        self::$_base32lookup = array_flip(self::$_base32);
     }
     
     /**
@@ -61,8 +60,7 @@ class TwoFactorAuth {
         
         $ts = "\0\0\0\0".pack('N*', $this->getTimeSlice($this->getTime($time)));    // Pack time into binary string
         $hm = hash_hmac($this->algorithm, $ts, $secretkey, true);                   // Hash it with users secret key
-        $offset = ord(substr($hm, -1)) & 0x0F;                                      // Use last nibble of result as index/offset
-        $hashpart = substr($hm, $offset, 4);                                        // Grab 4 bytes of the result
+        $hashpart = substr($hm, ord(substr($hm, -1)) & 0x0F, 4);                    // Use last nibble of result as index/offset and grab 4 bytes of the result
         $value = unpack('N', $hashpart);                                            // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                            // Drop MSB, keep only 31 bits
         
