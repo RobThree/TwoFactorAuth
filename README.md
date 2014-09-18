@@ -10,7 +10,7 @@ PHP class for two-factor authorization using [TOTP](http://en.wikipedia.org/wiki
 
 ## Usage
 
-*TODO* For now: see index.php
+*TODO* For now: see demo.php
 
 ## License
 
