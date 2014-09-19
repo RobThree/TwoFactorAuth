@@ -140,31 +140,11 @@ interface IQRCodeProvider
     public function getMimeType();
 }
 
-class GoogleQRCodeProvider implements IQRCodeProvider {
-    private $verifyssl;
+abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
+{
+    protected $verifyssl;
 
-    function __construct($verifyssl = false) {
-        if (!is_bool($verifyssl))
-            throw new Exception('VerifySSL must be bool');
-
-        $this->verifyssl = $verifyssl;
-    }
-    
-    public function getMimeType() {
-        return 'image/png';
-    }
-    
-    public function getQRCodeImage($qrtext, $size) {
-        return $this->get_content($this->getUrl($qrtext, $size));
-    }
-    
-    public function getUrl($qrtext, $size) {
-        return 'https://chart.googleapis.com/chart?chs='
-            . $size . 'x' . $size
-            . '&chld=M|0&cht=qr&chl=' . rawurlencode($qrtext);
-    }
-
-    private function get_content($url){
+	protected function getContent($url){
         $ch = curl_init();
         
         curl_setopt_array($ch, array(
@@ -182,5 +162,98 @@ class GoogleQRCodeProvider implements IQRCodeProvider {
         
         curl_close($ch);
         return $data;
+    }
+}
+
+// https://developers.google.com/chart/infographics/docs/qr_codes
+class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider {
+    public $errorcorrectionlevel;
+    public $margin;
+
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4) {
+        if (!is_bool($verifyssl))
+            throw new Exception('VerifySSL must be bool');
+
+        $this->verifyssl = $verifyssl;
+        
+        $this->errorcorrectionlevel = $errorcorrectionlevel;
+        $this->margin = $margin;
+    }
+    
+    public function getMimeType() {
+        return 'image/png';
+    }
+    
+    public function getQRCodeImage($qrtext, $size) {
+        return $this->getContent($this->getUrl($qrtext, $size));
+    }
+    
+    public function getUrl($qrtext, $size) {
+        return 'https://chart.googleapis.com/chart?cht=qr'
+            . '&chs=' . $size . 'x' . $size
+            . '&chld=' . $this->errorcorrectionlevel . '|' . $this->margin
+            . '&chl=' . rawurlencode($qrtext);
+    }
+}
+
+// http://goqr.me/api/doc/create-qr-code/
+class QRServerProvider extends BaseHTTPQRCodeProvider {
+    public $errorcorrectionlevel;
+    public $margin;
+    public $qzone;
+    public $bgcolor;
+    public $color;
+    public $format;
+
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = '#ffffff', $color = '#000000', $format = 'png') {
+        if (!is_bool($verifyssl))
+            throw new Exception('VerifySSL must be bool');
+
+        $this->verifyssl = $verifyssl;
+        
+        $this->errorcorrectionlevel = $errorcorrectionlevel;
+        $this->margin = $margin;
+        $this->qzone = $qzone;
+        $this->bgcolor = $bgcolor;
+        $this->color = $color;
+        $this->format = $format;
+    }
+    
+    public function getMimeType() {
+        switch (strtolower($this->format))
+        {
+        	case 'png':
+                return 'image/png';
+        	case 'gif':
+                return 'image/gif';
+        	case 'jpg':
+        	case 'jpeg':
+                return 'image/jpeg';
+        	case 'svg':
+                return 'image/svg+xml';
+        	case 'eps':
+                return 'application/postscript';
+        }
+    }
+    
+    public function getQRCodeImage($qrtext, $size) {
+        return $this->getContent($this->getUrl($qrtext, $size));
+    }
+    
+    private function decodeColor($value) {
+        list($r, $g, $b) = sscanf($value, "#%02x%02x%02x");
+        return $r . '-' . $g . '-' . $b;
+    }
+    
+    public function getUrl($qrtext, $size) {
+        return 'https://api.qrserver.com/v1/create-qr-code/'
+            . '?size=' . $size . 'x' . $size
+            . '&ecc=' . $this->errorcorrectionlevel
+            . '&margin=' . $this->margin
+            . '&qzone=' . $this->qzone
+            . '&bgcolor=' . $this->decodeColor($this->bgcolor)
+            . '&color=' . $this->decodeColor($this->color)
+            . '&format=' . strtolower($this->format)
+            . '&data=' . rawurlencode($qrtext);
     }
 }
