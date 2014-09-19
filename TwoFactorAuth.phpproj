@@ -33,5 +33,6 @@
   <ItemGroup>
     <Content Include="LICENSE" />
     <Content Include="logo.png" />
+    <Content Include="multifactorauthforeveryone.png" />
   </ItemGroup>
 </Project>
