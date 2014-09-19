@@ -1,6 +1,6 @@
 # ![Logo](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/logo.png) TwoFactorAuth class for PHP
 
-PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.org/wiki/Multi-factor_authentication) using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired, based and mostly an improvement on '[PHPGangsta/GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
+PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.org/wiki/Multi-factor_authentication) using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired by, based on but mostly importantly an *improvement* on '[PHPGangsta/GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/multifactorauthforeveryone.png">
@@ -32,7 +32,7 @@ Parameter         | Default value | Use
 `$algorithm`      | `sha1`        | The algorithm used
 `$qrcodeprovider` | `null`        | QR-code provider
 
-These parameters are all 'set once'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't have control on the app used by your audience.
+These parameters are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't have control on the app used by your audience.
 
 Next, when a user wants to setup tfo factor auth (or, more correctly, multi-factor auth) you need to create a secret. This will be your shared (this will be the `one-time` in [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm)) secret. This secret will need to be entered by the user in their app. This can be done manually, in which case you simply display the secret and have the user type it in the app:
 
