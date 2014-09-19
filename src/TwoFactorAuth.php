@@ -205,7 +205,7 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
     public $color;
     public $format;
 
-    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = '#ffffff', $color = '#000000', $format = 'png') {
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = 'ffffff', $color = '000000', $format = 'png') {
         if (!is_bool($verifyssl))
             throw new Exception('VerifySSL must be bool');
 
@@ -241,7 +241,7 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
     }
     
     private function decodeColor($value) {
-        list($r, $g, $b) = sscanf($value, "#%02x%02x%02x");
+        list($r, $g, $b) = sscanf($value, "%02x%02x%02x");
         return $r . '-' . $g . '-' . $b;
     }
     
