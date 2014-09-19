@@ -77,7 +77,7 @@ Simple as 1-2-3.
 All we need to remember is 4 methods and a constructor:
 
 ````php
-__construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null)
+__construct($issuer=null, $digits=6, $period=30, $algorithm='sha1', $qrcodeprovider=null)
 createSecret($bits = 80)
 getCode($secret, $time = null)
 verifyCode($secret, $code, $discrepancy = 1, $time = null)
