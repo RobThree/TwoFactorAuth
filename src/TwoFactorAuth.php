@@ -170,7 +170,7 @@ class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider {
     public $errorcorrectionlevel;
     public $margin;
 
-    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4) {
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 1) {
         if (!is_bool($verifyssl))
             throw new Exception('VerifySSL must be bool');
 
@@ -241,14 +241,13 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
     }
     
     private function decodeColor($value) {
-        list($r, $g, $b) = sscanf($value, "%02x%02x%02x");
-        return $r . '-' . $g . '-' . $b;
+        return vsprintf('%d-%d-%d', sscanf($value, "%02x%02x%02x"));
     }
     
     public function getUrl($qrtext, $size) {
         return 'https://api.qrserver.com/v1/create-qr-code/'
             . '?size=' . $size . 'x' . $size
-            . '&ecc=' . $this->errorcorrectionlevel
+            . '&ecc=' . strtoupper($this->errorcorrectionlevel)
             . '&margin=' . $this->margin
             . '&qzone=' . $this->qzone
             . '&bgcolor=' . $this->decodeColor($this->bgcolor)
@@ -267,7 +266,7 @@ class QRicketProvider extends BaseHTTPQRCodeProvider {
     public $color;
     public $format;
 
-    function __construct($errorcorrectionlevel = 'l', $bgcolor = 'ffffff', $color = '000000', $format = 'p') {
+    function __construct($errorcorrectionlevel = 'L', $bgcolor = 'ffffff', $color = '000000', $format = 'p') {
         $this->verifyssl = false;
         
         $this->errorcorrectionlevel = $errorcorrectionlevel;
@@ -295,7 +294,7 @@ class QRicketProvider extends BaseHTTPQRCodeProvider {
     public function getUrl($qrtext, $size) {
         return 'http://qrickit.com/api/qr'
             . '?qrsize=' . $size
-            . '&e=' . $this->errorcorrectionlevel
+            . '&e=' . strtolower($this->errorcorrectionlevel)
             . '&bgdcolor=' . $this->bgcolor
             . '&fgdcolor=' . $this->color
             . '&t=' . strtolower($this->format)
