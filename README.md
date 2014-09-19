@@ -1,6 +1,6 @@
 # ![Logo](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/logo.png) TwoFactorAuth class for PHP
 
-PHP class for two-factor authentication using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired, based and mostly an improvement on '[GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
+PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.org/wiki/Multi-factor_authentication) using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired, based and mostly an improvement on '[PHPGangsta/GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/multifactorauthforeveryone.png">
