@@ -1,6 +1,6 @@
 # TwoFactorAuth class for PHP
 
-PHP class for two-factor authorization using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired, based and mostly an improvement on '[GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
+PHP class for two-factor authentication using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired, based and mostly an improvement on '[GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
 
 ## Requirements
 
