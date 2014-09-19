@@ -2,6 +2,10 @@
 
 PHP class for two-factor authentication using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired, based and mostly an improvement on '[GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/multifactorauthforeveryone.png">
+</p>
+
 ## Requirements
 
 * Tested on PHP 5.3 and 5.4
@@ -80,7 +84,62 @@ verifyCode($secret, $code, $discrepancy = 1, $time = null)
 getQRCodeImageAsDataUri($label, $secret, $size = 200)
 ````
 
-Now, about those QR-code providers...
+### QR-code providers
+
+As mentioned before, this class comes with three 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` parameter which lets you specify a built-in or custom QR-code provider. All three built-in providers do a simple HTTP request to retrieve an image using cURL and implement the `IQRCodeProvider` interface. Which is all you need to implement to write your own QR-code provider.
+
+The default provider is the `GoogleQRCodeProvider` which uses the [Google Chart Tools](https://developers.google.com/chart/infographics/docs/qr_codes) to render QR-codes. Then we have the `QRServerProvider` which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) and finally we have the `QRicketProvider` which uses the [QRickit API](http://qrickit.com/qrickit_apps/qrickit_api.php). All three inherit from a common (abstract) base-class named `BaseHTTPQRCodeProvider` because all three share the same functionality: retrieve an image from a 3rd party. All three classes have constructors that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by these classes.
+
+If you don't like any of the built-in classes because you don't want to rely on external resources for example or because you're paranoid about sending the TOTP data to these 3rd parties (which is useless to them since they miss the at least one other factor in the [MFA process](http://en.wikipedia.org/wiki/Multi-factor_authentication)) feel tree to implement your own. The `IQRCodeProvider` interface couldn't be simpler. All you need to do is implement 2 methods:
+
+````php
+getMimeType();
+getQRCodeImage($qrtext, $size);
+````
+
+The `getMimeType()` method should return the [MIME type](http://en.wikipedia.org/wiki/Internet_media_type) of the image that is returned by `getQRCodeImage()`. This is usually simply `image/png`. The `getQRCodeImage()` method is passed two arguments: `$qrtext` and `$size`. The latter, `$size`, is simply the width/height of the image desired by the caller. The first, `$qrtext` is the text that should be encoded in the QR-code. An example of such a text would be:
+
+`otpauth://totp/LABEL:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=ISSUER`
+
+All you need to do is return the QR-code as binary image data and you're done. All parts of the `$qrtext` have been escaped for you; you may need to escape the entire `$qtext` just once more when passing it as a (single) parameter to another server. 
+
+Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to implement our own provider. We start with downloading the [required file](https://github.com/t0k4rt/phpqrcode/blob/master/phpqrcode.php) and putting it in our `src/` directory where `TwoFactorAuth.php` is located as well. Now let's implement the provider: create another file named `myprovider.php` in the `src` directory and paste in this content:
+
+````php
+<?php
+require_once 'phpqrcode.php';                      // Yeah, we're gonna need that
+
+class MyProvider implements IQRCodeProvider {
+  public function getMimeType() {
+    return 'image/png';                            // This provider only returns PNG's
+  }
+  
+  public function getQRCodeImage($qrtext, $size) {
+    ob_start();                                     // 'Catch' QRCode's output
+    QRCode::png($qrtext, null, QR_ECLEVEL_L, 3, 4); // We ignore $size and set it to 3
+                                                    // since phpqrcode doesn't support
+                                                    // a size in pixels...
+    $result = ob_get_contents();                    // 'Catch' QRCode's output
+    ob_end_clean();                                 // Cleanup
+    return $result;                                 // Return image
+  }
+}
+````
+
+That's it. We're done! We've implemented our own provider (with help of PHP QR Code). Now Let's *use* our provider:
+
+````php
+<?php
+require_once 'src/TwoFactorAuth.php';
+require_once 'src/myprovider.php';
+
+$tfa = new TwoFactorAuth('My Company');
+$secret = $tfa->createSecret();
+?>
+<p><img src="<?php $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret) ?>"></p>
+````
+
+Voila. Couldn't make it any simpler.
 
 ## License
 
