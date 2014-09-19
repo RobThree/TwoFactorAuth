@@ -1,8 +1,8 @@
 <?php
 // Based on / inspired by: https://github.com/PHPGangsta/GoogleAuthenticator
 // Algorithms, digits, period etc. explained: https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
-class TwoFactorAuth {
-    
+class TwoFactorAuth 
+{
     private $algorithm;
     private $period;
     private $digits;
@@ -12,7 +12,8 @@ class TwoFactorAuth {
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
     
-    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null) {
+    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null) 
+    {
         $this->issuer = $issuer;
 
         if (!is_int($digits) || $digits <= 0)
@@ -43,10 +44,12 @@ class TwoFactorAuth {
     /**
      * Create a new secret
      */
-    public function createSecret($length = 16) {
+    public function createSecret($bits = 80) 
+    {
         $secret = '';
-        $rnd = openssl_random_pseudo_bytes($length);
-        for ($i = 0; $i < $length; $i++)
+        $bytes = ceil($bits / 5);   //We use 5 bits of each byte
+        $rnd = openssl_random_pseudo_bytes($bytes);
+        for ($i = 0; $i < $bytes; $i++)
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
         return $secret;
     }
@@ -58,7 +61,7 @@ class TwoFactorAuth {
     {
         $secretkey = $this->base32Decode($secret);
         
-        $ts = "\0\0\0\0" . pack('N*', $this->getTimeSlice($this->getTime($time)));    // Pack time into binary string
+        $ts = "\0\0\0\0" . pack('N*', $this->getTimeSlice($this->getTime($time)));  // Pack time into binary string
         $hm = hash_hmac($this->algorithm, $ts, $secretkey, true);                   // Hash it with users secret key
         $hashpart = substr($hm, ord(substr($hm, -1)) & 0x0F, 4);                    // Use last nibble of result as index/offset and grab 4 bytes of the result
         $value = unpack('N', $hashpart);                                            // Unpack binary value
@@ -73,7 +76,8 @@ class TwoFactorAuth {
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null)
     {
         $t = $this->getTime($time);
-        for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
+        for ($i = -$discrepancy; $i <= $discrepancy; $i++) 
+        {
             if (strcmp($this->getCode($secret, $t + ($i * $this->period)), $code) === 0)
                 return true;
         }
@@ -84,7 +88,8 @@ class TwoFactorAuth {
     /**
      * Get data-uri of QRCode
      */
-    public function getQRCodeImageAsDataUri($label, $secret, $size = 200) {
+    public function getQRCodeImageAsDataUri($label, $secret, $size = 200) 
+    {
         if (!is_int($size) || $size < 0)
             throw new  Exception('Size must be int > 0');
         
@@ -94,18 +99,21 @@ class TwoFactorAuth {
             . base64_encode($this->qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
     }
     
-    private function getTime($time) {
+    private function getTime($time) 
+    {
         return ($time === null) ? time() : $time;
     }
     
-    private function getTimeSlice($time = null, $offset = 0) {
+    private function getTimeSlice($time = null, $offset = 0) 
+    {
         return (int)floor($time / $this->period) + ($offset * $this->period);
     }
     
     /**
      * Builds a string to be encoded in a QR code
      */
-    private function getQRText($label, $secret) {
+    private function getQRText($label, $secret) 
+    {
         return 'otpauth://totp/' . rawurlencode($label)
             . '?secret=' . rawurlencode($secret)
             . '&issuer=' . rawurlencode($this->issuer)
@@ -119,7 +127,8 @@ class TwoFactorAuth {
         if (strlen($value)==0) return '';
         
         $s = '';
-        foreach (str_split($value) as $c) {
+        foreach (str_split($value) as $c) 
+        {
             if ($c !== '=')
                 $s .= str_pad(decbin(self::$_base32lookup[$c]), 5, 0, STR_PAD_LEFT);
         }
@@ -144,7 +153,8 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
 {
     protected $verifyssl;
 
-	protected function getContent($url){
+	protected function getContent($url)
+    {
         $ch = curl_init();
         
         curl_setopt_array($ch, array(
@@ -166,11 +176,13 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
 }
 
 // https://developers.google.com/chart/infographics/docs/qr_codes
-class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider {
+class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider 
+{
     public $errorcorrectionlevel;
     public $margin;
 
-    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 1) {
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 1) 
+    {
         if (!is_bool($verifyssl))
             throw new Exception('VerifySSL must be bool');
 
@@ -180,15 +192,18 @@ class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider {
         $this->margin = $margin;
     }
     
-    public function getMimeType() {
+    public function getMimeType() 
+    {
         return 'image/png';
     }
     
-    public function getQRCodeImage($qrtext, $size) {
+    public function getQRCodeImage($qrtext, $size) 
+    {
         return $this->getContent($this->getUrl($qrtext, $size));
     }
     
-    public function getUrl($qrtext, $size) {
+    public function getUrl($qrtext, $size) 
+    {
         return 'https://chart.googleapis.com/chart?cht=qr'
             . '&chs=' . $size . 'x' . $size
             . '&chld=' . $this->errorcorrectionlevel . '|' . $this->margin
@@ -197,7 +212,8 @@ class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider {
 }
 
 // http://goqr.me/api/doc/create-qr-code/
-class QRServerProvider extends BaseHTTPQRCodeProvider {
+class QRServerProvider extends BaseHTTPQRCodeProvider 
+{
     public $errorcorrectionlevel;
     public $margin;
     public $qzone;
@@ -205,7 +221,8 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
     public $color;
     public $format;
 
-    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = 'ffffff', $color = '000000', $format = 'png') {
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = 'ffffff', $color = '000000', $format = 'png') 
+    {
         if (!is_bool($verifyssl))
             throw new Exception('VerifySSL must be bool');
 
@@ -219,7 +236,8 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
         $this->format = $format;
     }
     
-    public function getMimeType() {
+    public function getMimeType() 
+    {
         switch (strtolower($this->format))
         {
         	case 'png':
@@ -236,15 +254,18 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
         }
     }
     
-    public function getQRCodeImage($qrtext, $size) {
+    public function getQRCodeImage($qrtext, $size) 
+    {
         return $this->getContent($this->getUrl($qrtext, $size));
     }
     
-    private function decodeColor($value) {
+    private function decodeColor($value) 
+    {
         return vsprintf('%d-%d-%d', sscanf($value, "%02x%02x%02x"));
     }
     
-    public function getUrl($qrtext, $size) {
+    public function getUrl($qrtext, $size) 
+    {
         return 'https://api.qrserver.com/v1/create-qr-code/'
             . '?size=' . $size . 'x' . $size
             . '&ecc=' . strtoupper($this->errorcorrectionlevel)
@@ -258,7 +279,8 @@ class QRServerProvider extends BaseHTTPQRCodeProvider {
 }
 
 // http://qrickit.com/qrickit_apps/qrickit_api.php
-class QRicketProvider extends BaseHTTPQRCodeProvider {
+class QRicketProvider extends BaseHTTPQRCodeProvider 
+{
     public $errorcorrectionlevel;
     public $margin;
     public $qzone;
@@ -266,7 +288,8 @@ class QRicketProvider extends BaseHTTPQRCodeProvider {
     public $color;
     public $format;
 
-    function __construct($errorcorrectionlevel = 'L', $bgcolor = 'ffffff', $color = '000000', $format = 'p') {
+    function __construct($errorcorrectionlevel = 'L', $bgcolor = 'ffffff', $color = '000000', $format = 'p') 
+    {
         $this->verifyssl = false;
         
         $this->errorcorrectionlevel = $errorcorrectionlevel;
@@ -275,7 +298,8 @@ class QRicketProvider extends BaseHTTPQRCodeProvider {
         $this->format = $format;
     }
     
-    public function getMimeType() {
+    public function getMimeType() 
+    {
         switch (strtolower($this->format))
         {
         	case 'p':
@@ -287,11 +311,13 @@ class QRicketProvider extends BaseHTTPQRCodeProvider {
         }
     }
     
-    public function getQRCodeImage($qrtext, $size) {
+    public function getQRCodeImage($qrtext, $size) 
+    {
         return $this->getContent($this->getUrl($qrtext, $size));
     }
     
-    public function getUrl($qrtext, $size) {
+    public function getUrl($qrtext, $size) 
+    {
         return 'http://qrickit.com/api/qr'
             . '?qrsize=' . $size
             . '&e=' . strtolower($this->errorcorrectionlevel)
