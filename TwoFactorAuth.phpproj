@@ -32,5 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE" />
+    <Content Include="logo.png" />
   </ItemGroup>
 </Project>
