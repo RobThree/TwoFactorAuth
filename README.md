@@ -30,7 +30,7 @@ Parameter         | Default value | Use
 `$digits`         | `6`           | The number of digits the resulting codes will be
 `$period`         | `30`          | The number of seconds a code will be valid
 `$algorithm`      | `sha1`        | The algorithm used
-`$qrcodeprovider` | `null`        | QR-code provider
+`$qrcodeprovider` | `null`        | QR-code provider (more on this later)
 
 These parameters are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't have control on the app used by your audience.
 
