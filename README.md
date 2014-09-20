@@ -22,7 +22,7 @@ require_once 'src/TwoFactorAuth.php';
 $tfa = new TwoFactorAuth('My Company');
 ````
 
-The TwoFactorAuth class constructor accepts 5 parameters:
+The TwoFactorAuth class constructor accepts 5 parameters (all optional):
 
 Parameter         | Default value | Use 
 ------------------|---------------|--------------------------------------------------
