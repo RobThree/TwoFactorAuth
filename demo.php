@@ -12,7 +12,7 @@
         
         use RobThree\TwoFactorAuth;
         
-        $tfa = new TwoFactorAuth\TwoFactorAuth('MyApp', 6, 30, 'sha1', new TwoFactorAuth\Providers\QRicketProvider());
+        $tfa = new TwoFactorAuth\TwoFactorAuth('MyApp');
 
         echo '<li>First create a secret and associate it with a user';
         $secret = $tfa->createSecret();
