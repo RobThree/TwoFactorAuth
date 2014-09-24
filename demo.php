@@ -10,9 +10,9 @@
         require_once 'loader.php';
         Loader::register('RobThree','RobThree');
         
-        use RobThree\TwoFactorAuth;
-        
-        $tfa = new TwoFactorAuth\TwoFactorAuth('MyApp');
+        use \RobThree\TwoFactorAuth\TwoFactorAuth;
+
+        $tfa = new TwoFactorAuth('MyApp');
 
         echo '<li>First create a secret and associate it with a user';
         $secret = $tfa->createSecret();
