@@ -18,8 +18,7 @@ Here are some code snippets that should help you get started...
 
 ````php
 // Start by including the TwoFactorAuth.php file which contains all you need (for now)
-require_once 'src/TwoFactorAuth.php';
-$tfa = new TwoFactorAuth('My Company');
+$tfa = new RobThree\TwoFactorAuth\TwoFactorAuth('My Company');
 ````
 
 The TwoFactorAuth class constructor accepts 5 parameters (all optional):
@@ -109,11 +108,13 @@ The `getMimeType()` method should return the [MIME type](http://en.wikipedia.org
 
 All you need to do is return the QR-code as binary image data and you're done. All parts of the `$qrtext` have been escaped for you (but note: you *may* need to escape the entire `$qrtext` just once more when passing the data to another server as GET-parameter).
 
-Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to implement our own, custom, no-3rd-parties-allowed-here, provider. We start with downloading the [required (single) file](https://github.com/t0k4rt/phpqrcode/blob/master/phpqrcode.php) and putting it in our `src/` directory where `TwoFactorAuth.php` is located as well. Now let's implement the provider: create another file named `myprovider.php` in the `src` directory and paste in this content:
+Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to implement our own, custom, no-3rd-parties-allowed-here, provider. We start with downloading the [required (single) file](https://github.com/t0k4rt/phpqrcode/blob/master/phpqrcode.php) and putting it in the directory where `TwoFactorAuth.php` is located as well. Now let's implement the provider: create another file named `myprovider.php` in the `Providers` directory and paste in this content:
 
 ````php
 <?php
-require_once 'phpqrcode.php';                      // Yeah, we're gonna need that
+require_once '../phpqrcode.php';                   // Yeah, we're gonna need that
+
+namespace RobThree\TwoFactorAuth\Providers
 
 class MyProvider implements IQRCodeProvider {
   public function getMimeType() {
@@ -136,11 +137,8 @@ That's it. We're done! We've implemented our own provider (with help of PHP QR C
 
 ````php
 <?php
-require_once 'src/TwoFactorAuth.php';
-require_once 'src/myprovider.php';
-
-$mp = new MyProvider();
-$tfa = new TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
+$mp = new RobThree\TwoFactorAuth\TwoFactorAuth\Providers\MyProvider();
+$tfa = new RobThree\TwoFactorAuth\TwoFactorAuth\TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
 $secret = $tfa->createSecret();
 ?>
 <p><img src="<?php $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret) ?>"></p>

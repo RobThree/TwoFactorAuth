@@ -23,12 +23,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="demo.php" />
-    <Compile Include="src\TwoFactorAuth.php" />
+    <Compile Include="loader.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\BaseHTTPQRCodeProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\GoogleQRCodeProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\IQRCodeProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\QRicketProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\QRServerProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\TwoFactorAuth.php" />
     <Compile Include=".gitignore" />
     <Compile Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\" />
+    <Folder Include="RobThree\" />
+    <Folder Include="RobThree\TwoFactorAuth\" />
+    <Folder Include="RobThree\TwoFactorAuth\Providers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE" />

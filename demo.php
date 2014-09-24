@@ -7,9 +7,12 @@
     <ol>
         <?php
         error_reporting(-1);
-        require_once 'src/TwoFactorAuth.php';
-
-        $tfa = new TwoFactorAuth('MyApp');
+        require_once 'loader.php';
+        Loader::register('RobThree','RobThree');
+        
+        use RobThree\TwoFactorAuth;
+        
+        $tfa = new TwoFactorAuth\TwoFactorAuth('MyApp', 6, 30, 'sha1', new TwoFactorAuth\Providers\QRicketProvider());
 
         echo '<li>First create a secret and associate it with a user';
         $secret = $tfa->createSecret();
