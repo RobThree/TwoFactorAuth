@@ -50,7 +50,7 @@ class TwoFactorAuth
     public function createSecret($bits = 80) 
     {
         $secret = '';
-        $bytes = ceil($bits / 5);   //We use 5 bits of each byte
+        $bytes = ceil($bits / 5);   //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
         $rnd = openssl_random_pseudo_bytes($bytes);
         for ($i = 0; $i < $bytes; $i++)
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
