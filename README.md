@@ -8,7 +8,7 @@ PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.
 
 ## Requirements
 
-* Tested on PHP 5.3 and 5.4
+* Tested on PHP 5.3, 5.4, 5.5 and 5.6
 * [cURL](http://php.net/manual/en/book.curl.php) when using the provided `GoogleQRCodeProvider` (default), `QRServerProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 
 
@@ -30,6 +30,7 @@ Parameter         | Default value | Use
 `$period`         | `30`          | The number of seconds a code will be valid
 `$algorithm`      | `sha1`        | The algorithm used
 `$qrcodeprovider` | `null`        | QR-code provider (more on this later)
+`$rngprovider`    | `null`        | Random Number Generator provider (more on this later)
 
 These parameters are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't control which app your audience uses.
 
@@ -82,7 +83,7 @@ Simple as 1-2-3.
 All we need to remember is 4 methods and a constructor:
 
 ````php
-__construct($issuer=null, $digits=6, $period=30, $algorithm='sha1', $qrcodeprovider=null)
+__construct($issuer=null, $digits=6, $period=30, $algorithm='sha1', $qrcodeprovider=null, $rngprovider=null)
 createSecret($bits = 80)
 getCode($secret, $time = null)
 verifyCode($secret, $code, $discrepancy = 1, $time = null)
@@ -108,13 +109,13 @@ The `getMimeType()` method should return the [MIME type](http://en.wikipedia.org
 
 All you need to do is return the QR-code as binary image data and you're done. All parts of the `$qrtext` have been escaped for you (but note: you *may* need to escape the entire `$qrtext` just once more when passing the data to another server as GET-parameter).
 
-Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to implement our own, custom, no-3rd-parties-allowed-here, provider. We start with downloading the [required (single) file](https://github.com/t0k4rt/phpqrcode/blob/master/phpqrcode.php) and putting it in the directory where `TwoFactorAuth.php` is located as well. Now let's implement the provider: create another file named `myprovider.php` in the `Providers` directory and paste in this content:
+Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to implement our own, custom, no-3rd-parties-allowed-here, provider. We start with downloading the [required (single) file](https://github.com/t0k4rt/phpqrcode/blob/master/phpqrcode.php) and putting it in the directory where `TwoFactorAuth.php` is located as well. Now let's implement the provider: create another file named `myprovider.php` in the `Providers\Qr` directory and paste in this content:
 
 ````php
 <?php
-require_once '../phpqrcode.php';                   // Yeah, we're gonna need that
+require_once '../../phpqrcode.php';                   // Yeah, we're gonna need that
 
-namespace RobThree\TwoFactorAuth\Providers
+namespace RobThree\TwoFactorAuth\Providers\Qr
 
 class MyProvider implements IQRCodeProvider {
   public function getMimeType() {
@@ -133,11 +134,11 @@ class MyProvider implements IQRCodeProvider {
 }
 ````
 
-That's it. We're done! We've implemented our own provider (with help of PHP QR Code). No more external dependencies, no more unnecessary latencies. Now Let's *use* our provider:
+That's it. We're done! We've implemented our own provider (with help of PHP QR Code). No more external dependencies, no more unnecessary latencies. Now let's *use* our provider:
 
 ````php
 <?php
-$mp = new RobThree\TwoFactorAuth\TwoFactorAuth\Providers\MyProvider();
+$mp = new RobThree\TwoFactorAuth\TwoFactorAuth\Providers\Qr\MyProvider();
 $tfa = new RobThree\TwoFactorAuth\TwoFactorAuth\TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
 $secret = $tfa->createSecret();
 ?>
@@ -145,6 +146,12 @@ $secret = $tfa->createSecret();
 ````
 
 Voilà. Couldn't make it any simpler.
+
+### RNG providers
+
+This class also comes with three 'built-in' RNG providers (Random Number Generator). The RNG provider generates a number of random bytes and returns these bytes as an array. These values are then used to create the secret. By default (no RNG provider specified) TwoFactorAuth will try to determine the best available RNG provider to use. It will, be default, try to use the `MCryptRNGProvider`, if this is not available/supported for any reason it will try to use the `OpenSSLRNGProvider` and if that is also not available/supported it will try to use the final RNG provider: `HashRNGProvider`. Each of these providers use their own method of generating a random sequence of bytes. The first two (`OpenSSLRNGProvider` and `MCryptRNGProvider`) return a cryptographically secure sequence of random bytes whereas the `HashRNGProvider` returns a **non-cryptographically secure** sequence.
+
+You can easily implement your own `RNDProvider` by simply implementing the `IRNGProvider` interface. Each of the 'built-in' RNG providers have some constructor parameters that allow you to 'tweak' some of the settings to use when creating the random bytes such as which source to use (`MCryptRNGProvider`) or which hashing algorithm (`HashRNGProvider`).
 
 ## License
 
