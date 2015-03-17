@@ -12,6 +12,18 @@ PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.
 * [cURL](http://php.net/manual/en/book.curl.php) when using the provided `GoogleQRCodeProvider` (default), `QRServerProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 * [MCrypt](http://php.net/manual/en/book.mcrypt.php), [OpenSSL](http://php.net/manual/en/book.openssl.php) or [Hash](http://php.net/manual/en/book.hash.php) depending on which built-in RNG you use (TwoFactorAuth will try to 'autodetect' and use the best available); however: feel free to provide your own (CS)RNG.
 
+## Installation
+
+Add the following line to the composer.json file:
+
+````
+{
+    "require": {
+        "robthree/twofactorauth": "~1.0"
+    }
+}
+````
+
 ## Usage
 
 Here are some code snippets that should help you get started...
