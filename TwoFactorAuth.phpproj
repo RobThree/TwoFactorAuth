@@ -48,6 +48,7 @@
     <Folder Include="RobThree\TwoFactorAuth\Providers\Qr\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="composer.json" />
     <Content Include="LICENSE" />
     <Content Include="logo.png" />
     <Content Include="multifactorauthforeveryone.png" />

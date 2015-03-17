@@ -3,7 +3,7 @@
     "description": "Two factor authentication",
     "version": "1.0",
     "type": "library",
-    "keywords": ["Authentication", "Two Factor Authentication", "Multi Factor Authentication", "TFA", "MFA", "PHP", "Authenticator", "Authy"],
+    "keywords": [ "Authentication", "Two Factor Authentication", "Multi Factor Authentication", "TFA", "MFA", "PHP", "Authenticator", "Authy" ],
     "homepage": "https://github.com/RobThree/TwoFactorAuth",
     "license": "MIT",
     "authors": [
@@ -17,10 +17,10 @@
         "issues": "https://github.com/PHPGangsta/GoogleAuthenticator/issues",
         "source": "https://github.com/RobThree/TwoFactorAuth"
     },
-	"autoload": {
-		"classmap": ["RobThree/TwoFactorAuth/TwoFactorAuth.php"]
-	},
-	"require": {
-        "php": ">=5.3.0"
+    "autoload": {
+        "classmap": [ "RobThree/TwoFactorAuth/TwoFactorAuth.php" ]
     },
+    "require": {
+        "php": ">=5.3.0"
+    }
 }
