@@ -21,7 +21,7 @@ Here are some code snippets that should help you get started...
 $tfa = new RobThree\TwoFactorAuth\TwoFactorAuth('My Company');
 ````
 
-The TwoFactorAuth class constructor accepts 5 parameters (all optional):
+The TwoFactorAuth class constructor accepts 6 parameters (all optional):
 
 Parameter         | Default value | Use 
 ------------------|---------------|--------------------------------------------------
