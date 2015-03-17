@@ -46,7 +46,9 @@ Parameter         | Default value | Use
 
 These parameters are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't control which app your audience uses.
 
-Next, when a user wants to setup two-factor auth (or, more correctly, multi-factor auth) you need to create a secret. This will be your **shared** (this will be the `one-time` in [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm)) **secret**. This secret will need to be entered by the user in their app. This can be done manually, in which case you simply display the secret and have the user type it in the app:
+### Step 1: Set up secret shared key
+
+Wwhen a user wants to setup two-factor auth (or, more correctly, multi-factor auth) you need to create a secret. This will be your **shared** (this will be the `one-time` in [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm)) **secret**. This secret will need to be entered by the user in their app. This can be done manually, in which case you simply display the secret and have the user type it in the app:
 
 ````php
 $secret = $tfa->createSecret();
@@ -77,6 +79,8 @@ The built-in providers all have some provider-specific 'tweaks' you can 'apply'.
 
 When outputting a QR-code you can choose a `$label` for the user (which, when entering a shared secret manually, will have to be chosen by the user). This label may be an empty string or `null`. Also a `$size` may be specified (in pixels, width == height) for which we use a default value of `200`.
 
+### Step 2: Verify secret shared key
+
 When the code is added to the app, the app will be ready to start generating codes which 'expire' each '`$period`' number of seconds. To make sure the code was entered, or scanned, correctly you need to verify this by having the user enter a generated code. To check if the generated code is valid you call the `verifyCode()` method:
 
 ````php
@@ -84,9 +88,11 @@ When the code is added to the app, the app will be ready to start generating cod
 $result = $tfa->verifyCode($_SESSION['secret'], $_POST['verification']);
 ````
 
-`verifyCode()` will return either `true` (the code was valid) or `false` (the code was invalid; no points for you!). You may need to store `$secret` in a `$_SESSION` or other persistent storage (like a database) between requests. The `verifyCode()` accepts, aside from `$secret` and `$code`, two more parameters. The first being `$discrepancy`. Since TOTP codes are based on time("slices") it is very important that the server (but also client) have a correct date/time. But because the two *may* differ a bit we usually allow a certain amount of leeway. Because generated codes are valid for a specific period (remember the `$period` parameter in the `TwoFactorAuth`'s constructor?) we usually check the period directly before and the period directly after the current time when validating codes. So when the current time is `14:34:21`, which results in a 'current timeslice' of `14:34:00` to `14:34:30` we also calculate/verify the codes for `14:33:30` to `14:34:00` and for `14:34:30` to `14:35:00`. This gives us a 'window' of `14:33:30` to `14:35:00`. The `$discrepancy` parameter specifies how many periods (or: timeslices) we check in either direction of the current time. The default `$discrepancy` of `1` results in (max.) 3 period checks: -1, current and +1 period. A `$discrepancy` of `4` would result in a larger window (or: bigger time difference between client and server) of -4, -3, -2, -1, current, +1, +2, +3 and +4 periods.
+`verifyCode()` will return either `true` (the code was valid) or `false` (the code was invalid; no points for you!). You may need to store `$secret` in a `$_SESSION` or other persistent storage between requests. The `verifyCode()` accepts, aside from `$secret` and `$code`, two more parameters. The first being `$discrepancy`. Since TOTP codes are based on time("slices") it is very important that the server (but also client) have a correct date/time. But because the two *may* differ a bit we usually allow a certain amount of leeway. Because generated codes are valid for a specific period (remember the `$period` parameter in the `TwoFactorAuth`'s constructor?) we usually check the period directly before and the period directly after the current time when validating codes. So when the current time is `14:34:21`, which results in a 'current timeslice' of `14:34:00` to `14:34:30` we also calculate/verify the codes for `14:33:30` to `14:34:00` and for `14:34:30` to `14:35:00`. This gives us a 'window' of `14:33:30` to `14:35:00`. The `$discrepancy` parameter specifies how many periods (or: timeslices) we check in either direction of the current time. The default `$discrepancy` of `1` results in (max.) 3 period checks: -1, current and +1 period. A `$discrepancy` of `4` would result in a larger window (or: bigger time difference between client and server) of -4, -3, -2, -1, current, +1, +2, +3 and +4 periods.
 
 The second parameter `$time` allows you to check a code for a specific point in time. This parameter has no real practical use but can be handy for unittesting etc. The default value, `null`, means: use the current time.
+
+### Step 3: Store `$secret` with user and we're done!
 
 Ok, so now the code has been verified and found to be correct. Now we can store the `$secret` with our user in our database (or elsewhere) and whenever the user begins a new session we ask for a code generated by the authentication app of their choice. All we need to do is call `verifyCode()` again with the shared secret and the entered code and we know if the user is legit or not.
 
