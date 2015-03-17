@@ -1,6 +1,6 @@
 {
     "name": "robthree/twofactorauth",
-    "description": "Two factor authentication",
+    "description": "Two Factor Authentication",
     "version": "1.0",
     "type": "library",
     "keywords": [ "Authentication", "Two Factor Authentication", "Multi Factor Authentication", "TFA", "MFA", "PHP", "Authenticator", "Authy" ],
