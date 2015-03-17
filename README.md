@@ -113,13 +113,13 @@ Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to impl
 
 ````php
 <?php
-require_once '../../phpqrcode.php';                   // Yeah, we're gonna need that
+require_once '../../phpqrcode.php';                 // Yeah, we're gonna need that
 
 namespace RobThree\TwoFactorAuth\Providers\Qr
 
 class MyProvider implements IQRCodeProvider {
   public function getMimeType() {
-    return 'image/png';                            // This provider only returns PNG's
+    return 'image/png';                             // This provider only returns PNG's
   }
   
   public function getQRCodeImage($qrtext, $size) {
