@@ -1,0 +1,26 @@
+{
+    "name": "robthree/twofactorauth",
+    "description": "Two factor authentication",
+    "version": "1.0",
+    "type": "library",
+    "keywords": ["Authentication", "Two Factor Authentication", "Multi Factor Authentication", "TFA", "MFA", "PHP", "Authenticator", "Authy"],
+    "homepage": "https://github.com/RobThree/TwoFactorAuth",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rob Janssen",
+            "homepage": "http://robiii.me",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/PHPGangsta/GoogleAuthenticator/issues",
+        "source": "https://github.com/RobThree/TwoFactorAuth"
+    },
+	"autoload": {
+		"classmap": ["RobThree/TwoFactorAuth/TwoFactorAuth.php"]
+	},
+	"require": {
+        "php": ">=5.3.0"
+    },
+}
