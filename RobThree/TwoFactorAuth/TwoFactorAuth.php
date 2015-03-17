@@ -48,8 +48,10 @@ class TwoFactorAuth
                 $rngprovider = new Providers\Rng\MCryptRNGProvider();
             } elseif (function_exists('openssl_random_pseudo_bytes')) {
                 $rngprovider = new Providers\Rng\OpenSSLRNGProvider();
-            } else {
+            } elseif (function_exists('hash')) {
                 $rngprovider = new Providers\Rng\HashRNGProvider();
+            } else {
+                throw new TwoFactorAuthException('Unable to find a suited RNGProvider');
             }
         }
         
