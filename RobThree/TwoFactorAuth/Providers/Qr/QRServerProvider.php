@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth\Providers;
+namespace RobThree\TwoFactorAuth\Providers\Qr;
 
 // http://goqr.me/api/doc/create-qr-code/
 class QRServerProvider extends BaseHTTPQRCodeProvider 
@@ -15,7 +15,7 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
     function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = 'ffffff', $color = '000000', $format = 'png') 
     {
         if (!is_bool($verifyssl))
-            throw new Exception('VerifySSL must be bool');
+            throw new QRException('VerifySSL must be bool');
 
         $this->verifyssl = $verifyssl;
         

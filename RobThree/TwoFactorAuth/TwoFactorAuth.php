@@ -11,11 +11,12 @@ class TwoFactorAuth
     private $digits;
     private $issuer;
     private $qrcodeprovider;
+    private $rngprovider;
     private static $_base32;
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
     
-    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null) 
+    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null, $rngprovider = null) 
     {
         $this->issuer = $issuer;
 
@@ -32,13 +33,30 @@ class TwoFactorAuth
             throw new Exception('Unsupported algorithm: ' . $algorithm);
         $this->algorithm = $algorithm;
         
+        // Set default QR Code provider if none was specified
         if ($qrcodeprovider==null)
-            $qrcodeprovider = new Providers\GoogleQRCodeProvider();
+            $qrcodeprovider = new Providers\Qr\GoogleQRCodeProvider();
         
-        if (!($qrcodeprovider instanceof Providers\IQRCodeProvider))
+        if (!($qrcodeprovider instanceof Providers\Qr\IQRCodeProvider))
             throw new Exception('QRCodeProvider must implement IQRCodeProvider');
         
         $this->qrcodeprovider = $qrcodeprovider;
+        
+        // Try to find best available RNG provider if none was specified
+        if ($rngprovider==null) {
+            if (function_exists('mcrypt_create_iv')) {
+                $rngprovider = new Providers\Rng\MCryptRNGProvider();
+            } elseif (function_exists('openssl_random_pseudo_bytes')) {
+                $rngprovider = new Providers\Rng\OpenSSLRNGProvider();
+            } else {
+                $rngprovider = new Providers\Rng\HashRNGProvider();
+            }
+        }
+        
+        if (!($rngprovider instanceof Providers\Rng\IRNGProvider))
+            throw new Exception('RNGProvider must implement IRNGProvider');
+        
+        $this->rngprovider = $rngprovider;
         
         self::$_base32 = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=');
         self::$_base32lookup = array_flip(self::$_base32);
@@ -51,7 +69,7 @@ class TwoFactorAuth
     {
         $secret = '';
         $bytes = ceil($bits / 5);   //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
-        $rnd = openssl_random_pseudo_bytes($bytes);
+        $rnd = $this->rngprovider->getRandomBytes($bytes);
         for ($i = 0; $i < $bytes; $i++)
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
         return $secret;

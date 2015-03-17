@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth\Providers;
+namespace RobThree\TwoFactorAuth\Providers\Qr;
 
 // https://developers.google.com/chart/infographics/docs/qr_codes
 class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider 
@@ -11,7 +11,7 @@ class GoogleQRCodeProvider extends BaseHTTPQRCodeProvider
     function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 1) 
     {
         if (!is_bool($verifyssl))
-            throw new Exception('VerifySSL must be bool');
+            throw new QRException('VerifySSL must be bool');
 
         $this->verifyssl = $verifyssl;
         

@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth\Providers;
+namespace RobThree\TwoFactorAuth\Providers\Qr;
 
 interface IQRCodeProvider
 {

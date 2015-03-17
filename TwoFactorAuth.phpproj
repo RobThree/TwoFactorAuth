@@ -24,11 +24,17 @@
   <ItemGroup>
     <Compile Include="demo.php" />
     <Compile Include="loader.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\BaseHTTPQRCodeProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\GoogleQRCodeProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\IQRCodeProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\QRicketProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\QRServerProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\BaseHTTPQRCodeProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\GoogleQRCodeProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\IQRCodeProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\QRException.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\QRicketProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\QRServerProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\IRNGProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\MCryptRNGProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\OpenSSLRNGProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\HashRNGProvider.php" />
+    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\RNGException.php" />
     <Compile Include="RobThree\TwoFactorAuth\TwoFactorAuth.php" />
     <Compile Include=".gitignore" />
     <Compile Include="README.md" />
@@ -37,6 +43,8 @@
     <Folder Include="RobThree\" />
     <Folder Include="RobThree\TwoFactorAuth\" />
     <Folder Include="RobThree\TwoFactorAuth\Providers\" />
+    <Folder Include="RobThree\TwoFactorAuth\Providers\Rng\" />
+    <Folder Include="RobThree\TwoFactorAuth\Providers\Qr\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE" />
