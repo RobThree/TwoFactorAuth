@@ -14,7 +14,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/PHPGangsta/GoogleAuthenticator/issues",
+        "issues": "https://github.com/RobThree/TwoFactorAuth/issues",
         "source": "https://github.com/RobThree/TwoFactorAuth"
     },
     "autoload": {
