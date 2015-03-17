@@ -16,4 +16,8 @@ class MCryptRNGProvider implements IRNGProvider
             throw new RNGException('mcrypt_create_iv returned an invalid value');
         return $result;
     }
+    
+    public function isCryptographicallySecure() {
+        return true;
+    }
 }

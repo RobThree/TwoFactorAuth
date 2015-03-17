@@ -38,6 +38,7 @@
     <Compile Include="RobThree\TwoFactorAuth\TwoFactorAuth.php" />
     <Compile Include=".gitignore" />
     <Compile Include="README.md" />
+    <Compile Include="RobThree\TwoFactorAuth\TwoFactorAuthException.php" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="RobThree\" />

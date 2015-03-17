@@ -18,4 +18,8 @@ class OpenSSLRNGProvider implements IRNGProvider
             throw new RNGException('openssl_random_pseudo_bytes returned an invalid value');
         return $result;
     }
+    
+    public function isCryptographicallySecure() {
+        return $this->requirestrong;
+    }
 }

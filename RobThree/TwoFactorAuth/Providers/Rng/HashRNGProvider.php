@@ -13,11 +13,16 @@ class HashRNGProvider implements IRNGProvider
     }
     
     public function getRandomBytes($bytecount) {
-        $result = array();
+        $result = '';
+        $hash = mt_rand();
         for ($i = 0; $i < $bytecount; $i++) {
             $hash = hash($this->algorithm, $hash.mt_rand(), true);
-            array_push($result, $hash[mt_rand(0, sizeof($hash))]);
+            $result .= $hash[mt_rand(0, sizeof($hash))];
         }
         return $result;
+    }
+    
+    public function isCryptographicallySecure() {
+        return false;
     }
 }

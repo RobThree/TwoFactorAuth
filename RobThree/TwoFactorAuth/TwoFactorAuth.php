@@ -21,16 +21,16 @@ class TwoFactorAuth
         $this->issuer = $issuer;
 
         if (!is_int($digits) || $digits <= 0)
-            throw new Exception('Digits must be int > 0');
+            throw new TwoFactorAuthException('Digits must be int > 0');
         $this->digits = $digits;
         
         if (!is_int($period) || $period <= 0)
-            throw new Exception('Period must be int > 0');
+            throw new TwoFactorAuthException('Period must be int > 0');
         $this->period = $period;
         
         $algorithm = strtolower(trim($algorithm));
         if (!in_array($algorithm, self::$_supportedalgos))
-            throw new Exception('Unsupported algorithm: ' . $algorithm);
+            throw new TwoFactorAuthException('Unsupported algorithm: ' . $algorithm);
         $this->algorithm = $algorithm;
         
         // Set default QR Code provider if none was specified
@@ -38,7 +38,7 @@ class TwoFactorAuth
             $qrcodeprovider = new Providers\Qr\GoogleQRCodeProvider();
         
         if (!($qrcodeprovider instanceof Providers\Qr\IQRCodeProvider))
-            throw new Exception('QRCodeProvider must implement IQRCodeProvider');
+            throw new TwoFactorAuthException('QRCodeProvider must implement IQRCodeProvider');
         
         $this->qrcodeprovider = $qrcodeprovider;
         
@@ -54,7 +54,7 @@ class TwoFactorAuth
         }
         
         if (!($rngprovider instanceof Providers\Rng\IRNGProvider))
-            throw new Exception('RNGProvider must implement IRNGProvider');
+            throw new TwoFactorAuthException('RNGProvider must implement IRNGProvider');
         
         $this->rngprovider = $rngprovider;
         
@@ -65,10 +65,12 @@ class TwoFactorAuth
     /**
      * Create a new secret
      */
-    public function createSecret($bits = 80) 
+    public function createSecret($bits = 80, $requirecryptosecure = true) 
     {
         $secret = '';
         $bytes = ceil($bits / 5);   //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
+        if ($requirecryptosecure && !$this->rngprovider->isCryptographicallySecure())
+            throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
         $rnd = $this->rngprovider->getRandomBytes($bytes);
         for ($i = 0; $i < $bytes; $i++)
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
@@ -112,7 +114,7 @@ class TwoFactorAuth
     public function getQRCodeImageAsDataUri($label, $secret, $size = 200) 
     {
         if (!is_int($size) || $size < 0)
-            throw new  Exception('Size must be int > 0');
+            throw new TwoFactorAuthException('Size must be int > 0');
         
         return 'data:'
             . $this->qrcodeprovider->getMimeType()
