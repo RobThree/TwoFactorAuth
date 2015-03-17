@@ -29,7 +29,7 @@ Add the following line to the composer.json file:
 Here are some code snippets that should help you get started...
 
 ````php
-// Start by including the TwoFactorAuth.php file which contains all you need (for now)
+// Create a TwoFactorAuth instance
 $tfa = new RobThree\TwoFactorAuth\TwoFactorAuth('My Company');
 ````
 
