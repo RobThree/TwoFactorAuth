@@ -6,7 +6,7 @@ class MCryptRNGProvider implements IRNGProvider
 {
     private $source;
     
-    function __construct($source = MCRYPT_DEV_URANDOM ) {
+    function __construct($source = MCRYPT_DEV_URANDOM) {
         $this->source = $source;
     }
     
