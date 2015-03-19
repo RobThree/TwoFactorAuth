@@ -24,28 +24,27 @@
   <ItemGroup>
     <Compile Include="demo.php" />
     <Compile Include="loader.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\BaseHTTPQRCodeProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\GoogleQRCodeProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\IQRCodeProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\QRException.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\QRicketProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Qr\QRServerProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\IRNGProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\MCryptRNGProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\OpenSSLRNGProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\HashRNGProvider.php" />
-    <Compile Include="RobThree\TwoFactorAuth\Providers\Rng\RNGException.php" />
-    <Compile Include="RobThree\TwoFactorAuth\TwoFactorAuth.php" />
+    <Compile Include="lib\Providers\Qr\BaseHTTPQRCodeProvider.php" />
+    <Compile Include="lib\Providers\Qr\GoogleQRCodeProvider.php" />
+    <Compile Include="lib\Providers\Qr\IQRCodeProvider.php" />
+    <Compile Include="lib\Providers\Qr\QRException.php" />
+    <Compile Include="lib\Providers\Qr\QRicketProvider.php" />
+    <Compile Include="lib\Providers\Qr\QRServerProvider.php" />
+    <Compile Include="lib\Providers\Rng\IRNGProvider.php" />
+    <Compile Include="lib\Providers\Rng\MCryptRNGProvider.php" />
+    <Compile Include="lib\Providers\Rng\OpenSSLRNGProvider.php" />
+    <Compile Include="lib\Providers\Rng\HashRNGProvider.php" />
+    <Compile Include="lib\Providers\Rng\RNGException.php" />
+    <Compile Include="lib\TwoFactorAuth.php" />
     <Compile Include=".gitignore" />
     <Compile Include="README.md" />
-    <Compile Include="RobThree\TwoFactorAuth\TwoFactorAuthException.php" />
+    <Compile Include="lib\TwoFactorAuthException.php" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="RobThree\" />
-    <Folder Include="RobThree\TwoFactorAuth\" />
-    <Folder Include="RobThree\TwoFactorAuth\Providers\" />
-    <Folder Include="RobThree\TwoFactorAuth\Providers\Rng\" />
-    <Folder Include="RobThree\TwoFactorAuth\Providers\Qr\" />
+    <Folder Include="lib\" />
+    <Folder Include="lib\Providers\" />
+    <Folder Include="lib\Providers\Qr\" />
+    <Folder Include="lib\Providers\Rng\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="composer.json" />
