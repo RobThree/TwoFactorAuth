@@ -46,12 +46,11 @@
     <Folder Include="lib\Providers\Qr\" />
     <Folder Include="lib\Providers\Rng\" />
     <Folder Include="demo\" />
-    <Folder Include="img\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="composer.json" />
-    <Content Include="img\logo.png" />
-    <Content Include="img\multifactorauthforeveryone.png" />
+    <Content Include="logo.png" />
+    <Content Include="multifactorauthforeveryone.png" />
     <Content Include="LICENSE" />
   </ItemGroup>
 </Project>
