@@ -17,6 +17,11 @@
         "issues": "https://github.com/RobThree/TwoFactorAuth/issues",
         "source": "https://github.com/RobThree/TwoFactorAuth"
     },
+    "autoload": {
+		"psr-4": {
+			"RobThree\\TwoFactorAuth\\": ""
+		}
+	},
     "require": {
         "php": ">=5.3.0"
     }
