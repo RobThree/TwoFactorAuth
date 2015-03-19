@@ -51,7 +51,5 @@
   <ItemGroup>
     <Content Include="composer.json" />
     <Content Include="LICENSE" />
-    <Content Include="img\logo.png" />
-    <Content Include="img\multifactorauthforeveryone.png" />
   </ItemGroup>
 </Project>
