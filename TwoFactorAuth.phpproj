@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="composer.json" />
+    <Content Include="img\logo.png" />
+    <Content Include="img\multifactorauthforeveryone.png" />
     <Content Include="LICENSE" />
   </ItemGroup>
 </Project>
