@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth;
+namespace RobThree\Auth;
 
 class TwoFactorAuthException extends \Exception
 {

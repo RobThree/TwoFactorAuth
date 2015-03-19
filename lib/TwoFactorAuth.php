@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth;
+namespace RobThree\Auth;
 
 // Based on / inspired by: https://github.com/PHPGangsta/GoogleAuthenticator
 // Algorithms, digits, period etc. explained: https://github.com/google/google-authenticator/wiki/Key-Uri-Format

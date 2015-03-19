@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth\Providers\Qr;
+namespace RobThree\Auth\Providers\Qr;
 
 class QRException extends \Exception
 {

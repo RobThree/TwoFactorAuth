@@ -1,6 +1,6 @@
 <?php
 
-namespace RobThree\TwoFactorAuth\Providers\Rng;
+namespace RobThree\Auth\Providers\Rng;
 
 class OpenSSLRNGProvider implements IRNGProvider
 {
