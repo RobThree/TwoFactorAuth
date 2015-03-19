@@ -10,7 +10,7 @@
         require_once 'loader.php';
         Loader::register('RobThree','RobThree');
         
-        use \RobThree\TwoFactorAuth\TwoFactorAuth;
+        use \RobThree\Auth\TwoFactorAuth;
 
         $tfa = new TwoFactorAuth('MyApp');
 

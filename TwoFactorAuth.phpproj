@@ -22,8 +22,8 @@
     <IncludeDebugInformation>false</IncludeDebugInformation>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="demo.php" />
-    <Compile Include="loader.php" />
+    <Compile Include="demo\demo.php" />
+    <Compile Include="demo\loader.php" />
     <Compile Include="lib\Providers\Qr\BaseHTTPQRCodeProvider.php" />
     <Compile Include="lib\Providers\Qr\GoogleQRCodeProvider.php" />
     <Compile Include="lib\Providers\Qr\IQRCodeProvider.php" />
@@ -45,11 +45,13 @@
     <Folder Include="lib\Providers\" />
     <Folder Include="lib\Providers\Qr\" />
     <Folder Include="lib\Providers\Rng\" />
+    <Folder Include="demo\" />
+    <Folder Include="img\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="composer.json" />
     <Content Include="LICENSE" />
-    <Content Include="logo.png" />
-    <Content Include="multifactorauthforeveryone.png" />
+    <Content Include="img\logo.png" />
+    <Content Include="img\multifactorauthforeveryone.png" />
   </ItemGroup>
 </Project>

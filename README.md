@@ -1,9 +1,9 @@
-# ![Logo](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/logo.png) TwoFactorAuth class for PHP
+# ![Logo](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/img/logo.png) TwoFactorAuth class for PHP
 
 PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.org/wiki/Multi-factor_authentication) using [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) and [QR-codes](http://en.wikipedia.org/wiki/QR_code). Inspired by, based on but most importantly an *improvement* on '[PHPGangsta/GoogleAuthenticator](https://github.com/PHPGangsta/GoogleAuthenticator)'.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/multifactorauthforeveryone.png">
+<img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/img/multifactorauthforeveryone.png">
 </p>
 
 ## Requirements
@@ -30,7 +30,7 @@ Here are some code snippets that should help you get started...
 
 ````php
 // Create a TwoFactorAuth instance
-$tfa = new RobThree\TwoFactorAuth\TwoFactorAuth('My Company');
+$tfa = new RobThree\Auth\TwoFactorAuth('My Company');
 ````
 
 The TwoFactorAuth class constructor accepts 6 parameters (all optional):
@@ -155,8 +155,8 @@ That's it. We're done! We've implemented our own provider (with help of PHP QR C
 
 ````php
 <?php
-$mp = new RobThree\TwoFactorAuth\TwoFactorAuth\Providers\Qr\MyProvider();
-$tfa = new RobThree\TwoFactorAuth\TwoFactorAuth\TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
+$mp = new RobThree\Auth\Providers\Qr\MyProvider();
+$tfa = new RobThree\Auth\TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
 $secret = $tfa->createSecret();
 ?>
 <p><img src="<?php $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret) ?>"></p>
