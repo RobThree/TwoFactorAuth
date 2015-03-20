@@ -27,6 +27,10 @@ Add the following line to the composer.json file:
 }
 ````
 
+## Quick start
+
+If you want to hit the ground running then have a look at the [demo](demo/demo.php). It's very simple and easy!
+
 ## Usage
 
 Here are some code snippets that should help you get started...
@@ -112,11 +116,11 @@ verifyCode($secret, $code, $discrepancy = 1, $time = null)
 
 ### QR-code providers
 
-As mentioned before, this class comes with three 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` parameter which lets you specify a built-in or custom QR-code provider. All three built-in providers do a simple HTTP request to retrieve an image using cURL and implement the `IQRCodeProvider` interface which is all you need to implement to write your own QR-code provider.
+As mentioned before, this class comes with three 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` parameter which lets you specify a built-in or custom QR-code provider. All three built-in providers do a simple HTTP request to retrieve an image using cURL and implement the [`IQRCodeProvider`](lib/Providers/Qr/IQRCodeProvider.php) interface which is all you need to implement to write your own QR-code provider.
 
-The default provider is the `GoogleQRCodeProvider` which uses the [Google Chart Tools](https://developers.google.com/chart/infographics/docs/qr_codes) to render QR-codes. Then we have the `QRServerProvider` which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) and finally we have the `QRicketProvider` which uses the [QRickit API](http://qrickit.com/qrickit_apps/qrickit_api.php). All three inherit from a common (abstract) base-class named `BaseHTTPQRCodeProvider` because all three share the same functionality: retrieve an image from a 3rd party. All three classes have constructors that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by these classes.
+The default provider is the [`GoogleQRCodeProvider`](lib/Providers/Qr/GoogleQRCodeProvider.php) which uses the [Google Chart Tools](https://developers.google.com/chart/infographics/docs/qr_codes) to render QR-codes. Then we have the [`QRServerProvider`](lib/Providers/Qr/QRServerProvider.php) which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) and finally we have the [`QRicketProvider`](lib/Providers/Qr/QRicketProvider.php) which uses the [QRickit API](http://qrickit.com/qrickit_apps/qrickit_api.php). All three inherit from a common (abstract) base-class named [`BaseHTTPQRCodeProvider`](lib/Providers/Qr/BaseHTTPQRCodeProvider.php) because all three share the same functionality: retrieve an image from a 3rd party over HTTP. All three classes have constructors that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by these classes.
 
-If you don't like any of the built-in classes because you don't want to rely on external resources for example or because you're paranoid about sending the TOTP data to these 3rd parties (which is useless to them since they miss *at least one* other factor in the [MFA process](http://en.wikipedia.org/wiki/Multi-factor_authentication)), feel tree to implement your own. The `IQRCodeProvider` interface couldn't be any simpler. All you need to do is implement 2 methods:
+If you don't like any of the built-in classes because you don't want to rely on external resources for example or because you're paranoid about sending the TOTP secret to these 3rd parties (which is useless to them since they miss *at least one* other factor in the [MFA process](http://en.wikipedia.org/wiki/Multi-factor_authentication)), feel tree to implement your own. The `IQRCodeProvider` interface couldn't be any simpler. All you need to do is implement 2 methods:
 
 ````php
 getMimeType();
@@ -169,9 +173,9 @@ Voilà. Couldn't make it any simpler.
 
 ### RNG providers
 
-This class also comes with three 'built-in' RNG providers ([Random Number Generator](https://en.wikipedia.org/wiki/Random_number_generation)). The RNG provider generates a number of random bytes and returns these bytes as a string. These values are then used to create the secret. By default (no RNG provider specified) TwoFactorAuth will try to determine the best available RNG provider to use. It will, be default, try to use the `MCryptRNGProvider`, if this is not available/supported for any reason it will try to use the `OpenSSLRNGProvider` and if that is also not available/supported it will try to use the final RNG provider: `HashRNGProvider`. Each of these providers use their own method of generating a random sequence of bytes. The first two (`OpenSSLRNGProvider` and `MCryptRNGProvider`) return a [cryptographically secure](https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator) sequence of random bytes whereas the `HashRNGProvider` returns a **non-cryptographically secure** sequence.
+This class also comes with three 'built-in' RNG providers ([Random Number Generator](https://en.wikipedia.org/wiki/Random_number_generation)). The RNG provider generates a number of random bytes and returns these bytes as a string. These values are then used to create the secret. By default (no RNG provider specified) TwoFactorAuth will try to determine the best available RNG provider to use. It will, be default, try to use the [`MCryptRNGProvider`](lib/Providers/Rng/MCryptRNGProvider.php), if this is not available/supported for any reason it will try to use the [`OpenSSLRNGProvider`](lib/Providers/Rng/OpenSSLRNGProvider.php) and if that is also not available/supported it will try to use the final RNG provider: [`HashRNGProvider`](lib/Providers/Rng/HashRNGProvider.php). Each of these providers use their own method of generating a random sequence of bytes. The first two (`OpenSSLRNGProvider` and `MCryptRNGProvider`) return a [cryptographically secure](https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator) sequence of random bytes whereas the `HashRNGProvider` returns a **non-cryptographically secure** sequence.
 
-You can easily implement your own `RNDProvider` by simply implementing the `IRNGProvider` interface. Each of the 'built-in' RNG providers have some constructor parameters that allow you to 'tweak' some of the settings to use when creating the random bytes such as which source to use (`MCryptRNGProvider`) or which hashing algorithm (`HashRNGProvider`).
+You can easily implement your own `RNGProvider` by simply implementing the `IRNGProvider` interface. Each of the 'built-in' RNG providers have some constructor parameters that allow you to 'tweak' some of the settings to use when creating the random bytes such as which source to use (`MCryptRNGProvider`) or which hashing algorithm (`HashRNGProvider`). I encourage you to have a look at some of the ['built-in' RNG providers](lib/Providers/Rng) for details and the [`IRNGProvider` interface](lib/Providers/Rng/IRNGProvider.php).
 
 ## License
 
