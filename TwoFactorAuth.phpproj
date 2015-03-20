@@ -39,6 +39,7 @@
     <Compile Include=".gitignore" />
     <Compile Include="README.md" />
     <Compile Include="lib\TwoFactorAuthException.php" />
+    <Compile Include="tests\TwoFactorAuthTest.php" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
@@ -46,8 +47,10 @@
     <Folder Include="lib\Providers\Qr\" />
     <Folder Include="lib\Providers\Rng\" />
     <Folder Include="demo\" />
+    <Folder Include="tests\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".travis.yml" />
     <Content Include="composer.json" />
     <Content Include="logo.png" />
     <Content Include="multifactorauthforeveryone.png" />
