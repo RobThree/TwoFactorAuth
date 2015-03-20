@@ -115,7 +115,7 @@ class TwoFactorAuth
      */
     public function getQRCodeImageAsDataUri($label, $secret, $size = 200) 
     {
-        if (!is_int($size) || $size < 0)
+        if (!is_int($size) || $size <= 0)
             throw new TwoFactorAuthException('Size must be int > 0');
         
         return 'data:'
