@@ -22,7 +22,7 @@ Add the following line to the composer.json file:
 ````
 {
     "require": {
-        "robthree/twofactorauth": "dev-master"
+        "robthree/twofactorauth": "1.0"
     }
 }
 ````
