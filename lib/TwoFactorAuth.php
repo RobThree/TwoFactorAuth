@@ -160,10 +160,10 @@ class TwoFactorAuth
         $l = strlen($s);
         $r = trim(chunk_split(substr($s, 0, $l - ($l % 8)), 8, ' '));
         
-		$o = '';
-		foreach (explode(' ', $r) as $b)
+        $o = '';
+        foreach (explode(' ', $r) as $b)
             $o .= chr(bindec(str_pad($b, 8, 0, STR_PAD_RIGHT)));
 
-		return $o;
+        return $o;
     }
 }
