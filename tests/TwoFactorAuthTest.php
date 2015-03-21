@@ -12,6 +12,11 @@ require_once 'lib/Providers/Rng/MCryptRNGProvider.php';
 require_once 'lib/Providers/Rng/OpenSSLRNGProvider.php';
 require_once 'lib/Providers/Rng/HashRNGProvider.php';
 
+use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\Providers\Qr\IQRCodeProvider;
+use RobThree\Auth\Providers\Rng\IRNGProvider;
+
+
 class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
 {
     /**
@@ -19,7 +24,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnInvalidDigits() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 0);
+        $tfa = new TwoFactorAuth('Test', 0);
     }
 
     /**
@@ -27,7 +32,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnInvalidPeriod() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 0);
+        $tfa = new TwoFactorAuth('Test', 6, 0);
     }
 
     /**
@@ -35,7 +40,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnInvalidAlgorithm() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'xxx');
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'xxx');
     }
 
     /**
@@ -43,7 +48,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnQrProviderNotImplementingInterface() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', new stdClass());
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', new stdClass());
     }
 
     /**
@@ -51,12 +56,12 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnRngProviderNotImplementingInterface() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', null, new stdClass());
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, new stdClass());
     }
 
     public function testGetCodeReturnsCorrectResults() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test');
+        $tfa = new TwoFactorAuth('Test');
         $this->assertEquals('543160', $tfa->getCode('VMR466AB62ZBOKHE', 1426847216));
         $this->assertEquals('538532', $tfa->getCode('VMR466AB62ZBOKHE', 0));
     }
@@ -67,28 +72,28 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testCreateSecretThrowsOnInsecureRNGProvider() {
         $rng = new TestRNGProvider();
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
         $tfa->createSecret();
     }
 
     public function testCreateSecretOverrideSecureDoesNotThrowOnInsecureRNG() {
         $rng = new TestRNGProvider();
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
         $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret(80, false));
     }
 
     public function testCreateSecretDoesNotThrowOnSecureRNGProvider() {
         $rng = new TestRNGProvider(true);
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
         $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret());
     }
 
     public function testCreateSecretGeneratesDesiredAmountOfEntropy() {
         $rng = new TestRNGProvider(true);
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
         $this->assertEquals('A', $tfa->createSecret(5));
         $this->assertEquals('AB', $tfa->createSecret(6));
         $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $tfa->createSecret(128));
@@ -100,7 +105,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
 
     public function testVerifyCodeWorksCorrectly() {
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30);
+        $tfa = new TwoFactorAuth('Test', 6, 30);
         $this->assertEquals(true , $tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847190));
         $this->assertEquals(true , $tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 + 29));	//Test discrepancy
         $this->assertEquals(false, $tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 + 30));	//Test discrepancy
@@ -120,7 +125,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testTotpUriIsCorrect() {
         $qr = new TestQrProvider();
 
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test&Issuer', 6, 30, 'sha1', $qr);
+        $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, 'sha1', $qr);
         $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
         $this->assertEquals('test/test', $data['mimetype']);
         $this->assertEquals('base64', $data['encoding']);
@@ -133,14 +138,14 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testGetQRCodeImageAsDataUriThrowsOnInvalidSize() {
         $qr = new TestQrProvider();
         
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 6, 30, 'sha1', $qr);
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', $qr);
         $tfa->getQRCodeImageAsDataUri('Test', 'VMR466AB62ZBOKHE', 0);
     }
 
     public function testKnownTestVectors_sha1() {
         //Known test vectors for SHA1: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';   //== base32encode('12345678901234567890')
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 8, 30, 'sha1');
+        $tfa = new TwoFactorAuth('Test', 8, 30, 'sha1');
         $this->assertEquals('94287082', $tfa->getCode($secret, 59));
         $this->assertEquals('07081804', $tfa->getCode($secret, 1111111109));
         $this->assertEquals('14050471', $tfa->getCode($secret, 1111111111));
@@ -152,7 +157,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testKnownTestVectors_sha256() {
         //Known test vectors for SHA256: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA';   //== base32encode('12345678901234567890123456789012')
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 8, 30, 'sha256');
+        $tfa = new TwoFactorAuth('Test', 8, 30, 'sha256');
         $this->assertEquals('46119246', $tfa->getCode($secret, 59));
         $this->assertEquals('68084774', $tfa->getCode($secret, 1111111109));
         $this->assertEquals('67062674', $tfa->getCode($secret, 1111111111));
@@ -164,7 +169,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testKnownTestVectors_sha512() {
         //Known test vectors for SHA512: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA';   //== base32encode('1234567890123456789012345678901234567890123456789012345678901234')
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Test', 8, 30, 'sha512');
+        $tfa = new TwoFactorAuth('Test', 8, 30, 'sha512');
         $this->assertEquals('90693936', $tfa->getCode($secret, 59));
         $this->assertEquals('25091201', $tfa->getCode($secret, 1111111109));
         $this->assertEquals('99943326', $tfa->getCode($secret, 1111111111));
@@ -186,7 +191,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class TestRNGProvider implements \RobThree\Auth\Providers\Rng\IRNGProvider {
+class TestRNGProvider implements IRNGProvider {
     private $isSecure;
     
     function __construct($isSecure = false) {
@@ -206,7 +211,7 @@ class TestRNGProvider implements \RobThree\Auth\Providers\Rng\IRNGProvider {
     }
 }
 
-class TestQrProvider implements \RobThree\Auth\Providers\Qr\IQRCodeProvider {
+class TestQrProvider implements IQRCodeProvider {
     public function getQRCodeImage($qrtext, $size) {
         return $qrtext . '@' . $size;
     }
