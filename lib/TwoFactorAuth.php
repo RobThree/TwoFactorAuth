@@ -12,6 +12,7 @@ class TwoFactorAuth
     private $issuer;
     private $qrcodeprovider;
     private $rngprovider;
+    private static $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
     private static $_base32;
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
@@ -60,7 +61,7 @@ class TwoFactorAuth
         
         $this->rngprovider = $rngprovider;
         
-        self::$_base32 = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=');
+        self::$_base32 = str_split(self::$_base32dict);
         self::$_base32lookup = array_flip(self::$_base32);
     }
     
@@ -150,6 +151,9 @@ class TwoFactorAuth
     private function base32Decode($value)
     {
         if (strlen($value)==0) return '';
+        
+        if (preg_match('/[^'.preg_quote(self::$_base32dict).']/', $value) !== 0)
+            throw new TwoFactorAuthException('Invalid base32 string');
         
         $s = '';
         foreach (str_split($value) as $c) 

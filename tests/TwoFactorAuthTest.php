@@ -142,6 +142,70 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $tfa->getQRCodeImageAsDataUri('Test', 'VMR466AB62ZBOKHE', 0);
     }
 
+    /**
+     * @expectedException \RobThree\Auth\TwoFactorAuthException
+     */
+    public function testGetCodeThrowsOnInvalidBase32String1() {
+        $tfa = new TwoFactorAuth('Test');
+        $result = $tfa->getCode('FOO1BAR8BAZ9');    //1, 8 & 9 are invalid chars
+    }
+    
+    /**
+     * @expectedException \RobThree\Auth\TwoFactorAuthException
+     */
+    public function testGetCodeThrowsOnInvalidBase32String2() {
+        $tfa = new TwoFactorAuth('Test');
+        $result = $tfa->getCode('mzxw6===');        //Lowercase
+    }
+    
+    public function testKnownBase32DecodeTestVectors() {
+        // We usually don't test internals (e.g. privates) but since we rely heavily on base32 decoding and don't want
+        // to expose this method nor do we want to give people the possibility of implementing / providing their own base32
+        // decoding/decoder (as we do with Rng/QR providers for example) we simply test the private base32Decode() method
+        // with some known testvectors **only** to ensure base32 decoding works correctly following RFC's so there won't
+        // be any bugs hiding in there. We **could** 'fool' ourselves by calling the public getCode() method (which uses
+        // base32decode internally) and then make sure getCode's output (in digits) equals expected output since that would
+        // mean the base32Decode() works as expected but that **could** hide some subtle bug(s) in decoding the base32 string.
+        
+        // "In general, you don't want to break any encapsulation for the sake of testing (or as Mom used to say, "don't
+        // expose your privates!"). Most of the time, you should be able to test a class by exercising its public methods."
+        //                                                           Dave Thomas and Andy Hunt -- "Pragmatic Unit Testing
+        $tfa = new TwoFactorAuth('Test');
+        
+        $method = new ReflectionMethod('RobThree\Auth\TwoFactorAuth', 'base32Decode');
+        $method->setAccessible(true);
+        
+        // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
+        $this->assertEquals('', $method->invoke($tfa, ''));
+        $this->assertEquals('f', $method->invoke($tfa, 'MY======'));
+        $this->assertEquals('fo', $method->invoke($tfa, 'MZXQ===='));
+        $this->assertEquals('foo', $method->invoke($tfa, 'MZXW6==='));
+        $this->assertEquals('foob', $method->invoke($tfa, 'MZXW6YQ='));
+        $this->assertEquals('fooba', $method->invoke($tfa, 'MZXW6YTB'));
+        $this->assertEquals('foobar', $method->invoke($tfa, 'MZXW6YTBOI======'));
+    }
+    
+    public function testKnownBase32DecodeUnpaddedTestVectors() {
+        // See testKnownBase32DecodeTestVectors() for the rationale behind testing the private base32Decode() method.
+        // This test ensures that strings without the padding-char ('=') are also decoded correctly.
+        // https://tools.ietf.org/html/rfc4648#page-4: 
+        //   "In some circumstances, the use of padding ("=") in base-encoded data is not required or used."
+        $tfa = new TwoFactorAuth('Test');
+        
+        $method = new ReflectionMethod('RobThree\Auth\TwoFactorAuth', 'base32Decode');
+        $method->setAccessible(true);
+        
+        // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
+        $this->assertEquals('', $method->invoke($tfa, ''));
+        $this->assertEquals('f', $method->invoke($tfa, 'MY'));
+        $this->assertEquals('fo', $method->invoke($tfa, 'MZXQ'));
+        $this->assertEquals('foo', $method->invoke($tfa, 'MZXW6'));
+        $this->assertEquals('foob', $method->invoke($tfa, 'MZXW6YQ'));
+        $this->assertEquals('fooba', $method->invoke($tfa, 'MZXW6YTB'));
+        $this->assertEquals('foobar', $method->invoke($tfa, 'MZXW6YTBOI'));
+    }
+
+
     public function testKnownTestVectors_sha1() {
         //Known test vectors for SHA1: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';   //== base32encode('12345678901234567890')
