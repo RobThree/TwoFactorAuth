@@ -16,15 +16,12 @@ PHP class for [two-factor (or multi-factor) authentication](http://en.wikipedia.
 
 ## Installation
 
-Add the following line to the composer.json file:
-
-````
-{
-    "require": {
-        "robthree/twofactorauth": "1.0"
-    }
+````json
+"require": {
+    "robthree/twofactorauth": "1.0"
 }
 ````
+And run `php composer update`
 
 ## Quick start
 
