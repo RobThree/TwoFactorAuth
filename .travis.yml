@@ -8,4 +8,4 @@ php:
   - 7
   - hhvm
 
-script: phpunit tests
+script: phpunit --coverage-text tests
