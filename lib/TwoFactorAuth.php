@@ -87,11 +87,11 @@ class TwoFactorAuth
     {
         $secretkey = $this->base32Decode($secret);
         
-        $ts = "\0\0\0\0" . pack('N*', $this->getTimeSlice($this->getTime($time)));  // Pack time into binary string
-        $hm = hash_hmac($this->algorithm, $ts, $secretkey, true);                   // Hash it with users secret key
-        $hashpart = substr($hm, ord(substr($hm, -1)) & 0x0F, 4);                    // Use last nibble of result as index/offset and grab 4 bytes of the result
-        $value = unpack('N', $hashpart);                                            // Unpack binary value
-        $value = $value[1] & 0x7FFFFFFF;                                            // Drop MSB, keep only 31 bits
+        $timestamp = "\0\0\0\0" . pack('N*', $this->getTimeSlice($this->getTime($time)));  // Pack time into binary string
+        $hashhmac = hash_hmac($this->algorithm, $timestamp, $secretkey, true);             // Hash it with users secret key
+        $hashpart = substr($hashhmac, ord(substr($hashhmac, -1)) & 0x0F, 4);               // Use last nibble of result as index/offset and grab 4 bytes of the result
+        $value = unpack('N', $hashpart);                                                   // Unpack binary value
+        $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
         
         return str_pad($value % pow(10, $this->digits), $this->digits, '0', STR_PAD_LEFT);
     }
@@ -101,10 +101,10 @@ class TwoFactorAuth
      */
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null)
     {
-        $t = $this->getTime($time);
+        $timetamp = $this->getTime($time);
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) 
         {
-            if (strcmp($this->getCode($secret, $t + ($i * $this->period)), $code) === 0)
+            if (strcmp($this->getCode($secret, $timetamp + ($i * $this->period)), $code) === 0)
                 return true;
         }
         
@@ -155,19 +155,19 @@ class TwoFactorAuth
         if (preg_match('/[^'.preg_quote(self::$_base32dict).']/', $value) !== 0)
             throw new TwoFactorAuthException('Invalid base32 string');
         
-        $s = '';
-        foreach (str_split($value) as $c) 
+        $buffer = '';
+        foreach (str_split($value) as $char) 
         {
-            if ($c !== '=')
-                $s .= str_pad(decbin(self::$_base32lookup[$c]), 5, 0, STR_PAD_LEFT);
+            if ($char !== '=')
+                $buffer .= str_pad(decbin(self::$_base32lookup[$char]), 5, 0, STR_PAD_LEFT);
         }
-        $l = strlen($s);
-        $r = trim(chunk_split(substr($s, 0, $l - ($l % 8)), 8, ' '));
+        $length = strlen($buffer);
+        $blocks = trim(chunk_split(substr($buffer, 0, $length - ($length % 8)), 8, ' '));
         
-        $o = '';
-        foreach (explode(' ', $r) as $b)
-            $o .= chr(bindec(str_pad($b, 8, 0, STR_PAD_RIGHT)));
+        $output = '';
+        foreach (explode(' ', $blocks) as $block)
+            $output .= chr(bindec(str_pad($block, 8, 0, STR_PAD_RIGHT)));
 
-        return $o;
+        return $output;
     }
 }

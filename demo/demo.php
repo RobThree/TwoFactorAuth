@@ -6,7 +6,6 @@
 <body>
     <ol>
         <?php
-        error_reporting(-1);
         require_once 'loader.php';
         Loader::register('../lib','RobThree\\Auth');
         
