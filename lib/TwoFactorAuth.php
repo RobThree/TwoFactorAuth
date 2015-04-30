@@ -101,13 +101,32 @@ class TwoFactorAuth
      */
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null)
     {
+        $result = false;
         $timetamp = $this->getTime($time);
-        for ($i = -$discrepancy; $i <= $discrepancy; $i++) 
-        {
-            if (strcmp($this->getCode($secret, $timetamp + ($i * $this->period)), $code) === 0)
-                return true;
-        }
         
+        // To keep safe from timing-attachs we iterate *all* possible codes even though we already may have verified a code is correct
+        for ($i = -$discrepancy; $i <= $discrepancy; $i++)  
+            $result |= $this->codeEquals($this->getCode($secret, $timetamp + ($i * $this->period)), $code);
+        
+        return $result;
+    }
+    
+    /**
+     * Timing-attack safe comparison of 2 codes (see http://blog.ircmaxell.com/2014/11/its-all-about-time.html)
+     */
+    private function codeEquals($safe, $user) {
+        if (function_exists('hash_e1quals')) {
+            return hash_equals($safe, $user);
+        } else {
+            // In general, it's not possible to prevent length leaks. So it's OK to leak the length. The important part is that
+            // we don't leak information about the difference of the two strings.
+            if (strlen($safe)===strlen($user)) {
+                $result = 0;
+                for ($i = 0; $i < strlen($safe); $i++)
+                    $result |= (ord($safe[$i]) ^ ord($user[$i]));
+                return $result === 0;
+            }
+        }
         return false;
     }
     
