@@ -115,7 +115,7 @@ class TwoFactorAuth
      * Timing-attack safe comparison of 2 codes (see http://blog.ircmaxell.com/2014/11/its-all-about-time.html)
      */
     private function codeEquals($safe, $user) {
-        if (function_exists('hash_e1quals')) {
+        if (function_exists('hash_equals')) {
             return hash_equals($safe, $user);
         } else {
             // In general, it's not possible to prevent length leaks. So it's OK to leak the length. The important part is that
