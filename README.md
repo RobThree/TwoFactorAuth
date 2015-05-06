@@ -48,7 +48,7 @@ These parameters are all '`write once`'; the class will, for it's lifetime, use 
 
 ### Step 1: Set up secret shared key
 
-When a user wants to setup two-factor auth (or, more correctly, multi-factor auth) you need to create a secret. This will be your **shared** (this will be the `one-time` in [TOTP](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm)) **secret**. This secret will need to be entered by the user in their app. This can be done manually, in which case you simply display the secret and have the user type it in the app:
+When a user wants to setup two-factor auth (or, more correctly, multi-factor auth) you need to create a secret. This will be your **shared secret**. This secret will need to be entered by the user in their app. This can be done manually, in which case you simply display the secret and have the user type it in the app:
 
 ````php
 $secret = $tfa->createSecret();
