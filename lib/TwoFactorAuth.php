@@ -108,7 +108,7 @@ class TwoFactorAuth
         for ($i = -$discrepancy; $i <= $discrepancy; $i++)  
             $result |= $this->codeEquals($this->getCode($secret, $timetamp + ($i * $this->period)), $code);
         
-        return $result;
+        return (bool)$result;
     }
     
     /**
