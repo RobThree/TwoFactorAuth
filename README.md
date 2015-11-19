@@ -81,7 +81,7 @@ When outputting a QR-code you can choose a `$label` for the user (which, when en
 
 ### Step 2: Verify secret shared key
 
-When the code is added to the app, the app will be ready to start generating codes which 'expire' each '`$period`' number of seconds. To make sure the code was entered, or scanned, correctly you need to verify this by having the user enter a generated code. To check if the generated code is valid you call the `verifyCode()` method:
+When the code is added to the app, the app will be ready to start generating codes which 'expire' each '`$period`' number of seconds. To make sure the secret was entered, or scanned, correctly you need to verify this by having the user enter a generated code. To check if the generated code is valid you call the `verifyCode()` method:
 
 ````php
 // Verify code
