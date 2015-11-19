@@ -174,4 +174,4 @@ You can easily implement your own `RNGProvider` by simply implementing the `IRNG
 
 Licensed under MIT license. See [LICENSE](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/LICENSE) for details.
 
-[Logo / icon](http://www.iconmay.com/Simple/Travel_and_Tourism_Part_2/luggage_lock_safety_baggage_keys_cylinder_lock_hotel_travel_tourism_luggage_lock_icon_465) under  CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+[Logo / icon](http://www.iconmay.com/Simple/Travel_and_Tourism_Part_2/luggage_lock_safety_baggage_keys_cylinder_lock_hotel_travel_tourism_luggage_lock_icon_465) under  CC0 1.0 Universal (CC0 1.0) Public Domain Dedication  ([Archived page](http://riii.nl/tm7ap))
