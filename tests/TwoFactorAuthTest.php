@@ -24,7 +24,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnInvalidDigits() {
 
-        $tfa = new TwoFactorAuth('Test', 0);
+        new TwoFactorAuth('Test', 0);
     }
 
     /**
@@ -32,7 +32,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnInvalidPeriod() {
 
-        $tfa = new TwoFactorAuth('Test', 6, 0);
+        new TwoFactorAuth('Test', 6, 0);
     }
 
     /**
@@ -40,7 +40,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnInvalidAlgorithm() {
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'xxx');
+        new TwoFactorAuth('Test', 6, 30, 'xxx');
     }
 
     /**
@@ -48,7 +48,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnQrProviderNotImplementingInterface() {
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', new stdClass());
+        new TwoFactorAuth('Test', 6, 30, 'sha1', new stdClass());
     }
 
     /**
@@ -56,7 +56,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testConstructorThrowsOnRngProviderNotImplementingInterface() {
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, new stdClass());
+        new TwoFactorAuth('Test', 6, 30, 'sha1', null, new stdClass());
     }
 
     public function testGetCodeReturnsCorrectResults() {
@@ -147,7 +147,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCodeThrowsOnInvalidBase32String1() {
         $tfa = new TwoFactorAuth('Test');
-        $result = $tfa->getCode('FOO1BAR8BAZ9');    //1, 8 & 9 are invalid chars
+        $tfa->getCode('FOO1BAR8BAZ9');    //1, 8 & 9 are invalid chars
     }
     
     /**
@@ -155,7 +155,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCodeThrowsOnInvalidBase32String2() {
         $tfa = new TwoFactorAuth('Test');
-        $result = $tfa->getCode('mzxw6===');        //Lowercase
+        $tfa->getCode('mzxw6===');        //Lowercase
     }
     
     public function testKnownBase32DecodeTestVectors() {
@@ -242,7 +242,62 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('47863826', $tfa->getCode($secret, 20000000000));
     }
 
+    /**
+     * @requires function random_bytes
+     */
+    public function testCSRNGProvidersReturnExpectedNumberOfBytes() {
+        $rng = new \RobThree\Auth\Providers\Rng\CSRNGProvider();
+        foreach ($this->getRngTestLengths() as $l)
+            $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+        $this->assertEquals(true, $rng->isCryptographicallySecure());
+    }
+
+    /**
+     * @requires function hash_algos
+     * @requires function hash
+     */
+    public function testHashRNGProvidersReturnExpectedNumberOfBytes() {
+        $rng = new \RobThree\Auth\Providers\Rng\HashRNGProvider();
+        foreach ($this->getRngTestLengths() as $l)
+            $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+        $this->assertEquals(false, $rng->isCryptographicallySecure());
+    }
     
+    /**
+     * @requires function mcrypt_create_iv
+     */
+    public function testMCryptRNGProvidersReturnExpectedNumberOfBytes() {
+        $rng = new \RobThree\Auth\Providers\Rng\MCryptRNGProvider();
+        foreach ($this->getRngTestLengths() as $l)
+            $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+        $this->assertEquals(true, $rng->isCryptographicallySecure());
+    }
+
+    /**
+     * @requires function openssl_random_pseudo_bytes
+     */
+    public function testStrongOpenSSLRNGProvidersReturnExpectedNumberOfBytes() {
+        $rng = new \RobThree\Auth\Providers\Rng\OpenSSLRNGProvider(true);
+        foreach ($this->getRngTestLengths() as $l)
+            $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+        $this->assertEquals(true, $rng->isCryptographicallySecure());
+    }
+
+    /**
+     * @requires function openssl_random_pseudo_bytes
+     */
+    public function testNonStrongOpenSSLRNGProvidersReturnExpectedNumberOfBytes() {
+        $rng = new \RobThree\Auth\Providers\Rng\OpenSSLRNGProvider(false);
+        foreach ($this->getRngTestLengths() as $l)
+            $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+        $this->assertEquals(false, $rng->isCryptographicallySecure());
+    }
+
+
+    private function getRngTestLengths() {
+        return array(1, 16, 32, 256);
+    }
+
     private function DecodeDataUri($datauri) {
         if (preg_match('/data:(?P<mimetype>[\w\.\-\/]+);(?P<encoding>\w+),(?P<data>.*)/', $datauri, $m) === 1) {
             return array(

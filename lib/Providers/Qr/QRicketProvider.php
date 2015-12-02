@@ -33,6 +33,7 @@ class QRicketProvider extends BaseHTTPQRCodeProvider
         	case 'j':
                 return 'image/jpeg';
         }
+        throw new QRException(sprintf('Unknown MIME-type: %s', $this->format));
     }
     
     public function getQRCodeImage($qrtext, $size) 

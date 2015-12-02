@@ -45,7 +45,9 @@ class TwoFactorAuth
         
         // Try to find best available RNG provider if none was specified
         if ($rngprovider==null) {
-            if (function_exists('mcrypt_create_iv')) {
+            if (function_exists('random_bytes')) {
+                $rngprovider = new Providers\Rng\CSRNGProvider();
+            } elseif (function_exists('mcrypt_create_iv')) {
                 $rngprovider = new Providers\Rng\MCryptRNGProvider();
             } elseif (function_exists('openssl_random_pseudo_bytes')) {
                 $rngprovider = new Providers\Rng\OpenSSLRNGProvider();

@@ -30,6 +30,7 @@
     <Compile Include="lib\Providers\Qr\QRException.php" />
     <Compile Include="lib\Providers\Qr\QRicketProvider.php" />
     <Compile Include="lib\Providers\Qr\QRServerProvider.php" />
+    <Compile Include="lib\Providers\Rng\CSRNGProvider.php" />
     <Compile Include="lib\Providers\Rng\IRNGProvider.php" />
     <Compile Include="lib\Providers\Rng\MCryptRNGProvider.php" />
     <Compile Include="lib\Providers\Rng\OpenSSLRNGProvider.php" />
