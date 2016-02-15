@@ -170,6 +170,10 @@ This library also comes with three 'built-in' RNG providers ([Random Number Gene
 
 You can easily implement your own `RNGProvider` by simply implementing the `IRNGProvider` interface. Each of the 'built-in' RNG providers have some constructor parameters that allow you to 'tweak' some of the settings to use when creating the random bytes such as which source to use (`MCryptRNGProvider`) or which hashing algorithm (`HashRNGProvider`). I encourage you to have a look at some of the ['built-in' RNG providers](lib/Providers/Rng) for details and the [`IRNGProvider` interface](lib/Providers/Rng/IRNGProvider.php).
 
+## Integrations
+
+- [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth) 
+
 ## License
 
 Licensed under MIT license. See [LICENSE](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/LICENSE) for details.
