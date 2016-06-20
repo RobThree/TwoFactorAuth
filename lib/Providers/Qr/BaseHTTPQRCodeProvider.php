@@ -12,8 +12,6 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
         
         curl_setopt_array($curlhandle, array(
             CURLOPT_URL => $url,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_MAXREDIRS => 3,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_DNS_CACHE_TIMEOUT => 10,
