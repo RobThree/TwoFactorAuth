@@ -159,7 +159,7 @@ class TwoFactorAuth
     /**
      * Builds a string to be encoded in a QR code
      */
-    private function getQRText($label, $secret) 
+    public function getQRText($label, $secret)
     {
         return 'otpauth://totp/' . rawurlencode($label)
             . '?secret=' . rawurlencode($secret)
