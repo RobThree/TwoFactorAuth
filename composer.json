@@ -21,8 +21,7 @@
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "@stable",
-        "cakephp/cakephp-codesniffer": "^2.0"
+        "phpunit/phpunit": "@stable"
     },
     "autoload": {
         "psr-4": {
