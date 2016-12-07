@@ -6,8 +6,7 @@
 <body>
     <ol>
         <?php
-        require_once 'loader.php';
-        Loader::register('../lib','RobThree\\Auth');
+        require __DIR__ . '/../vendor/autoload.php';
         
         use \RobThree\Auth\TwoFactorAuth;
 
