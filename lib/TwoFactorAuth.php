@@ -3,6 +3,7 @@
 namespace RobThree\Auth;
 
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
+use RobThree\Auth\Providers\Rng\IRNGProvider;
 
 // Based on / inspired by: https://github.com/PHPGangsta/GoogleAuthenticator
 // Algorithms, digits, period etc. explained: https://github.com/google/google-authenticator/wiki/Key-Uri-Format
@@ -13,13 +14,13 @@ class TwoFactorAuth
     private $digits;
     private $issuer;
     private $qrcodeprovider = null;
-    private $rngprovider;
+    private $rngprovider = null;
     private static $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
     private static $_base32;
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
     
-    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, $rngprovider = null)
+    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, IRNGProvider $rngprovider = null)
     {
         $this->issuer = $issuer;
 
@@ -37,25 +38,6 @@ class TwoFactorAuth
         $this->algorithm = $algorithm;
 
         $this->qrcodeprovider = $qrcodeprovider;
-        
-        // Try to find best available RNG provider if none was specified
-        if ($rngprovider==null) {
-            if (function_exists('random_bytes')) {
-                $rngprovider = new Providers\Rng\CSRNGProvider();
-            } elseif (function_exists('mcrypt_create_iv')) {
-                $rngprovider = new Providers\Rng\MCryptRNGProvider();
-            } elseif (function_exists('openssl_random_pseudo_bytes')) {
-                $rngprovider = new Providers\Rng\OpenSSLRNGProvider();
-            } elseif (function_exists('hash')) {
-                $rngprovider = new Providers\Rng\HashRNGProvider();
-            } else {
-                throw new TwoFactorAuthException('Unable to find a suited RNGProvider');
-            }
-        }
-        
-        if (!($rngprovider instanceof Providers\Rng\IRNGProvider))
-            throw new TwoFactorAuthException('RNGProvider must implement IRNGProvider');
-        
         $this->rngprovider = $rngprovider;
         
         self::$_base32 = str_split(self::$_base32dict);
@@ -69,9 +51,9 @@ class TwoFactorAuth
     {
         $secret = '';
         $bytes = ceil($bits / 5);   //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
-        if ($requirecryptosecure && !$this->rngprovider->isCryptographicallySecure())
+        if ($requirecryptosecure && !$this->getRngprovider()->isCryptographicallySecure())
             throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
-        $rnd = $this->rngprovider->getRandomBytes($bytes);
+        $rnd = $this->getRngprovider()->getRandomBytes($bytes);
         for ($i = 0; $i < $bytes; $i++)
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
         return $secret;
@@ -199,5 +181,31 @@ class TwoFactorAuth
         }
 
         return $this->qrcodeprovider;
+    }
+
+    /**
+     * @return IRNGProvider
+     * @throws TwoFactorAuthException
+     */
+    public function getRngprovider()
+    {
+        if (null !== $this->rngprovider) {
+            return $this->rngprovider;
+        }
+
+        if (function_exists('random_bytes')) {
+            return $this->rngprovider = new Providers\Rng\CSRNGProvider();
+        }
+        if (function_exists('mcrypt_create_iv')) {
+            return $this->rngprovider = new Providers\Rng\MCryptRNGProvider();
+        }
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            return $this->rngprovider = new Providers\Rng\OpenSSLRNGProvider();
+        }
+        if (function_exists('hash')) {
+            return $this->rngprovider = new Providers\Rng\HashRNGProvider();
+        }
+
+        throw new TwoFactorAuthException('Unable to find a suited RNGProvider');
     }
 }
