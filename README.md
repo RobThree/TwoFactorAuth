@@ -58,7 +58,7 @@ The `createSecret()` method accepts two arguments: `$bits` (default: `80`) and `
 
 ````php
 // Display shared secret
-<p>Please enter the following code in your app: '<?php echo $secret ?>'</p>
+<p>Please enter the following code in your app: '<?php echo $secret; ?>'</p>
 ````
 
 Another, more user-friendly, way to get the shared secret into the app is to generate a [QR-code](http://en.wikipedia.org/wiki/QR_code) which can be scanned by the app. To generate these QR codes you can use any one of the built-in `QRProvider` classes:
@@ -74,7 +74,7 @@ The built-in providers all have some provider-specific 'tweaks' you can 'apply'.
 ````php
 // Display QR code to user
 <p>Scan the following image with your app:</p>
-<p><img src="<?php $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret) ?>"></p>
+<p><img src="<?php echo $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret); ?>"></p>
 ````
 
 When outputting a QR-code you can choose a `$label` for the user (which, when entering a shared secret manually, will have to be chosen by the user). This label may be an empty string or `null`. Also a `$size` may be specified (in pixels, width == height) for which we use a default value of `200`.
@@ -101,10 +101,17 @@ Simple as 1-2-3.
 All we need is 3 methods and a constructor:
 
 ````php
-__construct($issuer=null, $digits=6, $period=30, $algorithm='sha1', $qrcodeprovider=null, $rngprovider=null)
-createSecret($bits = 80, $requirecryptosecure = true)
-getQRCodeImageAsDataUri($label, $secret, $size = 200)
-verifyCode($secret, $code, $discrepancy = 1, $time = null)
+public function __construct(
+    $issuer = null, 
+    $digits = 6,
+    $period = 30, 
+    $algorithm = 'sha1', 
+    RobThree\Auth\Providers\Qr\IQRCodeProvider $qrcodeprovider = null,
+    RobThree\Auth\Providers\Rng\IRNGProvider $rngprovider = null
+);
+public function createSecret($bits = 80, $requirecryptosecure = true): string;
+public function getQRCodeImageAsDataUri($label, $secret, $size = 200): string;
+public function verifyCode($secret, $code, $discrepancy = 1, $time = null): bool;
 ````
 
 ### QR-code providers
@@ -132,7 +139,7 @@ Let's see if we can use [PHP QR Code](http://phpqrcode.sourceforge.net/) to impl
 <?php
 require_once '../../phpqrcode.php';                 // Yeah, we're gonna need that
 
-namespace RobThree\Auth\Providers\Qr
+namespace RobThree\Auth\Providers\Qr;
 
 class MyProvider implements IQRCodeProvider {
   public function getMimeType() {
@@ -159,7 +166,7 @@ $mp = new RobThree\Auth\Providers\Qr\MyProvider();
 $tfa = new RobThree\Auth\TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
 $secret = $tfa->createSecret();
 ?>
-<p><img src="<?php $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret) ?>"></p>
+<p><img src="<?php echo $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret); ?>"></p>
 ````
 
 Voilà. Couldn't make it any simpler.
