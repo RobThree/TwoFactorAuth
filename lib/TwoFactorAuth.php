@@ -2,22 +2,24 @@
 
 namespace RobThree\Auth;
 
+use RobThree\Auth\Providers\Qr\IQRCodeProvider;
+
 // Based on / inspired by: https://github.com/PHPGangsta/GoogleAuthenticator
 // Algorithms, digits, period etc. explained: https://github.com/google/google-authenticator/wiki/Key-Uri-Format
-class TwoFactorAuth 
+class TwoFactorAuth
 {
     private $algorithm;
     private $period;
     private $digits;
     private $issuer;
-    private $qrcodeprovider;
+    private $qrcodeprovider = null;
     private $rngprovider;
     private static $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
     private static $_base32;
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
     
-    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null, $rngprovider = null) 
+    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, $rngprovider = null)
     {
         $this->issuer = $issuer;
 
@@ -33,14 +35,7 @@ class TwoFactorAuth
         if (!in_array($algorithm, self::$_supportedalgos))
             throw new TwoFactorAuthException('Unsupported algorithm: ' . $algorithm);
         $this->algorithm = $algorithm;
-        
-        // Set default QR Code provider if none was specified
-        if ($qrcodeprovider==null)
-            $qrcodeprovider = new Providers\Qr\GoogleQRCodeProvider();
-        
-        if (!($qrcodeprovider instanceof Providers\Qr\IQRCodeProvider))
-            throw new TwoFactorAuthException('QRCodeProvider must implement IQRCodeProvider');
-        
+
         $this->qrcodeprovider = $qrcodeprovider;
         
         // Try to find best available RNG provider if none was specified
@@ -141,9 +136,9 @@ class TwoFactorAuth
             throw new TwoFactorAuthException('Size must be int > 0');
         
         return 'data:'
-            . $this->qrcodeprovider->getMimeType()
+            . $this->getQrCodeProvider()->getMimeType()
             . ';base64,'
-            . base64_encode($this->qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
+            . base64_encode($this->getQrCodeProvider()->getQRCodeImage($this->getQRText($label, $secret), $size));
     }
     
     private function getTime($time) 
@@ -190,5 +185,19 @@ class TwoFactorAuth
             $output .= chr(bindec(str_pad($block, 8, 0, STR_PAD_RIGHT)));
 
         return $output;
+    }
+
+    /**
+     * @return IQRCodeProvider
+     * @throws TwoFactorAuthException
+     */
+    public function getQrCodeProvider()
+    {
+        // Set default QR Code provider if none was specified
+        if (null === $this->qrcodeprovider) {
+            return $this->qrcodeprovider = new Providers\Qr\GoogleQRCodeProvider();
+        }
+
+        return $this->qrcodeprovider;
     }
 }
