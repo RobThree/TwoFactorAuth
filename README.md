@@ -55,7 +55,7 @@ When a user wants to setup two-factor auth (or, more correctly, multi-factor aut
 $secret = $tfa->createSecret();
 ````
 
-The `createSecret()` method accepts two arguments: `$bits` (default: `80`) and `$requirecryptosecure` (default: `true`). The former is the number of bits generated for the shared secret. Make sure this argument is a multiple of 8 and, again, keep in mind that not all combinations may be supported by all apps. Google authenticator seems happy with 80 and 160, the default is set to 80 because that's what most sites (that I know of) currently use. The latter is used to ensure that the secret is cryptographically secure; if you don't care very much for cryptographically secure secrets you can specify `false` and use a **non**-cryptographically secure RNG provider.
+The `createSecret()` method accepts two arguments: `$bits` (default: `80`) and `$requirecryptosecure` (default: `true`). The former is the number of bits generated for the shared secret. Make sure this argument is a multiple of 8 and, again, keep in mind that not all combinations may be supported by all apps. Google authenticator seems happy with 80 and 160, the default is set to 80 because that's what most sites (that I know of) currently use; however a value of 160 or higher is recommended (see [RFC 4226 - Algorithm Requirements](https://tools.ietf.org/html/rfc4226#section-4)). The latter is used to ensure that the secret is cryptographically secure; if you don't care very much for cryptographically secure secrets you can specify `false` and use a **non**-cryptographically secure RNG provider.
 
 ````php
 // Display shared secret
