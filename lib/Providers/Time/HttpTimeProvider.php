@@ -8,16 +8,15 @@ namespace RobThree\Auth\Providers\Time;
 class HttpTimeProvider implements ITimeProvider
 {
     public $url;
+    public $options;
 
-    function __construct($url = 'https://google.com')
+    function __construct($url = 'https://google.com', array $options = null)
     {
         $this->url = $url;
-    }
 
-    public function getTime() {
-        try {
-            $host = parse_url($this->url, PHP_URL_HOST);
-            $context  = stream_context_create(array(
+        $this->options = $options;
+        if ($this->options === null) {
+            $this->options = array(
                 'http' => array(
                     'method' => 'HEAD',
                     'follow_location' => false,
@@ -30,10 +29,15 @@ class HttpTimeProvider implements ITimeProvider
                     )
                 ),
                 'ssl' => array(
-                    'SNI_enabled' => true,
-                    'peer_name' => $host
+                    'verify_peer' => true
                 )
-            ));
+            );
+        }
+    }
+
+    public function getTime() {
+        try {
+            $context  = stream_context_create($this->options);
             $fd = fopen($this->url, 'rb', false, $context);
             $headers = stream_get_meta_data($fd);
             fclose($fd);
