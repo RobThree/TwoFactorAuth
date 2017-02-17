@@ -35,10 +35,10 @@ class HttpTimeProvider implements ITimeProvider
                 )
             ));
             $fd = fopen($this->url, 'rb', false, $context);
-            $headers = stream_get_meta_data($fd)['wrapper_data'];
+            $headers = stream_get_meta_data($fd);
             fclose($fd);
 
-            foreach ($headers as $h) {
+            foreach ($headers['wrapper_data'] as $h) {
                 if (strcasecmp(substr($h, 0, 5), 'Date:') === 0)
                     return \DateTime::createFromFormat('D, d M Y H:i:s O+', trim(substr($h,5)))->getTimestamp();
             }
