@@ -33,7 +33,7 @@ Here are some code snippets that should help you get started...
 $tfa = new RobThree\Auth\TwoFactorAuth('My Company');
 ````
 
-The TwoFactorAuth class constructor accepts 6 parameters (all optional):
+The TwoFactorAuth class constructor accepts 7 parameters (all optional):
 
 Parameter         | Default value | Use 
 ------------------|---------------|--------------------------------------------------
@@ -43,6 +43,7 @@ Parameter         | Default value | Use
 `$algorithm`      | `sha1`        | The algorithm used
 `$qrcodeprovider` | `null`        | QR-code provider (more on this later)
 `$rngprovider`    | `null`        | Random Number Generator provider (more on this later)
+`$timeprovider`   | `null`        | Time provider (more on this later)
 
 These parameters are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't control which app your audience uses.
 
@@ -176,6 +177,14 @@ Voilà. Couldn't make it any simpler.
 This library also comes with three 'built-in' RNG providers ([Random Number Generator](https://en.wikipedia.org/wiki/Random_number_generation)). The RNG provider generates a number of random bytes and returns these bytes as a string. These values are then used to create the secret. By default (no RNG provider specified) TwoFactorAuth will try to determine the best available RNG provider to use. It will, by default, try to use the [`CSRNGProvider`](lib/Providers/Rng/CSRNGProvider.php) for PHP7+ or the [`MCryptRNGProvider`](lib/Providers/Rng/MCryptRNGProvider.php); if this is not available/supported for any reason it will try to use the [`OpenSSLRNGProvider`](lib/Providers/Rng/OpenSSLRNGProvider.php) and if that is also not available/supported it will try to use the final RNG provider: [`HashRNGProvider`](lib/Providers/Rng/HashRNGProvider.php). Each of these providers use their own method of generating a random sequence of bytes. The first three (`CSRNGProvider`, `OpenSSLRNGProvider` and `MCryptRNGProvider`) return a [cryptographically secure](https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator) sequence of random bytes whereas the `HashRNGProvider` returns a **non-cryptographically secure** sequence.
 
 You can easily implement your own `RNGProvider` by simply implementing the `IRNGProvider` interface. Each of the 'built-in' RNG providers have some constructor parameters that allow you to 'tweak' some of the settings to use when creating the random bytes such as which source to use (`MCryptRNGProvider`) or which hashing algorithm (`HashRNGProvider`). I encourage you to have a look at some of the ['built-in' RNG providers](lib/Providers/Rng) for details and the [`IRNGProvider` interface](lib/Providers/Rng/IRNGProvider.php).
+
+### Time providers
+
+Another set of providers in this library are the Time Providers; this library provides three 'built-in' ones. The default Time Provider used is the [`LocalMachineTimeProvider`](lib/Providers/Time/LocalMachineTimeProvider.php); this provider simply returns the output of `Time()` and is *highly recommended* as default provider. The [`HttpTimeProvider`](lib/Providers/Time/HttpTimeProvider.php) executes a `HEAD` request against a given webserver (default: google.com) and tries to extract the `Date:`-HTTP header and returns it's date. Other url's/domains can be used by specifying the url in the constructor. The final Time Provider is the [`ConvertUnixTimeDotComTimeProvider`](lib/Providers/Time/ConvertUnixTimeDotComTimeProvider.php) which does a HTTP request to `convert-unix-time.com/api` and decodes the `JSON` result to retrieve the time.
+
+You can easily implement your own `TimeProvider` by simply implementing the `ITimeProvider` interface.
+
+As to *why* these Time Providers are implemented: it allows the TwoFactorAuth library to ensure the hosts time is correct (or rather: within a margin). You can use the `ensureCorrectTime()` method to ensure the hosts time is correct. By default this method will compare the hosts time (returned by calling `time()` on the `LocalMachineTimeProvider`) to Google's and convert-unix-time.com's current time. You can pass an array of `ITimeProvider`s and specify the `leniency` (second argument) allowed (default: 5 seconds). The method will throw when the TwoFactorAuth's timeprovider (which can be any `ITimeProvider`, see constructor) differs more than the given amount of seconds from any of the given `ITimeProviders`. We advise to call this method sparingly when relying on 3rd parties (which both the `HttpTimeProvider` and `ConvertUnixTimeDotComTimeProvider` do) or, if you need to ensure time is correct on a (very) regular basis to implement an `ITimeProvider` that is more efficient than the 'built-in' ones (like use a GPS signal). The `ensureCorrectTime()` method is mostly to be used to make sure the server is configured correctly.
 
 ## Integrations
 
