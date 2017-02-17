@@ -27,9 +27,6 @@ class HttpTimeProvider implements ITimeProvider
                         'Connection: close',
                         'User-agent: TwoFactorAuth HttpTimeProvider (https://github.com/RobThree/TwoFactorAuth)'
                     )
-                ),
-                'ssl' => array(
-                    'verify_peer' => true
                 )
             );
         }
