@@ -44,22 +44,6 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         new TwoFactorAuth('Test', 6, 30, 'xxx');
     }
 
-    /**
-     * @expectedException \RobThree\Auth\TwoFactorAuthException
-     */
-    public function testConstructorThrowsOnQrProviderNotImplementingInterface() {
-
-        new TwoFactorAuth('Test', 6, 30, 'sha1', new stdClass());
-    }
-
-    /**
-     * @expectedException \RobThree\Auth\TwoFactorAuthException
-     */
-    public function testConstructorThrowsOnRngProviderNotImplementingInterface() {
-
-        new TwoFactorAuth('Test', 6, 30, 'sha1', null, new stdClass());
-    }
-
     public function testGetCodeReturnsCorrectResults() {
 
         $tfa = new TwoFactorAuth('Test');
