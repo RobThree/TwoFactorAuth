@@ -101,7 +101,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $tpr2 = new TestTimeProvider(128);
 
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, null, $tpr1);
-        $tfa->ensureCorrectTime([$tpr2]);   // 128 - 123 = 5 => within default leniency
+        $tfa->ensureCorrectTime(array($tpr2));   // 128 - 123 = 5 => within default leniency
     }
 
     /**
@@ -112,23 +112,23 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $tpr2 = new TestTimeProvider(124);
 
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, null, $tpr1);
-        $tfa->ensureCorrectTime([$tpr2], 0);    // We force a leniency of 0, 124-123 = 1 so this should throw
+        $tfa->ensureCorrectTime(array($tpr2), 0);    // We force a leniency of 0, 124-123 = 1 so this should throw
     }
 
 
     public function testEnsureDefaultTimeProviderReturnsCorrectTime() {
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
-        $tfa->ensureCorrectTime([new TestTimeProvider(time())], 1);    // Use a leniency of 1, should the time change between both time() calls
+        $tfa->ensureCorrectTime(array(new TestTimeProvider(time())), 1);    // Use a leniency of 1, should the time change between both time() calls
     }
 
     public function testEnsureAllTimeProvidersReturnCorrectTime() {
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
-        $tfa->ensureCorrectTime([
+        $tfa->ensureCorrectTime(array(
             new RobThree\Auth\Providers\Time\ConvertUnixTimeDotComTimeProvider(),
             new RobThree\Auth\Providers\Time\HttpTimeProvider(),                        // Uses google.com by default
             new RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),
             new RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
-        ]);
+        ));
     }
 
     public function testVerifyCodeWorksCorrectly() {

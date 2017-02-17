@@ -17,23 +17,23 @@ class HttpTimeProvider implements ITimeProvider
     public function getTime() {
         try {
             $host = parse_url($this->url, PHP_URL_HOST);
-            $context  = stream_context_create([
-                'http' => [
+            $context  = stream_context_create(array(
+                'http' => array(
                     'method' => 'HEAD',
                     'follow_location' => false,
                     'ignore_errors' => true,
                     'max_redirects' => 0,
                     'request_fulluri' => true,
-                    'header' => [
+                    'header' => array(
                         'Connection: close',
                         'User-agent: TwoFactorAuth HttpTimeProvider (https://github.com/RobThree/TwoFactorAuth)'
-                    ]
-                ],
-                'ssl' => [
+                    )
+                ),
+                'ssl' => array(
                     'SNI_enabled' => true,
-                    'SNI_server_name' => $host
-                ]
-            ]);
+                    'peer_name' => $host
+                )
+            ));
             $fd = fopen($this->url, 'rb', false, $context);
             $headers = stream_get_meta_data($fd)['wrapper_data'];
             fclose($fd);
