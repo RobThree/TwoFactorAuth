@@ -5,6 +5,7 @@ require_once 'lib/TwoFactorAuthException.php';
 require_once 'lib/Providers/Qr/IQRCodeProvider.php';
 require_once 'lib/Providers/Qr/BaseHTTPQRCodeProvider.php';
 require_once 'lib/Providers/Qr/GoogleQRCodeProvider.php';
+require_once 'lib/Providers/Qr/QRException.php';
 
 require_once 'lib/Providers/Rng/IRNGProvider.php';
 require_once 'lib/Providers/Rng/RNGException.php';
@@ -12,10 +13,18 @@ require_once 'lib/Providers/Rng/CSRNGProvider.php';
 require_once 'lib/Providers/Rng/MCryptRNGProvider.php';
 require_once 'lib/Providers/Rng/OpenSSLRNGProvider.php';
 require_once 'lib/Providers/Rng/HashRNGProvider.php';
+require_once 'lib/Providers/Rng/RNGException.php';
+
+require_once 'lib/Providers/Time/ITimeProvider.php';
+require_once 'lib/Providers/Time/LocalMachineTimeProvider.php';
+require_once 'lib/Providers/Time/HttpTimeProvider.php';
+require_once 'lib/Providers/Time/ConvertUnixTimeDotComTimeProvider.php';
+require_once 'lib/Providers/Time/TimeException.php';
 
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use RobThree\Auth\Providers\Rng\IRNGProvider;
+use RobThree\Auth\Providers\Time\ITimeProvider;
 
 
 class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
@@ -42,22 +51,6 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testConstructorThrowsOnInvalidAlgorithm() {
 
         new TwoFactorAuth('Test', 6, 30, 'xxx');
-    }
-
-    /**
-     * @expectedException \RobThree\Auth\TwoFactorAuthException
-     */
-    public function testConstructorThrowsOnQrProviderNotImplementingInterface() {
-
-        new TwoFactorAuth('Test', 6, 30, 'sha1', new stdClass());
-    }
-
-    /**
-     * @expectedException \RobThree\Auth\TwoFactorAuthException
-     */
-    public function testConstructorThrowsOnRngProviderNotImplementingInterface() {
-
-        new TwoFactorAuth('Test', 6, 30, 'sha1', null, new stdClass());
     }
 
     public function testGetCodeReturnsCorrectResults() {
@@ -103,6 +96,40 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567A', $tfa->createSecret(321));
     }
 
+    public function testEnsureCorrectTimeDoesNotThrowForCorrectTime() {
+        $tpr1 = new TestTimeProvider(123);
+        $tpr2 = new TestTimeProvider(128);
+
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, null, $tpr1);
+        $tfa->ensureCorrectTime(array($tpr2));   // 128 - 123 = 5 => within default leniency
+    }
+
+    /**
+     * @expectedException \RobThree\Auth\TwoFactorAuthException
+     */
+    public function testEnsureCorrectTimeThrowsOnIncorrectTime() {
+        $tpr1 = new TestTimeProvider(123);
+        $tpr2 = new TestTimeProvider(124);
+
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, null, $tpr1);
+        $tfa->ensureCorrectTime(array($tpr2), 0);    // We force a leniency of 0, 124-123 = 1 so this should throw
+    }
+
+
+    public function testEnsureDefaultTimeProviderReturnsCorrectTime() {
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
+        $tfa->ensureCorrectTime(array(new TestTimeProvider(time())), 1);    // Use a leniency of 1, should the time change between both time() calls
+    }
+
+    public function testEnsureAllTimeProvidersReturnCorrectTime() {
+        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
+        $tfa->ensureCorrectTime(array(
+            new RobThree\Auth\Providers\Time\ConvertUnixTimeDotComTimeProvider(),
+            new RobThree\Auth\Providers\Time\HttpTimeProvider(),                        // Uses google.com by default
+            new RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),
+            new RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
+        ));
+    }
 
     public function testVerifyCodeWorksCorrectly() {
 
@@ -138,7 +165,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      */
     public function testGetQRCodeImageAsDataUriThrowsOnInvalidSize() {
         $qr = new TestQrProvider();
-        
+
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', $qr);
         $tfa->getQRCodeImageAsDataUri('Test', 'VMR466AB62ZBOKHE', 0);
     }
@@ -150,7 +177,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $tfa = new TwoFactorAuth('Test');
         $tfa->getCode('FOO1BAR8BAZ9');    //1, 8 & 9 are invalid chars
     }
-    
+
     /**
      * @expectedException \RobThree\Auth\TwoFactorAuthException
      */
@@ -158,7 +185,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $tfa = new TwoFactorAuth('Test');
         $tfa->getCode('mzxw6===');        //Lowercase
     }
-    
+
     public function testKnownBase32DecodeTestVectors() {
         // We usually don't test internals (e.g. privates) but since we rely heavily on base32 decoding and don't want
         // to expose this method nor do we want to give people the possibility of implementing / providing their own base32
@@ -167,15 +194,15 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         // be any bugs hiding in there. We **could** 'fool' ourselves by calling the public getCode() method (which uses
         // base32decode internally) and then make sure getCode's output (in digits) equals expected output since that would
         // mean the base32Decode() works as expected but that **could** hide some subtle bug(s) in decoding the base32 string.
-        
+
         // "In general, you don't want to break any encapsulation for the sake of testing (or as Mom used to say, "don't
         // expose your privates!"). Most of the time, you should be able to test a class by exercising its public methods."
         //                                                           Dave Thomas and Andy Hunt -- "Pragmatic Unit Testing
         $tfa = new TwoFactorAuth('Test');
-        
+
         $method = new ReflectionMethod('RobThree\Auth\TwoFactorAuth', 'base32Decode');
         $method->setAccessible(true);
-        
+
         // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
         $this->assertEquals('', $method->invoke($tfa, ''));
         $this->assertEquals('f', $method->invoke($tfa, 'MY======'));
@@ -185,17 +212,17 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('fooba', $method->invoke($tfa, 'MZXW6YTB'));
         $this->assertEquals('foobar', $method->invoke($tfa, 'MZXW6YTBOI======'));
     }
-    
+
     public function testKnownBase32DecodeUnpaddedTestVectors() {
         // See testKnownBase32DecodeTestVectors() for the rationale behind testing the private base32Decode() method.
         // This test ensures that strings without the padding-char ('=') are also decoded correctly.
-        // https://tools.ietf.org/html/rfc4648#page-4: 
+        // https://tools.ietf.org/html/rfc4648#page-4:
         //   "In some circumstances, the use of padding ("=") in base-encoded data is not required or used."
         $tfa = new TwoFactorAuth('Test');
-        
+
         $method = new ReflectionMethod('RobThree\Auth\TwoFactorAuth', 'base32Decode');
         $method->setAccessible(true);
-        
+
         // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
         $this->assertEquals('', $method->invoke($tfa, ''));
         $this->assertEquals('f', $method->invoke($tfa, 'MY'));
@@ -218,7 +245,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('69279037', $tfa->getCode($secret, 2000000000));
         $this->assertEquals('65353130', $tfa->getCode($secret, 20000000000));
     }
-    
+
     public function testKnownTestVectors_sha256() {
         //Known test vectors for SHA256: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA';   //== base32encode('12345678901234567890123456789012')
@@ -230,7 +257,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('90698825', $tfa->getCode($secret, 2000000000));
         $this->assertEquals('77737706', $tfa->getCode($secret, 20000000000));
     }
-    
+
     public function testKnownTestVectors_sha512() {
         //Known test vectors for SHA512: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA';   //== base32encode('1234567890123456789012345678901234567890123456789012345678901234')
@@ -263,7 +290,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
             $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
         $this->assertEquals(false, $rng->isCryptographicallySecure());
     }
-    
+
     /**
      * @requires function mcrypt_create_iv
      */
@@ -313,11 +340,11 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
 
 class TestRNGProvider implements IRNGProvider {
     private $isSecure;
-    
+
     function __construct($isSecure = false) {
         $this->isSecure = $isSecure;
     }
-    
+
     public function getRandomBytes($bytecount) {
         $result = '';
         for ($i=0; $i<$bytecount; $i++)
@@ -325,7 +352,7 @@ class TestRNGProvider implements IRNGProvider {
         return $result;
 
     }
-    
+
     public function isCryptographicallySecure() {
         return $this->isSecure;
     }
@@ -338,5 +365,17 @@ class TestQrProvider implements IQRCodeProvider {
 
     public function getMimeType() {
         return 'test/test';
+    }
+}
+
+class TestTimeProvider implements ITimeProvider {
+    private $time;
+
+    function __construct($time) {
+        $this->time = $time;
+    }
+
+    public function getTime() {
+        return $this->time;
     }
 }

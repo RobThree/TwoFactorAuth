@@ -14,6 +14,8 @@
     <PHPDevPort>41315</PHPDevPort>
     <PHPDevHostName>localhost</PHPDevHostName>
     <IISProjectUrl>http://localhost:41315/</IISProjectUrl>
+    <Runtime>PHP</Runtime>
+    <RuntimeVersion>7.0</RuntimeVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <IncludeDebugInformation>true</IncludeDebugInformation>
@@ -36,6 +38,11 @@
     <Compile Include="lib\Providers\Rng\OpenSSLRNGProvider.php" />
     <Compile Include="lib\Providers\Rng\HashRNGProvider.php" />
     <Compile Include="lib\Providers\Rng\RNGException.php" />
+    <Compile Include="lib\Providers\Time\ConvertUnixTimeDotComTimeProvider.php" />
+    <Compile Include="lib\Providers\Time\HttpTimeProvider.php" />
+    <Compile Include="lib\Providers\Time\ITimeProvider.php" />
+    <Compile Include="lib\Providers\Time\LocalMachineTimeProvider.php" />
+    <Compile Include="lib\Providers\Time\TimeException.php" />
     <Compile Include="lib\TwoFactorAuth.php" />
     <Compile Include=".gitignore" />
     <Compile Include="README.md" />
@@ -45,6 +52,7 @@
   <ItemGroup>
     <Folder Include="lib\" />
     <Folder Include="lib\Providers\" />
+    <Folder Include="lib\Providers\Time\" />
     <Folder Include="lib\Providers\Qr\" />
     <Folder Include="lib\Providers\Rng\" />
     <Folder Include="demo\" />
@@ -53,6 +61,7 @@
   <ItemGroup>
     <Content Include=".travis.yml" />
     <Content Include="composer.json" />
+    <Content Include="composer.lock" />
     <Content Include="logo.png" />
     <Content Include="multifactorauthforeveryone.png" />
     <Content Include="LICENSE" />

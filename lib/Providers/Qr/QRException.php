@@ -1,11 +1,5 @@
 <?php
 
-namespace RobThree\Auth\Providers\Qr;
+use RobThree\Auth\TwoFactorAuthException;
 
-class QRException extends \Exception
-{
-    function __construct($message = "", $code = 0, $exception = null)
-    {
-    	parent::__construct($message, $code, $exception);
-    }
-}
+class QRException extends TwoFactorAuthException {}
