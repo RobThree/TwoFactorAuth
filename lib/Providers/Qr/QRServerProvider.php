@@ -43,7 +43,7 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
         	case 'eps':
                 return 'application/postscript';
         }
-        throw new \QRException(sprintf('Unknown MIME-type: %s', $this->format));
+        throw new QRException(sprintf('Unknown MIME-type: %s', $this->format));
     }
     
     public function getQRCodeImage($qrtext, $size) 

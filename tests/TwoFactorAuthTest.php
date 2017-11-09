@@ -8,7 +8,6 @@ require_once 'lib/Providers/Qr/GoogleQRCodeProvider.php';
 require_once 'lib/Providers/Qr/QRException.php';
 
 require_once 'lib/Providers/Rng/IRNGProvider.php';
-require_once 'lib/Providers/Rng/RNGException.php';
 require_once 'lib/Providers/Rng/CSRNGProvider.php';
 require_once 'lib/Providers/Rng/MCryptRNGProvider.php';
 require_once 'lib/Providers/Rng/OpenSSLRNGProvider.php';
