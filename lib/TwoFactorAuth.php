@@ -21,6 +21,16 @@ class TwoFactorAuth
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
 
+    /**
+     * @param string $issuer
+     * @param number $digits
+     * @param number $period
+     * @param string $algorithm
+     * @param IQRCodeProvider $qrcodeprovider
+     * @param IRNGProvider $rngprovider
+     * @param ITimeProvider $timeprovider
+     * @throws TwoFactorAuthException
+     */
     function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, IRNGProvider $rngprovider = null, ITimeProvider $timeprovider = null)
     {
         $this->issuer = $issuer;
@@ -46,6 +56,10 @@ class TwoFactorAuth
 
     /**
      * Create a new secret
+     * @param number $bits
+     * @param string $requirecryptosecure
+     * @throws TwoFactorAuthException
+     * @return string|mixed
      */
     public function createSecret($bits = 80, $requirecryptosecure = true)
     {
@@ -62,6 +76,9 @@ class TwoFactorAuth
 
     /**
      * Calculate the code with given secret and point in time
+     * @param string $secret
+     * @param unknown $time
+     * @return string
      */
     public function getCode($secret, $time = null)
     {
@@ -78,6 +95,11 @@ class TwoFactorAuth
 
     /**
      * Check if the code is correct. This will accept codes starting from ($discrepancy * $period) sec ago to ($discrepancy * period) sec from now
+     * @param string $secret
+     * @param string $code
+     * @param number $discrepancy
+     * @param unknown $time
+     * @return boolean
      */
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null)
     {
