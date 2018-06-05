@@ -79,16 +79,17 @@ class TwoFactorAuth
     /**
      * Check if the code is correct. This will accept codes starting from ($discrepancy * $period) sec ago to ($discrepancy * period) sec from now
      */
-    public function verifyCode($secret, $code, $discrepancy = 1, $time = null)
+    public function verifyCode($secret, $code, $discrepancy = 1, $time = null, &$timeslice = 0)
     {
-        $result = false;
         $timetamp = $this->getTime($time);
 
         // To keep safe from timing-attachs we iterate *all* possible codes even though we already may have verified a code is correct
-        for ($i = -$discrepancy; $i <= $discrepancy; $i++)
-            $result |= $this->codeEquals($this->getCode($secret, $timetamp + ($i * $this->period)), $code);
+        for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
+            $ts = $timetamp + ($i * $this->period);
+            $timeslice += $this->codeEquals($this->getCode($secret, $ts), $code) ? $ts : 0;
+        }
 
-        return (bool)$result;
+        return $timeslice > 0;
     }
 
     /**
@@ -134,7 +135,7 @@ class TwoFactorAuth
 
         if ($timeproviders == null)
             $timeproviders = array(
-                new Providers\Time\ConvertUnixTimeDotComTimeProvider(),
+                new Providers\Time\NTPTimeProvider(),
                 new Providers\Time\HttpTimeProvider()
             );
 
