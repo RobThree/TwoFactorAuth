@@ -125,7 +125,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
         $tfa->ensureCorrectTime(array(
             new RobThree\Auth\Providers\Time\NTPTimeProvider(),                         // Uses pool.ntp.org by default
-            new RobThree\Auth\Providers\Time\NTPTimeProvider('time.windows.com'),
+            new RobThree\Auth\Providers\Time\NTPTimeProvider('time.google.com'),
             new RobThree\Auth\Providers\Time\HttpTimeProvider(),                        // Uses google.com by default
             new RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),
             new RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
