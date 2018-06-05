@@ -317,10 +317,12 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
      * @requires function mcrypt_create_iv
      */
     public function testMCryptRNGProvidersReturnExpectedNumberOfBytes() {
-        $rng = new \RobThree\Auth\Providers\Rng\MCryptRNGProvider();
-        foreach ($this->getRngTestLengths() as $l)
-            $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
-        $this->assertEquals(true, $rng->isCryptographicallySecure());
+        if (function_exists('mcrypt_create_iv')) {
+            $rng = new \RobThree\Auth\Providers\Rng\MCryptRNGProvider();
+            foreach ($this->getRngTestLengths() as $l)
+                $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+            $this->assertEquals(true, $rng->isCryptographicallySecure());
+        }
     }
 
     /**
