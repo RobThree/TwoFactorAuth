@@ -65,5 +65,6 @@
     <Content Include="logo.png" />
     <Content Include="multifactorauthforeveryone.png" />
     <Content Include="LICENSE" />
+    <Content Include="phpunit.xml" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,5 @@
 language: php
 
-dist: trusty
-matrix:
-  include:
-    - php: 5.3
-      dist: precise
-
 php:
   - 5.4
   - 5.5
