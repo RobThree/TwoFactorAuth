@@ -10,4 +10,4 @@ php:
   - hhvm
 
 script:
-  - phpunit --coverage-text tests
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then phpunit --coverage-text tests ; fi
