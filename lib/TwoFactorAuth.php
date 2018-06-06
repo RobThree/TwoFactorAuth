@@ -86,7 +86,8 @@ class TwoFactorAuth
         // To keep safe from timing-attachs we iterate *all* possible codes even though we already may have verified a code is correct
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
             $ts = $timetamp + ($i * $this->period);
-            $timeslice += $this->codeEquals($this->getCode($secret, $ts), $code) ? $ts : 0;
+            $slice = $this->getTimeSlice($ts);
+            $timeslice += $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : 0;
         }
 
         return $timeslice > 0;

@@ -157,19 +157,19 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         // We test with discrepancy 3 (so total of 7 codes: c-3, c-2, c-1, c, c+1, c+2, c+3
         // Ensure each corresponding timeslice is returned correctly
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '534113', 3, 1426847190, $timeslice1));
-        $this->assertEquals(1426847100, $timeslice1);
+        $this->assertEquals(47561570, $timeslice1);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '819652', 3, 1426847190, $timeslice2));
-        $this->assertEquals(1426847130, $timeslice2);
+        $this->assertEquals(47561571, $timeslice2);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '915954', 3, 1426847190, $timeslice3));
-        $this->assertEquals(1426847160, $timeslice3);
+        $this->assertEquals(47561572, $timeslice3);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 3, 1426847190, $timeslice4));
-        $this->assertEquals(1426847190, $timeslice4);
+        $this->assertEquals(47561573, $timeslice4);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '348401', 3, 1426847190, $timeslice5));
-        $this->assertEquals(1426847220, $timeslice5);
+        $this->assertEquals(47561574, $timeslice5);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '648525', 3, 1426847190, $timeslice6));
-        $this->assertEquals(1426847250, $timeslice6);
+        $this->assertEquals(47561575, $timeslice6);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '170645', 3, 1426847190, $timeslice7));
-        $this->assertEquals(1426847280, $timeslice7);
+        $this->assertEquals(47561576, $timeslice7);
     }
 
     public function testTotpUriIsCorrect() {
