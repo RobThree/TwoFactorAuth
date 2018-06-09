@@ -83,11 +83,16 @@ class TwoFactorAuth
     {
         $timetamp = $this->getTime($time);
 
-        // To keep safe from timing-attachs we iterate *all* possible codes even though we already may have verified a code is correct
+        $timeslice = 0;
+
+        // To keep safe from timing-attacks we iterate *all* possible codes even though we already may have
+        // verified a code is correct. We use the timeslice variable to hold either 0 (no match) or the timeslice
+        // of the match. Each iteration we either set the timeslice variable to the timeslice of the match
+        // or set the value to itself.  This is an effort to maintain constant execution time for the code.
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
             $ts = $timetamp + ($i * $this->period);
             $slice = $this->getTimeSlice($ts);
-            $timeslice += $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : 0;
+            $timeslice = $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : $timeslice;
         }
 
         return $timeslice > 0;

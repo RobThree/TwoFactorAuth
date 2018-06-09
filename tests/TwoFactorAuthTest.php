@@ -170,6 +170,10 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(47561575, $timeslice6);
         $this->assertEquals(true, $tfa->verifyCode('VMR466AB62ZBOKHE', '170645', 3, 1426847190, $timeslice7));
         $this->assertEquals(47561576, $timeslice7);
+
+        // Incorrect code should return false and a 0 timeslice
+        $this->assertEquals(false, $tfa->verifyCode('VMR466AB62ZBOKHE', '111111', 3, 1426847190, $timeslice8));
+        $this->assertEquals(0, $timeslice8);
     }
 
     public function testTotpUriIsCorrect() {
