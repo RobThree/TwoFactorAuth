@@ -45,7 +45,7 @@ Argument          | Default value | Use
 `$rngprovider`    | `null`        | Random Number Generator provider (more on this later)
 `$timeprovider`   | `null`        | Time provider (more on this later)
 
-These arguments are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't control which app your audience uses.
+These arguments are all '`write once`'; the class will, for it's lifetime, use these values when generating / calculating codes. The number of digits, the period and algorithm are all set to values Google's Authenticator app uses (and supports). You may specify `8` digits, a period of `45` seconds and the `sha256` algorithm but the authenticator app (be it Google's implementation, Authy or any other app) may or may not support these values. Your mileage may vary; keep it on the safe side if you don't control which app your audience uses.
 
 ### Step 1: Set up secret shared key
 
