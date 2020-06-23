@@ -3,7 +3,7 @@
 namespace RobThree\Auth\Providers\Qr;
 
 // http://goqr.me/api/doc/create-qr-code/
-class QRServerProvider extends BaseHTTPQRCodeProvider 
+class QRServerProvider extends BaseHTTPQRCodeProvider
 {
     public $errorcorrectionlevel;
     public $margin;
@@ -12,13 +12,13 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
     public $color;
     public $format;
 
-    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = 'ffffff', $color = '000000', $format = 'png') 
+    function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $qzone = 1, $bgcolor = 'ffffff', $color = '000000', $format = 'png')
     {
         if (!is_bool($verifyssl))
             throw new QRException('VerifySSL must be bool');
 
         $this->verifyssl = $verifyssl;
-        
+
         $this->errorcorrectionlevel = $errorcorrectionlevel;
         $this->margin = $margin;
         $this->qzone = $qzone;
@@ -26,8 +26,8 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
         $this->color = $color;
         $this->format = $format;
     }
-    
-    public function getMimeType() 
+
+    public function getMimeType()
     {
         switch (strtolower($this->format))
         {
@@ -45,18 +45,22 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
         }
         throw new \QRException(sprintf('Unknown MIME-type: %s', $this->format));
     }
-    
-    public function getQRCodeImage($qrtext, $size) 
+
+    public function getQRCodeHTML($qrtext, $size)
     {
-        return $this->getContent($this->getUrl($qrtext, $size));
+        return '<img class="qrCode" src="data:'
+            . $this->getMimeType()
+            . ';base64,'
+            . base64_encode($this->getContent($this->getUrl($qrtext, $size)))
+            . '" width='.$size.' height='.$size.'>';
     }
-    
-    private function decodeColor($value) 
+
+    private function decodeColor($value)
     {
         return vsprintf('%d-%d-%d', sscanf($value, "%02x%02x%02x"));
     }
-    
-    public function getUrl($qrtext, $size) 
+
+    public function getUrl($qrtext, $size)
     {
         return 'https://api.qrserver.com/v1/create-qr-code/'
             . '?size=' . $size . 'x' . $size

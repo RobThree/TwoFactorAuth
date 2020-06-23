@@ -35,7 +35,7 @@ $tfa = new RobThree\Auth\TwoFactorAuth('My Company');
 
 The TwoFactorAuth class constructor accepts 7 arguments (all optional):
 
-Argument          | Default value | Use 
+Argument          | Default value | Use
 ------------------|---------------|--------------------------------------------------
 `$issuer`         | `null`        | Will be displayed in the app as issuer name
 `$digits`         | `6`           | The number of digits the resulting codes will be
@@ -75,7 +75,7 @@ The built-in providers all have some provider-specific 'tweaks' you can 'apply'.
 ````php
 // Display QR code to user
 <p>Scan the following image with your app:</p>
-<p><img src="<?php echo $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret); ?>"></p>
+<p><?php echo $tfa->getQRCodeHTML('Bob Ross', $secret); ?></p>
 ````
 
 When outputting a QR-code you can choose a `$label` for the user (which, when entering a shared secret manually, will have to be chosen by the user). This label may be an empty string or `null`. Also a `$size` may be specified (in pixels, width == height) for which we use a default value of `200`.
@@ -105,15 +105,15 @@ All we need is 3 methods and a constructor:
 
 ````php
 public function __construct(
-    $issuer = null, 
+    $issuer = null,
     $digits = 6,
-    $period = 30, 
-    $algorithm = 'sha1', 
+    $period = 30,
+    $algorithm = 'sha1',
     RobThree\Auth\Providers\Qr\IQRCodeProvider $qrcodeprovider = null,
     RobThree\Auth\Providers\Rng\IRNGProvider $rngprovider = null
 );
 public function createSecret($bits = 80, $requirecryptosecure = true): string;
-public function getQRCodeImageAsDataUri($label, $secret, $size = 200): string;
+public function getQRCodeHTML($label, $secret, $size = 200): string;
 public function verifyCode($secret, $code, $discrepancy = 1, $time = null): bool;
 ````
 
@@ -148,7 +148,7 @@ class MyProvider implements IQRCodeProvider {
   public function getMimeType() {
     return 'image/png';                             // This provider only returns PNG's
   }
-  
+
   public function getQRCodeImage($qrtext, $size) {
     ob_start();                                     // 'Catch' QRCode's output
     QRCode::png($qrtext, null, QR_ECLEVEL_L, 3, 4); // We ignore $size and set it to 3
@@ -169,7 +169,7 @@ $mp = new RobThree\Auth\Providers\Qr\MyProvider();
 $tfa = new RobThree\Auth\TwoFactorAuth('My Company', 6, 30, 'sha1', $mp);
 $secret = $tfa->createSecret();
 ?>
-<p><img src="<?php echo $tfa->getQRCodeImageAsDataUri('Bob Ross', $secret); ?>"></p>
+<p><?php echo $tfa->getQRCodeHTML('Bob Ross', $secret); ?></p>
 ````
 
 Voilà. Couldn't make it any simpler.
@@ -190,7 +190,7 @@ As to *why* these Time Providers are implemented: it allows the TwoFactorAuth li
 
 ## Integrations
 
-- [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth) 
+- [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth)
 
 ## License
 

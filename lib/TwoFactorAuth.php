@@ -117,18 +117,16 @@ class TwoFactorAuth
     }
 
     /**
-     * Get data-uri of QRCode
+     * Get HTML QRCode
      */
-    public function getQRCodeImageAsDataUri($label, $secret, $size = 200)
+    public function getQRCodeHTML($label, $secret, $size = 200)
     {
         if (!is_int($size) || $size <= 0)
             throw new TwoFactorAuthException('Size must be int > 0');
 
         $qrcodeprovider = $this->getQrCodeProvider();
-        return 'data:'
-            . $qrcodeprovider->getMimeType()
-            . ';base64,'
-            . base64_encode($qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
+        return $qrcodeprovider->getQRCodeHTML($this->getQRText($label, $secret), $size);
+
     }
 
     /**
