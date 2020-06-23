@@ -11,7 +11,6 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 ## Requirements
 
 * Tested on PHP 5.6 up to 7.4
-* [cURL](http://php.net/manual/en/book.curl.php) when using the provided `ImageChartsQRCodeProvider` (default), `QRServerProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 * [random_bytes()](http://php.net/manual/en/function.random-bytes.php), [MCrypt](http://php.net/manual/en/book.mcrypt.php), [OpenSSL](http://php.net/manual/en/book.openssl.php) or [Hash](http://php.net/manual/en/book.hash.php) depending on which built-in RNG you use (TwoFactorAuth will try to 'autodetect' and use the best available); however: feel free to provide your own (CS)RNG.
 
 ## Installation
@@ -64,13 +63,11 @@ The `createSecret()` method accepts two arguments: `$bits` (default: `80`) and `
 
 Another, more user-friendly, way to get the shared secret into the app is to generate a [QR-code](http://en.wikipedia.org/wiki/QR_code) which can be scanned by the app. To generate these QR codes you can use any one of the built-in `QRProvider` classes:
 
-1. `ImageChartsQRCodeProvider` (default)
-2. `QRServerProvider`
-3. `QRicketProvider`
+1. `QRJsProvider` (default)
 
-...or implement your own provider. To implement your own provider all you need to do is implement the `IQRCodeProvider` interface. You can use the built-in providers mentioned before to serve as an example or read the next chapter in this file. The built-in classes all use a 3rd (e.g. external) party (Image-charts, QRServer and QRicket) for the hard work of generating QR-codes (note: each of these services might at some point not be available or impose limitations to the number of codes generated per day, hour etc.). You could, however, easily use a project like [PHP QR Code](http://phpqrcode.sourceforge.net/) (or one of the [many others](https://packagist.org/search/?q=qr)) to generate your QR-codes without depending on external sources. Later on we'll [demonstrate](#qr-code-providers) how to do this.
+...or implement your own provider. To implement your own provider all you need to do is implement the `IQRCodeProvider` interface. You can use the built-in providers mentioned before to serve as an example or read the next chapter in this file. The built-in class use a javascript QRcode generator. You could, however, easily use a project like [PHP QR Code](http://phpqrcode.sourceforge.net/) (or one of the [many others](https://packagist.org/search/?q=qr)) to generate your QR-codes without depending on external sources. Later on we'll [demonstrate](#qr-code-providers) how to do this.
 
-The built-in providers all have some provider-specific 'tweaks' you can 'apply'. Some provide support for different colors, others may let you specify the desired image-format etc. What they all have in common is that they return a QR-code as binary blob which, in turn, will be turned into a [data URI](http://en.wikipedia.org/wiki/Data_URI_scheme) by the `TwoFactorAuth` class. This makes it easy for you to display the image without requiring extra 'roundtrips' from browser to server and vice versa.
+The built-in provider have some 'tweaks' you can 'apply'. It provies support for different colors, etc. It returns a QR-code as HTML snippet. This makes it easy for you to display the image.
 
 ````php
 // Display QR code to user
@@ -119,18 +116,17 @@ public function verifyCode($secret, $code, $discrepancy = 1, $time = null): bool
 
 ### QR-code providers
 
-As mentioned before, this library comes with three 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` argument which lets you specify a built-in or custom QR-code provider. All three built-in providers do a simple HTTP request to retrieve an image using cURL and implement the [`IQRCodeProvider`](lib/Providers/Qr/IQRCodeProvider.php) interface which is all you need to implement to write your own QR-code provider.
+As mentioned before, this library comes with one 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` argument which lets you specify a built-in or custom QR-code provider. All three built-in providers do a simple HTTP request to retrieve an image using cURL and implement the [`IQRCodeProvider`](lib/Providers/Qr/IQRCodeProvider.php) interface which is all you need to implement to write your own QR-code provider.
 
-The default provider is the [`ImageChartsQRCodeProvider`](lib/Providers/Qr/ImageChartsQRCodeProvider.php) which uses the [image-charts.com replacement for Google Image Charts](https://image-charts.com) to render QR-codes. Then we have the [`QRServerProvider`](lib/Providers/Qr/QRServerProvider.php) which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) and finally we have the [`QRicketProvider`](lib/Providers/Qr/QRicketProvider.php) which uses the [QRickit API](http://qrickit.com/qrickit_apps/qrickit_api.php). All three inherit from a common (abstract) baseclass named [`BaseHTTPQRCodeProvider`](lib/Providers/Qr/BaseHTTPQRCodeProvider.php) because all three share the same functionality: retrieve an image from a 3rd party over HTTP. All three classes have constructors that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by these classes.
+The default provider is the [`QRJsProvider`](lib/Providers/Qr/QRJsProvider.php) which uses the [qrcodesjs](https://github.com/davidshimjs/qrcodejs) to render QR-codes. This provider has a constructor that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by this class.
 
-If you don't like any of the built-in classes because you don't want to rely on external resources for example or because you're paranoid about sending the TOTP secret to these 3rd parties (which is useless to them since they miss *at least one* other factor in the [MFA process](http://en.wikipedia.org/wiki/Multi-factor_authentication)), feel tree to implement your own. The `IQRCodeProvider` interface couldn't be any simpler. All you need to do is implement 2 methods:
+If you don't like the built-in class, feel tree to implement your own. The `IQRCodeProvider` interface couldn't be any simpler. All you need to do is implement one method:
 
 ````php
-getMimeType();
-getQRCodeImage($qrtext, $size);
+getQRCodeHTML($qrtext, $size);
 ````
 
-The `getMimeType()` method should return the [MIME type](http://en.wikipedia.org/wiki/Internet_media_type) of the image that is returned by our implementation of `getQRCodeImage()`. In this example it's simply `image/png`. The `getQRCodeImage()` method is passed two arguments: `$qrtext` and `$size`. The latter, `$size`, is simply the width/height in pixels of the image desired by the caller. The first, `$qrtext` is the text that should be encoded in the QR-code. An example of such a text would be:
+The `getMimeType()` method should return the [MIME type](http://en.wikipedia.org/wiki/Internet_media_type) of the image that is returned by our implementation of `getQRCodeHTML()`. In this example it's simply `image/png`. The `getQRCodeHTML()` method is passed two arguments: `$qrtext` and `$size`. The latter, `$size`, is simply the width/height in pixels of the image desired by the caller. The first, `$qrtext` is the text that should be encoded in the QR-code. An example of such a text would be:
 
 `otpauth://totp/LABEL:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=ISSUER`
 
@@ -149,14 +145,18 @@ class MyProvider implements IQRCodeProvider {
     return 'image/png';                             // This provider only returns PNG's
   }
 
-  public function getQRCodeImage($qrtext, $size) {
+  public function getQRCodeHTML($qrtext, $size) {
     ob_start();                                     // 'Catch' QRCode's output
     QRCode::png($qrtext, null, QR_ECLEVEL_L, 3, 4); // We ignore $size and set it to 3
                                                     // since phpqrcode doesn't support
                                                     // a size in pixels...
     $result = ob_get_contents();                    // 'Catch' QRCode's output
     ob_end_clean();                                 // Cleanup
-    return $result;                                 // Return image
+    return '<img class="qrCode" src="data:'
+        . $this->getMimeType()
+        . ';base64,'
+        . base64_encode($result)
+        . '" width='.$size.' height='.$size.'>';
   }
 }
 ````
