@@ -10,8 +10,6 @@
         Loader::register('../lib','RobThree\\Auth');
 
         use \RobThree\Auth\TwoFactorAuth;
-        // function __construct($issuer = null, $digits = 6, $period = 30,
-        // $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, IRNGProvider $rngprovider = null, ITimeProvider $timeprovider = null)
         $qrcodeprovider = new \RobThree\Auth\Providers\QrHTML\QRJSProvider();
         $tfa = new TwoFactorAuth('MyApp', 6, 30, 'sha1', $qrcodeprovider);
 
