@@ -30,7 +30,7 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
   width: '.$size.',
   height: '.$size.',
   colorDark : "#'.$this->bgcolor.'",
-  colorLight : "#'.$This->color.'",
+  colorLight : "#'.$this->color.'",
   correctLevel : QRCode.CorrectLevel.'.$this->errorcorrectionlevel.'
 });
 </script>';
