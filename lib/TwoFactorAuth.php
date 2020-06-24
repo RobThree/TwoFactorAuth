@@ -2,6 +2,7 @@
 namespace RobThree\Auth;
 
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
+use RobThree\Auth\Providers\QrHTML\IQRCodeHTMLProvider;
 use RobThree\Auth\Providers\Rng\IRNGProvider;
 use RobThree\Auth\Providers\Time\ITimeProvider;
 
@@ -21,7 +22,7 @@ class TwoFactorAuth
     private static $_base32lookup = array();
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
 
-    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, IRNGProvider $rngprovider = null, ITimeProvider $timeprovider = null)
+    function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', $qrcodeprovider = null, IRNGProvider $rngprovider = null, ITimeProvider $timeprovider = null)
     {
         $this->issuer = $issuer;
         if (!is_int($digits) || $digits <= 0)
@@ -114,6 +115,25 @@ class TwoFactorAuth
             return $result === 0;
         }
         return false;
+    }
+
+    /**
+     * Get HTML of QRCode
+     */
+    public function getQRCodeHTML($label, $secret, $size = 200)
+    {
+        if (!is_int($size) || $size <= 0)
+            throw new TwoFactorAuthException('Size must be int > 0');
+
+        $qrcodeprovider = $this->getQrCodeProvider();
+        $impls = class_implements($qrcodeprovider);
+        if (in_array('RobThree\Auth\Providers\QrHTML\IQRCodeHTMLProvider', $impls)) {
+          return $qrcodeprovider->getQRCodeHTML($this->getQRText($label, $secret), $size);
+        }
+        return 'data:'
+            . $qrcodeprovider->getMimeType()
+            . ';base64,'
+            . base64_encode($qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
     }
 
     /**
