@@ -1,10 +1,10 @@
 <?php
+
 require_once 'lib/TwoFactorAuth.php';
 require_once 'lib/TwoFactorAuthException.php';
 
 require_once 'lib/Providers/Qr/IQRCodeProvider.php';
-require_once 'lib/Providers/Qr/BaseHTTPQRCodeProvider.php';
-require_once 'lib/Providers/Qr/ImageChartsQRCodeProvider.php';
+require_once 'lib/Providers/Qr/QRJSProvider.php';
 require_once 'lib/Providers/Qr/QRException.php';
 
 require_once 'lib/Providers/Rng/IRNGProvider.php';
@@ -180,10 +180,8 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $qr = new TestQrProvider();
 
         $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, 'sha1', $qr);
-        $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
-        $this->assertEquals('test/test', $data['mimetype']);
-        $this->assertEquals('base64', $data['encoding']);
-        $this->assertEquals('otpauth://totp/Test%26Label?secret=VMR466AB62ZBOKHE&issuer=Test%26Issuer&period=30&algorithm=SHA1&digits=6@200', $data['data']);
+        $data = $tfa->getQRCodeHTML('Test&Label', 'VMR466AB62ZBOKHE');
+        $this->assertEquals('otpauth://totp/Test%26Label?secret=VMR466AB62ZBOKHE&issuer=Test%26Issuer&period=30&algorithm=SHA1&digits=6@200', $data);
     }
 
     /**
@@ -193,7 +191,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
         $qr = new TestQrProvider();
 
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', $qr);
-        $tfa->getQRCodeImageAsDataUri('Test', 'VMR466AB62ZBOKHE', 0);
+        $tfa->getQRCodeHTML('Test', 'VMR466AB62ZBOKHE', 0);
     }
 
     /**
@@ -353,17 +351,6 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     private function getRngTestLengths() {
         return array(1, 16, 32, 256);
     }
-
-    private function DecodeDataUri($datauri) {
-        if (preg_match('/data:(?P<mimetype>[\w\.\-\/]+);(?P<encoding>\w+),(?P<data>.*)/', $datauri, $m) === 1) {
-            return array(
-                'mimetype' => $m['mimetype'],
-                'encoding' => $m['encoding'],
-                'data' => base64_decode($m['data'])
-            );
-        }
-        return null;
-    }
 }
 
 class TestRNGProvider implements IRNGProvider {
@@ -387,12 +374,8 @@ class TestRNGProvider implements IRNGProvider {
 }
 
 class TestQrProvider implements IQRCodeProvider {
-    public function getQRCodeImage($qrtext, $size) {
+    public function getQRCodeHTML($qrtext, $size) {
         return $qrtext . '@' . $size;
-    }
-
-    public function getMimeType() {
-        return 'test/test';
     }
 }
 
