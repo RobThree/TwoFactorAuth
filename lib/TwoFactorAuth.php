@@ -130,10 +130,11 @@ class TwoFactorAuth
         if (in_array('RobThree\Auth\Providers\QrHTML\IQRCodeHTMLProvider', $impls)) {
           return $qrcodeprovider->getQRCodeHTML($this->getQRText($label, $secret), $size);
         }
-        return 'data:'
+        return '<img src="data:'
             . $qrcodeprovider->getMimeType()
             . ';base64,'
-            . base64_encode($qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
+            . base64_encode($qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size)).
+            '" width="'.$size.'" height="'.$size.'">';
     }
 
     /**
