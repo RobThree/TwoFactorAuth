@@ -23,6 +23,10 @@
     "require-dev": {
         "phpunit/phpunit": "@stable"
     },
+    "suggest": {
+      "bacon/bacon-qr-code": "Needed for BaconQrCodeProvider provider",
+      "endroid/qr-code": "Needed for EndroidQrCodeProvider"
+    },
     "autoload": {
         "psr-4": {
             "RobThree\\Auth\\": "lib"
