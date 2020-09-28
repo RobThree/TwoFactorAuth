@@ -16,8 +16,8 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 
 Optionally, you may need:
 
-* (endroid/qr-code)[https://github.com/endroid/qr-code] if using `EndroidQrCodeProvider`.
-* (bacon/bacon-qr-code)[https://github.com/Bacon/BaconQrCode] if using `BaconQrCodeProvider`.
+* [endroid/qr-code](https://github.com/endroid/qr-code) if using `EndroidQrCodeProvider`.
+* [bacon/bacon-qr-code](https://github.com/Bacon/BaconQrCode) if using `BaconQrCodeProvider`.
 
 ## Installation
 
