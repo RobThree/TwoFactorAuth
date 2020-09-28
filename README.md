@@ -14,6 +14,11 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 * [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 * [random_bytes()](http://php.net/manual/en/function.random-bytes.php), [MCrypt](http://php.net/manual/en/book.mcrypt.php), [OpenSSL](http://php.net/manual/en/book.openssl.php) or [Hash](http://php.net/manual/en/book.hash.php) depending on which built-in RNG you use (TwoFactorAuth will try to 'autodetect' and use the best available); however: feel free to provide your own (CS)RNG.
 
+Optionally, you may need:
+
+* (endroid/qr-code)[https://github.com/endroid/qr-code] if using `EndroidQrCodeProvider`.
+* (bacon/bacon-qr-code)[https://github.com/Bacon/BaconQrCode] if using `BaconQrCodeProvider`.
+
 ## Installation
 
 Run the following command:
@@ -67,6 +72,8 @@ Another, more user-friendly, way to get the shared secret into the app is to gen
 1. `QRServerProvider` (default)
 2. `ImageChartsQRCodeProvider`
 3. `QRicketProvider`
+4. `EndroidQrCodeProvider` (requires `endroid/qr-code` to be installed)
+5. `BaconQrCodeProvider` (requires `bacon/bacon-qr-code` to be installed)
 
 ...or implement your own provider. To implement your own provider all you need to do is implement the `IQRCodeProvider` interface. You can use the built-in providers mentioned before to serve as an example or read the next chapter in this file. The built-in classes all use a 3rd (e.g. external) party (Image-charts, QRServer and QRicket) for the hard work of generating QR-codes (note: each of these services might at some point not be available or impose limitations to the number of codes generated per day, hour etc.). You could, however, easily use a project like [PHP QR Code](http://phpqrcode.sourceforge.net/) (or one of the [many others](https://packagist.org/search/?q=qr)) to generate your QR-codes without depending on external sources. Later on we'll [demonstrate](#qr-code-providers) how to do this.
 
@@ -119,9 +126,9 @@ public function verifyCode($secret, $code, $discrepancy = 1, $time = null): bool
 
 ### QR-code providers
 
-As mentioned before, this library comes with three 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` argument which lets you specify a built-in or custom QR-code provider. All three built-in providers do a simple HTTP request to retrieve an image using cURL and implement the [`IQRCodeProvider`](lib/Providers/Qr/IQRCodeProvider.php) interface which is all you need to implement to write your own QR-code provider.
+As mentioned before, this library comes with five 'built-in' QR-code providers. This chapter will touch the subject a bit but most of it should be self-explanatory. The `TwoFactorAuth`-class accepts a `$qrcodeprovider` argument which lets you specify a built-in or custom QR-code provider. All five built-in providers do a simple HTTP request to retrieve an image using cURL and implement the [`IQRCodeProvider`](lib/Providers/Qr/IQRCodeProvider.php) interface which is all you need to implement to write your own QR-code provider.
 
-The default provider is the [`QRServerProvider`](lib/Providers/Qr/QRServerProvider.php) which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) to render QR-codes. Then we have the [`ImageChartsQRCodeProvider`](lib/Providers/Qr/ImageChartsQRCodeProvider.php) which uses the [image-charts.com replacement for Google Image Charts](https://image-charts.com) to render QR-codes. Then we have the [`QRServerProvider`](lib/Providers/Qr/QRServerProvider.php) which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) and finally we have the [`QRicketProvider`](lib/Providers/Qr/QRicketProvider.php) which uses the [QRickit API](http://qrickit.com/qrickit_apps/qrickit_api.php). All three inherit from a common (abstract) baseclass named [`BaseHTTPQRCodeProvider`](lib/Providers/Qr/BaseHTTPQRCodeProvider.php) because all three share the same functionality: retrieve an image from a 3rd party over HTTP. All three classes have constructors that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by these classes.
+The default provider is the [`QRServerProvider`](lib/Providers/Qr/QRServerProvider.php) which uses the [goqr.me API](http://goqr.me/api/doc/create-qr-code/) to render QR-codes. Then we have the [`ImageChartsQRCodeProvider`](lib/Providers/Qr/ImageChartsQRCodeProvider.php) which uses the [image-charts.com replacement for Google Image Charts](https://image-charts.com) to render QR-codes and the [`QRicketProvider`](lib/Providers/Qr/QRicketProvider.php) which uses the [QRickit API](http://qrickit.com/qrickit_apps/qrickit_api.php). These three providers all inherit from a common (abstract) baseclass named [`BaseHTTPQRCodeProvider`](lib/Providers/Qr/BaseHTTPQRCodeProvider.php) because all three share the same functionality: retrieve an image from a 3rd party over HTTP. Finally, we have [`EndroidQrCodeProvider`](lib/Providers/Qr/EndroidQrCodeProvider.php) and [`BaconQrCodeProvider`](lib/Providers/Qr/BaconQrCodeProvider.php) which require an optional dependency to be installed to use (see Requirements section above), but will generate the QR codes locally. All five classes have constructors that allow you to tweak some settings and most, if not all, arguments should speak for themselves. If you're not sure which values are supported, click the links in this paragraph for documentation on the API's that are utilized by these classes.
 
 If you don't like any of the built-in classes because you don't want to rely on external resources for example or because you're paranoid about sending the TOTP secret to these 3rd parties (which is useless to them since they miss *at least one* other factor in the [MFA process](http://en.wikipedia.org/wiki/Multi-factor_authentication)), feel tree to implement your own. The `IQRCodeProvider` interface couldn't be any simpler. All you need to do is implement 2 methods:
 
