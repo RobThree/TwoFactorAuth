@@ -13,6 +13,7 @@ class TwoFactorAuth
     private $period;
     private $digits;
     private $issuer;
+    private $image;
     private $qrcodeprovider = null;
     private $rngprovider = null;
     private $timeprovider = null;
@@ -179,7 +180,8 @@ class TwoFactorAuth
             . '&issuer=' . rawurlencode($this->issuer)
             . '&period=' . intval($this->period)
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm))
-            . '&digits=' . intval($this->digits);
+            . '&digits=' . intval($this->digits)
+            . ($this->image != '' ? '&image=' . rawurlencode($this->image) : '');
     }
 
     private function base32Decode($value)
@@ -253,4 +255,17 @@ class TwoFactorAuth
         }
         return $this->timeprovider;
     }
+
+    /**
+      * Set the image url used by FreeOTP
+    */
+    public function setImage($image)
+    {
+        $ext = explode(".", $image);
+        //Image must be PNG
+        if (strtolower(end($ext)) == "png") {
+            $this->image = $image;
+        }
+    }    
+
 }
