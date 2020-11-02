@@ -45,7 +45,7 @@ Argument          | Default value | Use
 `$issuer`         | `null`        | Will be displayed in the app as issuer name
 `$digits`         | `6`           | The number of digits the resulting codes will be
 `$period`         | `30`          | The number of seconds a code will be valid
-`$algorithm`      | `sha1`        | The algorithm used
+`$algorithm`      | `sha1`        | The algorithm used (one of `sha1`, `sha256`, `sha512`, `md5`)
 `$qrcodeprovider` | `null`        | QR-code provider (more on this later)
 `$rngprovider`    | `null`        | Random Number Generator provider (more on this later)
 `$timeprovider`   | `null`        | Time provider (more on this later)
