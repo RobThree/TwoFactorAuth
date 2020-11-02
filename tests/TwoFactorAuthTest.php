@@ -27,7 +27,7 @@ use RobThree\Auth\Providers\Rng\IRNGProvider;
 use RobThree\Auth\Providers\Time\ITimeProvider;
 
 
-class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
+class TwoFactorAuthTest extends PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException \RobThree\Auth\TwoFactorAuthException
@@ -102,6 +102,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
 
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, null, $tpr1);
         $tfa->ensureCorrectTime(array($tpr2));   // 128 - 123 = 5 => within default leniency
+        $this->assertTrue(true);
     }
 
     /**
@@ -119,6 +120,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
     public function testEnsureDefaultTimeProviderReturnsCorrectTime() {
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
         $tfa->ensureCorrectTime(array(new TestTimeProvider(time())), 1);    // Use a leniency of 1, should the time change between both time() calls
+        $this->assertTrue(true);
     }
 
     public function testEnsureAllTimeProvidersReturnCorrectTime() {
@@ -130,6 +132,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
             new RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),
             new RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
         ));
+        $this->assertTrue(true);
     }
 
     public function testVerifyCodeWorksCorrectly() {
@@ -327,6 +330,7 @@ class TwoFactorAuthTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
             $this->assertEquals(true, $rng->isCryptographicallySecure());
         }
+        $this->assertTrue(true);
     }
 
     /**
