@@ -62,6 +62,7 @@ class TwoFactorAuth
 
     /**
      * Calculate the code with given secret and point in time
+     * @return string
      */
     public function getCode($secret, $time = null)
     {
@@ -78,10 +79,16 @@ class TwoFactorAuth
 
     /**
      * Check if the code is correct. This will accept codes starting from ($discrepancy * $period) sec ago to ($discrepancy * period) sec from now
+     * @param string   $secret
+     * @param string   $code This shouldn't be casted to integer - you may lose zeroes to the left
+     * @param int      $discrepancy
+     * @param int|null $time
+     * @param int      $timeslice
+     * @return bool
      */
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null, &$timeslice = 0)
     {
-        $timetamp = $this->getTime($time);
+        $timestamp = $this->getTime($time);
 
         $timeslice = 0;
 
@@ -90,7 +97,7 @@ class TwoFactorAuth
         // of the match. Each iteration we either set the timeslice variable to the timeslice of the match
         // or set the value to itself.  This is an effort to maintain constant execution time for the code.
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
-            $ts = $timetamp + ($i * $this->period);
+            $ts = $timestamp + ($i * $this->period);
             $slice = $this->getTimeSlice($ts);
             $timeslice = $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : $timeslice;
         }

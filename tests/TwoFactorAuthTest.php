@@ -136,7 +136,6 @@ class TwoFactorAuthTest extends PHPUnit\Framework\TestCase
     }
 
     public function testVerifyCodeWorksCorrectly() {
-
         $tfa = new TwoFactorAuth('Test', 6, 30);
         $this->assertEquals(true , $tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847190));
         $this->assertEquals(true , $tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 + 29));	//Test discrepancy
