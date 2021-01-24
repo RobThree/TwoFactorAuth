@@ -10,8 +10,6 @@ class EndroidQrCodeProvider implements IQRCodeProvider
     public $color;
     public $margin;
     public $errorcorrectionlevel;
-    protected $logoPath;
-    protected $logoSize;
 
     public function __construct($bgcolor = 'ffffff', $color = '000000', $margin = 0, $errorcorrectionlevel = 'H')
     {
@@ -21,23 +19,17 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $this->errorcorrectionlevel = $this->handleErrorCorrectionLevel($errorcorrectionlevel);
     }
 
-    /**
-     * Adds an image to the middle of the QR Code.
-     * @param string $path Path to an image file
-     * @param array|int $size Just the width, or [width, height]
-     */
-    public function setLogo($path, $size = null)
-    {
-        $this->logoPath = $path;
-        $this->logoSize = (array)$size;
-    }
-
     public function getMimeType()
     {
         return 'image/png';
     }
 
     public function getQRCodeImage($qrtext, $size)
+    {
+        return $this->qrCodeInstance($qrtext, $size)->writeString();
+    }
+
+    protected function qrCodeInstance($qrtext, $size)
     {
         $qrCode = new QrCode($qrtext);
         $qrCode->setSize($size);
@@ -47,14 +39,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $qrCode->setBackgroundColor($this->bgcolor);
         $qrCode->setForegroundColor($this->color);
 
-        if ($this->logoPath) {
-            $qrCode->setLogoPath($this->logoPath);
-            if ($this->logoSize) {
-                $qrCode->setLogoSize($this->logoSize[0], $this->logoSize[1]);
-            }
-        }
-
-        return $qrCode->writeString();
+        return $qrCode;
     }
 
     private function handleColor($color)
