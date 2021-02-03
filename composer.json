@@ -36,5 +36,10 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": [
+            "XDEBUG_MODE=coverage phpunit"
+        ]
     }
 }

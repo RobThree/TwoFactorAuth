@@ -188,3 +188,5 @@ composer.lock
 
 # .vs
 .vs/
+
+.phpunit.result.cache
