@@ -23,4 +23,5 @@ jobs:
 
     - uses: ramsey/composer-install@v1
 
-    - run: vendor/bin/phpunit --coverage-text tests
+    - run: composer lint
+    - run: composer test
