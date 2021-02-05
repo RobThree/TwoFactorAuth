@@ -45,10 +45,10 @@ class HttpTimeProvider implements ITimeProvider
                 if (strcasecmp(substr($h, 0, 5), 'Date:') === 0)
                     return \DateTime::createFromFormat($this->expectedtimeformat, trim(substr($h,5)))->getTimestamp();
             }
-            throw new \TimeException(sprintf('Unable to retrieve time from %s (Invalid or no "Date:" header found)', $this->url));
+            throw new \Exception('Invalid or no "Date:" header found');
+        } catch (\Exception $ex) {
+            throw new TimeException(sprintf('Unable to retrieve time from %s (%s)', $this->url, $ex->getMessage()));
         }
-        catch (Exception $ex) {
-            throw new \TimeException(sprintf('Unable to retrieve time from %s (%s)', $this->url, $ex->getMessage()));
-        }
+
     }
 }
