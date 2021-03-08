@@ -16,12 +16,12 @@ class NTPTimeProvider implements ITimeProvider
         $this->host = $host;
 
         if (!is_int($port) || $port <= 0 || $port > 65535) {
-            throw new \TimeException('Port must be 0 < port < 65535');
+            throw new TimeException('Port must be 0 < port < 65535');
         }
         $this->port = $port;
 
         if (!is_int($timeout) || $timeout < 0) {
-            throw new \TimeException('Timeout must be >= 0');
+            throw new TimeException('Timeout must be >= 0');
         }
         $this->timeout = $timeout;
     }
@@ -46,7 +46,7 @@ class NTPTimeProvider implements ITimeProvider
 
             /* Interpret response */
             $data = unpack('N12', $recv);
-            $timestamp = sprintf('%u', $data[9]);
+            $timestamp = (int) sprintf('%u', $data[9]);
 
             /* NTP is number of seconds since 0000 UT on 1 January 1900 Unix time is seconds since 0000 UT on 1 January 1970 */
             return $timestamp - 2208988800;

@@ -14,10 +14,11 @@ trait MightNotMakeAssertions
     {
         foreach (class_parents($this) as $parent) {
             if (method_exists($parent, 'expectNotToPerformAssertions')) {
-                return parent::expectNotToPerformAssertions();
+                parent::expectNotToPerformAssertions();
+                return;
             }
         }
 
-        return $this->assertTrue(true);
+        $this->assertTrue(true);
     }
 }

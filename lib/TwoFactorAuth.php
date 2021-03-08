@@ -62,7 +62,7 @@ class TwoFactorAuth
     public function createSecret($bits = 80, $requirecryptosecure = true)
     {
         $secret = '';
-        $bytes = ceil($bits / 5);   //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
+        $bytes = (int) ceil($bits / 5);   //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
         $rngprovider = $this->getRngProvider();
         if ($requirecryptosecure && !$rngprovider->isCryptographicallySecure()) {
             throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
@@ -87,7 +87,7 @@ class TwoFactorAuth
         $value = unpack('N', $hashpart);                                                   // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
 
-        return str_pad($value % pow(10, $this->digits), $this->digits, '0', STR_PAD_LEFT);
+        return str_pad((string) ($value % pow(10, $this->digits)), $this->digits, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -153,10 +153,6 @@ class TwoFactorAuth
      */
     public function ensureCorrectTime(array $timeproviders = null, $leniency = 5)
     {
-        if ($timeproviders !== null && !is_array($timeproviders)) {
-            throw new TwoFactorAuthException('No timeproviders specified');
-        }
-
         if ($timeproviders === null) {
             $timeproviders = array(
                 new NTPTimeProvider(),
@@ -216,7 +212,7 @@ class TwoFactorAuth
         $buffer = '';
         foreach (str_split($value) as $char) {
             if ($char !== '=') {
-                $buffer .= str_pad(decbin(self::$_base32lookup[$char]), 5, 0, STR_PAD_LEFT);
+                $buffer .= str_pad(decbin(self::$_base32lookup[$char]), 5, '0', STR_PAD_LEFT);
             }
         }
         $length = strlen($buffer);
@@ -224,7 +220,7 @@ class TwoFactorAuth
 
         $output = '';
         foreach (explode(' ', $blocks) as $block) {
-            $output .= chr(bindec(str_pad($block, 8, 0, STR_PAD_RIGHT)));
+            $output .= chr(bindec(str_pad($block, 8, '0', STR_PAD_RIGHT)));
         }
         return $output;
     }
