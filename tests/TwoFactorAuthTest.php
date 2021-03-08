@@ -10,6 +10,9 @@ class TwoFactorAuthTest extends TestCase
 {
     use MightNotMakeAssertions;
 
+    /**
+     * @return void
+     */
     public function testConstructorThrowsOnInvalidDigits()
     {
         $this->expectException(TwoFactorAuthException::class);
@@ -17,6 +20,9 @@ class TwoFactorAuthTest extends TestCase
         new TwoFactorAuth('Test', 0);
     }
 
+    /**
+     * @return void
+     */
     public function testConstructorThrowsOnInvalidPeriod()
     {
         $this->expectException(TwoFactorAuthException::class);
@@ -24,6 +30,9 @@ class TwoFactorAuthTest extends TestCase
         new TwoFactorAuth('Test', 6, 0);
     }
 
+    /**
+     * @return void
+     */
     public function testConstructorThrowsOnInvalidAlgorithm()
     {
         $this->expectException(TwoFactorAuthException::class);
@@ -31,6 +40,9 @@ class TwoFactorAuthTest extends TestCase
         new TwoFactorAuth('Test', 6, 30, 'xxx');
     }
 
+    /**
+     * @return void
+     */
     public function testGetCodeReturnsCorrectResults()
     {
         $tfa = new TwoFactorAuth('Test');
@@ -38,6 +50,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertEquals('538532', $tfa->getCode('VMR466AB62ZBOKHE', 0));
     }
 
+    /**
+     * @return void
+     */
     public function testEnsureAllTimeProvidersReturnCorrectTime()
     {
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
@@ -51,6 +66,9 @@ class TwoFactorAuthTest extends TestCase
         $this->noAssertionsMade();
     }
 
+    /**
+     * @return void
+     */
     public function testVerifyCodeWorksCorrectly()
     {
         $tfa = new TwoFactorAuth('Test', 6, 30);
@@ -70,6 +88,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 2, 1426847205 - 65));	//Test discrepancy
     }
 
+    /**
+     * @return void
+     */
     public function testVerifyCorrectTimeSliceIsReturned()
     {
         $tfa = new TwoFactorAuth('Test', 6, 30);
@@ -96,6 +117,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertEquals(0, $timeslice8);
     }
 
+    /**
+     * @return void
+     */
     public function testGetCodeThrowsOnInvalidBase32String1()
     {
         $tfa = new TwoFactorAuth('Test');
@@ -105,6 +129,9 @@ class TwoFactorAuthTest extends TestCase
         $tfa->getCode('FOO1BAR8BAZ9');    //1, 8 & 9 are invalid chars
     }
 
+    /**
+     * @return void
+     */
     public function testGetCodeThrowsOnInvalidBase32String2()
     {
         $tfa = new TwoFactorAuth('Test');
@@ -114,6 +141,9 @@ class TwoFactorAuthTest extends TestCase
         $tfa->getCode('mzxw6===');        //Lowercase
     }
 
+    /**
+     * @return void
+     */
     public function testKnownBase32DecodeTestVectors()
     {
         // We usually don't test internals (e.g. privates) but since we rely heavily on base32 decoding and don't want
@@ -142,6 +172,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertEquals('foobar', $method->invoke($tfa, 'MZXW6YTBOI======'));
     }
 
+    /**
+     * @return void
+     */
     public function testKnownBase32DecodeUnpaddedTestVectors()
     {
         // See testKnownBase32DecodeTestVectors() for the rationale behind testing the private base32Decode() method.
@@ -163,6 +196,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertEquals('foobar', $method->invoke($tfa, 'MZXW6YTBOI'));
     }
 
+    /**
+     * @return void
+     */
     public function testKnownTestVectors_sha1()
     {
         //Known test vectors for SHA1: https://tools.ietf.org/html/rfc6238#page-15
@@ -176,6 +212,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertEquals('65353130', $tfa->getCode($secret, 20000000000));
     }
 
+    /**
+     * @return void
+     */
     public function testKnownTestVectors_sha256()
     {
         //Known test vectors for SHA256: https://tools.ietf.org/html/rfc6238#page-15
@@ -189,6 +228,9 @@ class TwoFactorAuthTest extends TestCase
         $this->assertEquals('77737706', $tfa->getCode($secret, 20000000000));
     }
 
+    /**
+     * @return void
+     */
     public function testKnownTestVectors_sha512()
     {
         //Known test vectors for SHA512: https://tools.ietf.org/html/rfc6238#page-15

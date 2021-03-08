@@ -11,6 +11,9 @@ class ITimeProviderTest extends TestCase
 {
     use MightNotMakeAssertions;
 
+    /**
+     * @return void
+     */
     public function testEnsureCorrectTimeDoesNotThrowForCorrectTime()
     {
         $tpr1 = new TestTimeProvider(123);
@@ -22,6 +25,9 @@ class ITimeProviderTest extends TestCase
         $this->noAssertionsMade();
     }
 
+    /**
+     * @return void
+     */
     public function testEnsureCorrectTimeThrowsOnIncorrectTime()
     {
         $tpr1 = new TestTimeProvider(123);
@@ -34,6 +40,9 @@ class ITimeProviderTest extends TestCase
         $tfa->ensureCorrectTime(array($tpr2), 0);    // We force a leniency of 0, 124-123 = 1 so this should throw
     }
 
+    /**
+     * @return void
+     */
     public function testEnsureDefaultTimeProviderReturnsCorrectTime()
     {
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');

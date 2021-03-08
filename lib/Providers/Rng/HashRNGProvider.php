@@ -4,8 +4,12 @@ namespace RobThree\Auth\Providers\Rng;
 
 class HashRNGProvider implements IRNGProvider
 {
+    /** @var string */
     private $algorithm;
 
+    /**
+     * @param string $algorithm
+     */
     public function __construct($algorithm = 'sha256')
     {
         $algos = array_values(hash_algos());
@@ -15,6 +19,9 @@ class HashRNGProvider implements IRNGProvider
         $this->algorithm = $algorithm;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRandomBytes($bytecount)
     {
         $result = '';
@@ -26,6 +33,9 @@ class HashRNGProvider implements IRNGProvider
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isCryptographicallySecure()
     {
         return false;

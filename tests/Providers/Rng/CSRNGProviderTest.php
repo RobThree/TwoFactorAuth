@@ -12,6 +12,8 @@ class CSRNGProviderTest extends TestCase
 
     /**
      * @requires function random_bytes
+     *
+     * @return void
      */
     public function testCSRNGProvidersReturnExpectedNumberOfBytes()
     {

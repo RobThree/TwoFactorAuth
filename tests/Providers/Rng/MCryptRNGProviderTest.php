@@ -12,6 +12,8 @@ class MCryptRNGProviderTest extends TestCase
 
     /**
      * @requires function mcrypt_create_iv
+     *
+     * @return void
      */
     public function testMCryptRNGProvidersReturnExpectedNumberOfBytes()
     {
