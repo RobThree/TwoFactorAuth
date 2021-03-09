@@ -143,7 +143,7 @@ class TwoFactorAuth
      */
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null, &$timeslice = 0)
     {
-        $timetamp = $this->getTime($time);
+        $timestamp = $this->getTime($time);
 
         $timeslice = 0;
 
@@ -152,7 +152,7 @@ class TwoFactorAuth
         // of the match. Each iteration we either set the timeslice variable to the timeslice of the match
         // or set the value to itself.  This is an effort to maintain constant execution time for the code.
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
-            $ts = $timetamp + ($i * $this->period);
+            $ts = $timestamp + ($i * $this->period);
             $slice = $this->getTimeSlice($ts);
             $timeslice = $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : $timeslice;
         }

@@ -26,6 +26,11 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     public function getQRCodeImage($qrtext, $size)
     {
+        return $this->qrCodeInstance($qrtext, $size)->writeString();
+    }
+
+    protected function qrCodeInstance($qrtext, $size)
+    {
         $qrCode = new QrCode($qrtext);
         $qrCode->setSize($size);
 
@@ -34,7 +39,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $qrCode->setBackgroundColor($this->bgcolor);
         $qrCode->setForegroundColor($this->color);
 
-        return $qrCode->writeString();
+        return $qrCode;
     }
 
     private function handleColor($color)
