@@ -10,7 +10,7 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 
 ## Requirements
 
-* Tested on PHP 5.6 up to 7.4
+* Tested on PHP 5.6 up to 8.0
 * [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 * [random_bytes()](http://php.net/manual/en/function.random-bytes.php), [MCrypt](http://php.net/manual/en/book.mcrypt.php), [OpenSSL](http://php.net/manual/en/book.openssl.php) or [Hash](http://php.net/manual/en/book.hash.php) depending on which built-in RNG you use (TwoFactorAuth will try to 'autodetect' and use the best available); however: feel free to provide your own (CS)RNG.
 
@@ -40,7 +40,7 @@ $tfa = new RobThree\Auth\TwoFactorAuth('My Company');
 
 The TwoFactorAuth class constructor accepts 7 arguments (all optional):
 
-Argument          | Default value | Use 
+Argument          | Default value | Use
 ------------------|---------------|--------------------------------------------------
 `$issuer`         | `null`        | Will be displayed in the app as issuer name
 `$digits`         | `6`           | The number of digits the resulting codes will be
@@ -98,7 +98,7 @@ $result = $tfa->verifyCode($_SESSION['secret'], $_POST['verification']);
 ````
 
 If you do extra validations with your `$_POST` values, just make sure the code is still submitted as string - even if that's a numeric code, casting it to integer is unreliable. Also, you may need to store `$secret` in a `$_SESSION` or other persistent storage between requests. `verifyCode()` will return either `true` (the code was valid) or `false` (the code was invalid; no points for you!).
- 
+
  The `verifyCode()` accepts, aside from `$secret` and `$code`, three more arguments, with the first being `$discrepancy`. Since TOTP codes are based on time("slices") it is very important that the server (but also client) have a correct date/time. But because the two *may* differ a bit we usually allow a certain amount of leeway. Because generated codes are valid for a specific period (remember the `$period` argument in the `TwoFactorAuth`'s constructor?) we usually check the period directly before and the period directly after the current time when validating codes. So when the current time is `14:34:21`, which results in a 'current timeslice' of `14:34:00` to `14:34:30` we also calculate/verify the codes for `14:33:30` to `14:34:00` and for `14:34:30` to `14:35:00`. This gives us a 'window' of `14:33:30` to `14:35:00`. The `$discrepancy` argument specifies how many periods (or: timeslices) we check in either direction of the current time. The default `$discrepancy` of `1` results in (max.) 3 period checks: -1, current and +1 period. A `$discrepancy` of `4` would result in a larger window (or: bigger time difference between client and server) of -4, -3, -2, -1, current, +1, +2, +3 and +4 periods.
 
 The second, `$time`, allows you to check a code for a specific point in time. This argument has no real practical use but can be handy for unittesting etc. The default value, `null`, means: use the current time.
@@ -115,10 +115,10 @@ All we need is 3 methods and a constructor:
 
 ````php
 public function __construct(
-    $issuer = null, 
+    $issuer = null,
     $digits = 6,
-    $period = 30, 
-    $algorithm = 'sha1', 
+    $period = 30,
+    $algorithm = 'sha1',
     RobThree\Auth\Providers\Qr\IQRCodeProvider $qrcodeprovider = null,
     RobThree\Auth\Providers\Rng\IRNGProvider $rngprovider = null
 );
@@ -158,7 +158,7 @@ class MyProvider implements IQRCodeProvider {
   public function getMimeType() {
     return 'image/png';                             // This provider only returns PNG's
   }
-  
+
   public function getQRCodeImage($qrtext, $size) {
     ob_start();                                     // 'Catch' QRCode's output
     QRCode::png($qrtext, null, QR_ECLEVEL_L, 3, 4); // We ignore $size and set it to 3
@@ -200,7 +200,7 @@ As to *why* these Time Providers are implemented: it allows the TwoFactorAuth li
 
 ## Integrations
 
-- [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth) 
+- [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth)
 
 ## License
 
