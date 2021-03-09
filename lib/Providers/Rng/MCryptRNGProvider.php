@@ -4,13 +4,20 @@ namespace RobThree\Auth\Providers\Rng;
 
 class MCryptRNGProvider implements IRNGProvider
 {
+    /** @var int */
     private $source;
 
+    /**
+     * @param int $source
+     */
     public function __construct($source = MCRYPT_DEV_URANDOM)
     {
         $this->source = $source;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRandomBytes($bytecount)
     {
         $result = @mcrypt_create_iv($bytecount, $this->source);
@@ -20,6 +27,9 @@ class MCryptRNGProvider implements IRNGProvider
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isCryptographicallySecure()
     {
         return true;

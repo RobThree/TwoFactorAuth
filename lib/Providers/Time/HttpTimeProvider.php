@@ -9,17 +9,26 @@ use DateTime;
  */
 class HttpTimeProvider implements ITimeProvider
 {
+    /** @var string */
     public $url;
-    public $options;
+
+    /** @var string */
     public $expectedtimeformat;
 
+    /** @var array */
+    public $options;
+
+    /**
+     * @param string $url
+     * @param string $expectedtimeformat
+     * @param array $options
+     */
     public function __construct($url = 'https://google.com', $expectedtimeformat = 'D, d M Y H:i:s O+', array $options = null)
     {
         $this->url = $url;
         $this->expectedtimeformat = $expectedtimeformat;
-        $this->options = $options;
-        if ($this->options === null) {
-            $this->options = array(
+        if ($options === null) {
+            $options = array(
                 'http' => array(
                     'method' => 'HEAD',
                     'follow_location' => false,
@@ -34,8 +43,12 @@ class HttpTimeProvider implements ITimeProvider
                 )
             );
         }
+        $this->options = $options;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTime()
     {
         try {

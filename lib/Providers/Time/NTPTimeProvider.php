@@ -7,10 +7,20 @@ namespace RobThree\Auth\Providers\Time;
  */
 class NTPTimeProvider implements ITimeProvider
 {
+    /** @var string */
     public $host;
+
+    /** @var int */
     public $port;
+
+    /** @var int */
     public $timeout;
 
+    /**
+     * @param string $host
+     * @param int $port
+     * @param int $timeout
+     */
     public function __construct($host = 'time.google.com', $port = 123, $timeout = 1)
     {
         $this->host = $host;
@@ -26,6 +36,9 @@ class NTPTimeProvider implements ITimeProvider
         $this->timeout = $timeout;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTime()
     {
         try {

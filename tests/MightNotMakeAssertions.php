@@ -9,6 +9,8 @@ trait MightNotMakeAssertions
      *
      * It has to be named something that doesn't collide with existing
      * TestCase methods as we can't support PHP return types right now
+     *
+     * @return void
      */
     public function noAssertionsMade()
     {

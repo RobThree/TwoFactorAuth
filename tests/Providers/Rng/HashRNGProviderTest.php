@@ -9,6 +9,9 @@ class HashRNGProviderTest extends TestCase
 {
     use NeedsRngLengths;
 
+    /**
+     * @return void
+     */
     public function testHashRNGProvidersReturnExpectedNumberOfBytes()
     {
         $rng = new HashRNGProvider();

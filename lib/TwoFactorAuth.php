@@ -18,18 +18,48 @@ use RobThree\Auth\Providers\Time\NTPTimeProvider;
 // Algorithms, digits, period etc. explained: https://github.com/google/google-authenticator/wiki/Key-Uri-Format
 class TwoFactorAuth
 {
+    /** @var string */
     private $algorithm;
+
+    /** @var int */
     private $period;
+
+    /** @var int */
     private $digits;
+
+    /** @var string */
     private $issuer;
+
+    /** @var ?IQRCodeProvider */
     private $qrcodeprovider = null;
+
+    /** @var ?IRNGProvider */
     private $rngprovider = null;
+
+    /** @var ?ITimeProvider */
     private $timeprovider = null;
+
+    /** @var string */
     private static $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
+
+    /** @var array */
     private static $_base32;
+
+    /** @var array */
     private static $_base32lookup = array();
+
+    /** @var array */
     private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
 
+    /**
+     * @param ?string $issuer
+     * @param int $digits
+     * @param int $period
+     * @param string $algorithm
+     * @param ?IQRCodeProvider $qrcodeprovider
+     * @param ?IRNGProvider $rngprovider
+     * @param ?ITimeProvider $timeprovider
+     */
     public function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1', IQRCodeProvider $qrcodeprovider = null, IRNGProvider $rngprovider = null, ITimeProvider $timeprovider = null)
     {
         $this->issuer = $issuer;
@@ -58,6 +88,11 @@ class TwoFactorAuth
 
     /**
      * Create a new secret
+     *
+     * @param int $bits
+     * @param bool $requirecryptosecure
+     *
+     * @return string
      */
     public function createSecret($bits = 80, $requirecryptosecure = true)
     {
@@ -76,6 +111,11 @@ class TwoFactorAuth
 
     /**
      * Calculate the code with given secret and point in time
+     *
+     * @param string $secret
+     * @param ?int $time
+     *
+     * @return string
      */
     public function getCode($secret, $time = null)
     {
@@ -92,6 +132,14 @@ class TwoFactorAuth
 
     /**
      * Check if the code is correct. This will accept codes starting from ($discrepancy * $period) sec ago to ($discrepancy * period) sec from now
+     *
+     * @param string $secret
+     * @param string $code
+     * @param int $discrepancy
+     * @param ?int $time
+     * @param int $timeslice
+     *
+     * @return bool
      */
     public function verifyCode($secret, $code, $discrepancy = 1, $time = null, &$timeslice = 0)
     {
@@ -114,6 +162,11 @@ class TwoFactorAuth
 
     /**
      * Timing-attack safe comparison of 2 codes (see http://blog.ircmaxell.com/2014/11/its-all-about-time.html)
+     *
+     * @param string $safe
+     * @param string $user
+     *
+     * @return bool
      */
     private function codeEquals($safe, $user)
     {
@@ -134,6 +187,12 @@ class TwoFactorAuth
 
     /**
      * Get data-uri of QRCode
+     *
+     * @param string $label
+     * @param string $secret
+     * @param mixed $size
+     *
+     * @return string
      */
     public function getQRCodeImageAsDataUri($label, $secret, $size = 200)
     {
@@ -150,6 +209,10 @@ class TwoFactorAuth
 
     /**
      * Compare default timeprovider with specified timeproviders and ensure the time is within the specified number of seconds (leniency)
+     * @param ?array $timeproviders
+     * @param int $leniency
+     *
+     * @return void
      */
     public function ensureCorrectTime(array $timeproviders = null, $leniency = 5)
     {
@@ -176,11 +239,22 @@ class TwoFactorAuth
         }
     }
 
-    private function getTime($time)
+    /**
+     * @param ?int $time
+     *
+     * @return int
+     */
+    private function getTime($time = null)
     {
         return ($time === null) ? $this->getTimeProvider()->getTime() : $time;
     }
 
+    /**
+     * @param int $time
+     * @param int $offset
+     *
+     * @return int
+     */
     private function getTimeSlice($time = null, $offset = 0)
     {
         return (int)floor($time / $this->period) + ($offset * $this->period);
@@ -188,6 +262,11 @@ class TwoFactorAuth
 
     /**
      * Builds a string to be encoded in a QR code
+     *
+     * @param string $label
+     * @param string $secret
+     *
+     * @return string
      */
     public function getQRText($label, $secret)
     {
@@ -199,6 +278,10 @@ class TwoFactorAuth
             . '&digits=' . intval($this->digits);
     }
 
+    /**
+     * @param string $value
+     * @return string
+     */
     private function base32Decode($value)
     {
         if (strlen($value) == 0) {

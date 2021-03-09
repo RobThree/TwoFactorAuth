@@ -9,6 +9,9 @@ class OpenSSLRNGProviderTest extends TestCase
 {
     use NeedsRngLengths;
 
+    /**
+     * @return void
+     */
     public function testStrongOpenSSLRNGProvidersReturnExpectedNumberOfBytes()
     {
         $rng = new OpenSSLRNGProvider(true);
@@ -19,6 +22,9 @@ class OpenSSLRNGProviderTest extends TestCase
         $this->assertTrue($rng->isCryptographicallySecure());
     }
 
+    /**
+     * @return void
+     */
     public function testNonStrongOpenSSLRNGProvidersReturnExpectedNumberOfBytes()
     {
         $rng = new OpenSSLRNGProvider(false);

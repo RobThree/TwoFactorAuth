@@ -8,6 +8,9 @@ use RobThree\Auth\TwoFactorAuthException;
 
 class IRNGProviderTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testCreateSecretThrowsOnInsecureRNGProvider()
     {
         $rng = new TestRNGProvider();
@@ -18,6 +21,9 @@ class IRNGProviderTest extends TestCase
         $tfa->createSecret();
     }
 
+    /**
+     * @return void
+     */
     public function testCreateSecretOverrideSecureDoesNotThrowOnInsecureRNG()
     {
         $rng = new TestRNGProvider();
@@ -26,6 +32,9 @@ class IRNGProviderTest extends TestCase
         $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret(80, false));
     }
 
+    /**
+     * @return void
+     */
     public function testCreateSecretDoesNotThrowOnSecureRNGProvider()
     {
         $rng = new TestRNGProvider(true);
@@ -34,6 +43,9 @@ class IRNGProviderTest extends TestCase
         $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret());
     }
 
+    /**
+     * @return void
+     */
     public function testCreateSecretGeneratesDesiredAmountOfEntropy()
     {
         $rng = new TestRNGProvider(true);
