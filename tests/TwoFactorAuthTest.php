@@ -63,7 +63,7 @@ class TwoFactorAuthTest extends TestCase
             new \RobThree\Auth\Providers\Time\HttpTimeProvider(),                        // Uses google.com by default
             new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),
             new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
-        ), 15);
+        ), 20);
         $this->noAssertionsMade();
     }
 
