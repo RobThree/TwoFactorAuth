@@ -56,13 +56,14 @@ class TwoFactorAuthTest extends TestCase
     public function testEnsureAllTimeProvidersReturnCorrectTime()
     {
         $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1');
+        // We increase leniency to ensureCorrectTime to avoid flakiness within GitHub actions test runner
         $tfa->ensureCorrectTime(array(
             new \RobThree\Auth\Providers\Time\NTPTimeProvider(),                         // Uses pool.ntp.org by default
             //new \RobThree\Auth\Providers\Time\NTPTimeProvider('time.google.com'),      // Somehow time.google.com and time.windows.com make travis timeout??
             new \RobThree\Auth\Providers\Time\HttpTimeProvider(),                        // Uses google.com by default
             new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),
             new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
-        ));
+        ), 15);
         $this->noAssertionsMade();
     }
 
