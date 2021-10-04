@@ -3,7 +3,7 @@
 namespace RobThree\Auth\Providers\Qr;
 
 // https://developers.google.com/chart/infographics/docs/qr_codes
-class ChartGoogleQrCodeProvider extends BaseHTTPQRCodeProvider
+class GoogleChartsQrCodeProvider extends BaseHTTPQRCodeProvider
 {
     /** @var string */
     public $errorcorrectionlevel;
