@@ -19,9 +19,9 @@ class GoogleChartsQrCodeProvider extends BaseHTTPQRCodeProvider
      * @param int $margin
      * @param string $encoding
      */
-    public function __construct($errorcorrectionlevel = 'L', $margin = 4, $encoding = 'UTF-8')
+    public function __construct($errorcorrectionlevel = 'L', $margin = 4, $encoding = 'UTF-8', $verifySSL = true)
     {
-        $this->verifyssl = false;
+        $this->verifyssl = $verifySSL;
 
         $this->errorcorrectionlevel = $errorcorrectionlevel;
         $this->margin = $margin;
