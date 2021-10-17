@@ -15,13 +15,18 @@ class GoogleChartsQrCodeProvider extends BaseHTTPQRCodeProvider
     public $encoding;
 
     /**
+     * @param bool $verifyssl
      * @param string $errorcorrectionlevel
      * @param int $margin
      * @param string $encoding
      */
-    public function __construct($errorcorrectionlevel = 'L', $margin = 4, $encoding = 'UTF-8', $verifySSL = true)
+    public function __construct($verifyssl = false, $errorcorrectionlevel = 'L', $margin = 4, $encoding = 'UTF-8')
     {
-        $this->verifyssl = $verifySSL;
+        if (!is_bool($verifyssl)) { 
+            throw new QRException('VerifySSL must be bool'); 
+        }
+
+        $this->verifyssl = $verifyssl;
 
         $this->errorcorrectionlevel = $errorcorrectionlevel;
         $this->margin = $margin;
