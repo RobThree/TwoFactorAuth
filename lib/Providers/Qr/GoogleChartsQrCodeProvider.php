@@ -61,6 +61,7 @@ class GoogleChartsQrCodeProvider extends BaseHTTPQRCodeProvider
             . '?chs=' . $size . 'x' . $size
             . '&chld=' . urlencode(strtoupper($this->errorcorrectionlevel) . '|' . $this->margin)
             . '&cht=' . 'qr'
+            . '&choe=' . $this->encoding
             . '&chl=' . rawurlencode($qrtext);
     }
 }
