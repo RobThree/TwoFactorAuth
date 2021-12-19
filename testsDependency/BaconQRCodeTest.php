@@ -2,6 +2,7 @@
 
 namespace TestsDependency;
 
+use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use PHPUnit\Framework\TestCase;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
@@ -13,12 +14,19 @@ class BaconQRCodeTest extends TestCase
 
     public function testDependency()
     {
-        $qr = new BaconQrCodeProvider(1, '#000', '#FFF', 'svg');
+        // php < 7.1 will install an older Bacon QR Code
+        if (! class_exists(ImagickImageBackEnd::class)) {
+            $this->expectException(\RuntimeException::class);
 
-        $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, 'sha1', $qr);
+            $qr = new BaconQrCodeProvider(1, '#000', '#FFF', 'svg');
+        } else {
+            $qr = new BaconQrCodeProvider(1, '#000', '#FFF', 'svg');
 
-        $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
-        $this->assertEquals('image/svg+xml', $data['mimetype']);
+            $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, 'sha1', $qr);
+
+            $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
+            $this->assertEquals('image/svg+xml', $data['mimetype']);
+        }
     }
 
     public function testBadTextColour()
