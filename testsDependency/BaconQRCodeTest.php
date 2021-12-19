@@ -34,4 +34,20 @@ class BaconQRCodeTest extends TestCase
 
         new BaconQrCodeProvider(1, '#000', 'not-a-colour');
     }
+
+    public function testBadTextColourHexRef()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        new BaconQrCodeProvider(1, '#AAAA', '#FFF');
+    }
+
+    public function testBadBackgroundColourHexRef()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        new BaconQrCodeProvider(1, '#000', '#AAAA');
+    }
+
+
 }
