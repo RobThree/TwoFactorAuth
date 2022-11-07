@@ -103,7 +103,7 @@ class TwoFactorAuth
             throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
         }
         $rnd = $rngprovider->getRandomBytes($bytes);
-        for ($i = 0; $i < $bytes; $i++) {
+        for ($i = 0; $i < $bytes; ++$i) {
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
         }
         return $secret;
@@ -151,10 +151,10 @@ class TwoFactorAuth
         // verified a code is correct. We use the timeslice variable to hold either 0 (no match) or the timeslice
         // of the match. Each iteration we either set the timeslice variable to the timeslice of the match
         // or set the value to itself.  This is an effort to maintain constant execution time for the code.
-        for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
+        for ($i = -$discrepancy; $i <= $discrepancy; ++$i) {
             $ts = $timestamp + ($i * $this->period);
             $slice = $this->getTimeSlice($ts);
-            $timeslice = $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : $timeslice;
+            $timeslice = $this->codeEquals($this->getCode($secret, $ts), (string)$code) ? $slice : $timeslice;
         }
 
         return $timeslice > 0;
@@ -177,7 +177,7 @@ class TwoFactorAuth
         // we don't leak information about the difference of the two strings.
         if (strlen($safe) === strlen($user)) {
             $result = 0;
-            for ($i = 0; $i < strlen($safe); $i++) {
+            for ($i = 0; $i < strlen($safe); ++$i) {
                 $result |= (ord($safe[$i]) ^ ord($user[$i]));
             }
             return $result === 0;
