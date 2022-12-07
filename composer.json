@@ -21,7 +21,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
-        "friendsofphp/php-cs-fixer": "^3.13"
+        "friendsofphp/php-cs-fixer": "^3.13",
+        "phpstan/phpstan": "^1.9"
     },
     "suggest": {
         "bacon/bacon-qr-code": "Needed for BaconQrCodeProvider provider",
@@ -38,6 +39,9 @@
         }
     },
     "scripts": {
+        "phpstan": [
+            "phpstan analyze --xdebug lib tests testsDependency"
+        ],
         "lint": [
             "php-cs-fixer fix -v"
         ],
