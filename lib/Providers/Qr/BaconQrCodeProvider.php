@@ -2,17 +2,17 @@
 
 namespace RobThree\Auth\Providers\Qr;
 
-use BaconQrCode\Writer;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\Color\Rgb;
-use BaconQrCode\Renderer\RendererStyle\EyeFill;
-
 use BaconQrCode\Renderer\Image\EpsImageBackEnd;
 use BaconQrCode\Renderer\Image\ImageBackEndInterface;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+
+use BaconQrCode\Renderer\RendererStyle\EyeFill;
+use BaconQrCode\Renderer\RendererStyle\Fill;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use RuntimeException;
 
 class BaconQrCodeProvider implements IQRCodeProvider
@@ -22,7 +22,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
      */
     public function __construct(private int $borderWidth = 4, private string $backgroundColour = '#ffffff', private string $foregroundColour = '#000000', private string $format = 'png')
     {
-        if (! class_exists(ImagickImageBackEnd::class)) {
+        if (!class_exists(ImagickImageBackEnd::class)) {
             throw new RuntimeException('Make sure you are using version 2 of Bacon QR Code');
         }
 
@@ -94,7 +94,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
                     new EyeFill(null, null),
                     new EyeFill(null, null),
                     new EyeFill(null, null)
-                )
+                ),
             ));
         }
 
@@ -119,7 +119,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
                 $input = trim($input, '#');
 
                 if (strlen($input) != 3 && strlen($input) != 6) {
-                    throw new \RuntimeException('Colour should be a 3 or 6 character value after the #');
+                    throw new RuntimeException('Colour should be a 3 or 6 character value after the #');
                 }
 
                 // split the array into three chunks

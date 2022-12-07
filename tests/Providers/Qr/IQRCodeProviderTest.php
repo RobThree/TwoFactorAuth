@@ -1,12 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Providers\Qr;
 
 use PHPUnit\Framework\TestCase;
+use RobThree\Auth\Algorithm;
+use RobThree\Auth\Providers\Qr\HandlesDataUri;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
-use RobThree\Auth\Providers\Qr\HandlesDataUri;
-use RobThree\Auth\Algorithm;
 
 class IQRCodeProviderTest extends TestCase
 {

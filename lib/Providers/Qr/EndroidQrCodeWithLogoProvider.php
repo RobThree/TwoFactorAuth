@@ -9,6 +9,7 @@ use Endroid\QrCode\Writer\PngWriter;
 class EndroidQrCodeWithLogoProvider extends EndroidQrCodeProvider
 {
     protected $logoPath;
+
     protected $logoSize;
 
     /**
@@ -49,7 +50,7 @@ class EndroidQrCodeWithLogoProvider extends EndroidQrCodeProvider
         if (!$this->endroid4 && $this->logoPath) {
             $qrCode->setLogoPath($this->logoPath);
             if ($this->logoSize) {
-                $qrCode->setLogoSize($this->logoSize[0], isset($this->logoSize[1]) ? $this->logoSize[1] : null);
+                $qrCode->setLogoSize($this->logoSize[0], $this->logoSize[1] ?? null);
             }
         }
 

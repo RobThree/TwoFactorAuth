@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TestsDependency;
 
 use PHPUnit\Framework\TestCase;
-use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
 use RobThree\Auth\Providers\Qr\HandlesDataUri;
+use RobThree\Auth\TwoFactorAuth;
 
 class EndroidQRCodeTest extends TestCase
 {
@@ -19,6 +19,5 @@ class EndroidQRCodeTest extends TestCase
         $this->assertEquals('image/png', $data['mimetype']);
         $this->assertEquals('base64', $data['encoding']);
         $this->assertNotEmpty($data['data']);
-
     }
 }

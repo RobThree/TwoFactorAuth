@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Providers\Rng;
 
@@ -6,7 +6,7 @@ use RobThree\Auth\Providers\Rng\IRNGProvider;
 
 class TestRNGProvider implements IRNGProvider
 {
-    function __construct(private bool $isSecure = false)
+    public function __construct(private bool $isSecure = false)
     {
     }
 

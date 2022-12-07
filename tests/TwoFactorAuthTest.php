@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use RobThree\Auth\Algorithm;
-use RobThree\Auth\TwoFactorAuthException;
 use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\TwoFactorAuthException;
 
 class TwoFactorAuthTest extends TestCase
 {
@@ -123,7 +124,7 @@ class TwoFactorAuthTest extends TestCase
         //                                                           Dave Thomas and Andy Hunt -- "Pragmatic Unit Testing
         $tfa = new TwoFactorAuth('Test');
 
-        $method = new \ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
+        $method = new ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
         $method->setAccessible(true);
 
         // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
@@ -144,7 +145,7 @@ class TwoFactorAuthTest extends TestCase
         //   "In some circumstances, the use of padding ("=") in base-encoded data is not required or used."
         $tfa = new TwoFactorAuth('Test');
 
-        $method = new \ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
+        $method = new ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
         $method->setAccessible(true);
 
         // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12

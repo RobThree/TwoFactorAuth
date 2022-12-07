@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Providers\Rng;
 
 use PHPUnit\Framework\TestCase;
-use Tests\MightNotMakeAssertions;
 use RobThree\Auth\Providers\Rng\CSRNGProvider;
+use Tests\MightNotMakeAssertions;
 
 class CSRNGProviderTest extends TestCase
 {

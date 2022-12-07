@@ -75,7 +75,7 @@ class TwoFactorAuth
         $value = unpack('N', $hashpart);                                                   // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
 
-        return str_pad((string) ($value % pow(10, $this->digits)), $this->digits, '0', STR_PAD_LEFT);
+        return str_pad((string) ($value % 10** $this->digits), $this->digits, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -98,26 +98,6 @@ class TwoFactorAuth
         }
 
         return $timeslice > 0;
-    }
-
-    /**
-     * Timing-attack safe comparison of 2 codes (see http://blog.ircmaxell.com/2014/11/its-all-about-time.html)
-     */
-    private function codeEquals(string $safe, string $user): bool
-    {
-        if (function_exists('hash_equals')) {
-            return hash_equals($safe, $user);
-        }
-        // In general, it's not possible to prevent length leaks. So it's OK to leak the length. The important part is that
-        // we don't leak information about the difference of the two strings.
-        if (strlen($safe) === strlen($user)) {
-            $result = 0;
-            for ($i = 0; $i < strlen($safe); $i++) {
-                $result |= (ord($safe[$i]) ^ ord($user[$i]));
-            }
-            return $result === 0;
-        }
-        return false;
     }
 
     /**
@@ -144,7 +124,7 @@ class TwoFactorAuth
         if ($timeproviders === null) {
             $timeproviders = array(
                 new NTPTimeProvider(),
-                new HttpTimeProvider()
+                new HttpTimeProvider(),
             );
         }
 
@@ -164,16 +144,6 @@ class TwoFactorAuth
         }
     }
 
-    private function getTime(?int $time = null): int
-    {
-        return ($time === null) ? $this->getTimeProvider()->getTime() : $time;
-    }
-
-    private function getTimeSlice(?int $time = null, int $offset = 0): int
-    {
-        return (int) floor($time / $this->period) + ($offset * $this->period);
-    }
-
     /**
      * Builds a string to be encoded in a QR code
      */
@@ -185,32 +155,6 @@ class TwoFactorAuth
             . '&period=' . intval($this->period)
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm->value))
             . '&digits=' . intval($this->digits);
-    }
-
-    private function base32Decode(string $value): string
-    {
-        if (strlen($value) == 0) {
-            return '';
-        }
-
-        if (preg_match('/[^' . preg_quote(self::$_base32dict) . ']/', $value) !== 0) {
-            throw new TwoFactorAuthException('Invalid base32 string');
-        }
-
-        $buffer = '';
-        foreach (str_split($value) as $char) {
-            if ($char !== '=') {
-                $buffer .= str_pad(decbin(self::$_base32lookup[$char]), 5, '0', STR_PAD_LEFT);
-            }
-        }
-        $length = strlen($buffer);
-        $blocks = trim(chunk_split(substr($buffer, 0, $length - ($length % 8)), 8, ' '));
-
-        $output = '';
-        foreach (explode(' ', $blocks) as $block) {
-            $output .= chr(bindec(str_pad($block, 8, '0', STR_PAD_RIGHT)));
-        }
-        return $output;
     }
 
     /**
@@ -255,5 +199,61 @@ class TwoFactorAuth
             return $this->timeprovider = new LocalMachineTimeProvider();
         }
         return $this->timeprovider;
+    }
+
+    /**
+     * Timing-attack safe comparison of 2 codes (see http://blog.ircmaxell.com/2014/11/its-all-about-time.html)
+     */
+    private function codeEquals(string $safe, string $user): bool
+    {
+        if (function_exists('hash_equals')) {
+            return hash_equals($safe, $user);
+        }
+        // In general, it's not possible to prevent length leaks. So it's OK to leak the length. The important part is that
+        // we don't leak information about the difference of the two strings.
+        if (strlen($safe) === strlen($user)) {
+            $result = 0;
+            for ($i = 0; $i < strlen($safe); $i++) {
+                $result |= (ord($safe[$i]) ^ ord($user[$i]));
+            }
+            return $result === 0;
+        }
+        return false;
+    }
+
+    private function getTime(?int $time = null): int
+    {
+        return ($time === null) ? $this->getTimeProvider()->getTime() : $time;
+    }
+
+    private function getTimeSlice(?int $time = null, int $offset = 0): int
+    {
+        return (int) floor($time / $this->period) + ($offset * $this->period);
+    }
+
+    private function base32Decode(string $value): string
+    {
+        if (strlen($value) == 0) {
+            return '';
+        }
+
+        if (preg_match('/[^' . preg_quote(self::$_base32dict) . ']/', $value) !== 0) {
+            throw new TwoFactorAuthException('Invalid base32 string');
+        }
+
+        $buffer = '';
+        foreach (str_split($value) as $char) {
+            if ($char !== '=') {
+                $buffer .= str_pad(decbin(self::$_base32lookup[$char]), 5, '0', STR_PAD_LEFT);
+            }
+        }
+        $length = strlen($buffer);
+        $blocks = trim(chunk_split(substr($buffer, 0, $length - ($length % 8)), 8, ' '));
+
+        $output = '';
+        foreach (explode(' ', $blocks) as $block) {
+            $output .= chr(bindec(str_pad($block, 8, '0', STR_PAD_RIGHT)));
+        }
+        return $output;
     }
 }

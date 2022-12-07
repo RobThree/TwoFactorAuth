@@ -2,8 +2,8 @@
 
 namespace RobThree\Auth\Providers\Qr;
 
-use function preg_match;
 use function base64_decode;
+use function preg_match;
 
 trait HandlesDataUri
 {
@@ -13,7 +13,7 @@ trait HandlesDataUri
             return array(
                 'mimetype' => $m['mimetype'],
                 'encoding' => $m['encoding'],
-                'data' => base64_decode($m['data'])
+                'data' => base64_decode($m['data'], true),
             );
         }
 

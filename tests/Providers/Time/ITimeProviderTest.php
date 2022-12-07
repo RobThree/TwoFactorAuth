@@ -1,12 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Providers\Time;
 
 use PHPUnit\Framework\TestCase;
-use Tests\MightNotMakeAssertions;
-use RobThree\Auth\TwoFactorAuthException;
-use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Algorithm;
+use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\TwoFactorAuthException;
+use Tests\MightNotMakeAssertions;
 
 class ITimeProviderTest extends TestCase
 {

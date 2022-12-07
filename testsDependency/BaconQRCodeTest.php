@@ -1,12 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace TestsDependency;
 
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use PHPUnit\Framework\TestCase;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
-use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\HandlesDataUri;
+use RobThree\Auth\TwoFactorAuth;
+use RuntimeException;
 
 class BaconQRCodeTest extends TestCase
 {
@@ -15,8 +16,8 @@ class BaconQRCodeTest extends TestCase
     public function testDependency()
     {
         // php < 7.1 will install an older Bacon QR Code
-        if (! class_exists(ImagickImageBackEnd::class)) {
-            $this->expectException(\RuntimeException::class);
+        if (!class_exists(ImagickImageBackEnd::class)) {
+            $this->expectException(RuntimeException::class);
 
             $qr = new BaconQrCodeProvider(1, '#000', '#FFF', 'svg');
         } else {
@@ -31,31 +32,29 @@ class BaconQRCodeTest extends TestCase
 
     public function testBadTextColour()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         new BaconQrCodeProvider(1, 'not-a-colour', '#FFF');
     }
 
     public function testBadBackgroundColour()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         new BaconQrCodeProvider(1, '#000', 'not-a-colour');
     }
 
     public function testBadTextColourHexRef()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         new BaconQrCodeProvider(1, '#AAAA', '#FFF');
     }
 
     public function testBadBackgroundColourHexRef()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         new BaconQrCodeProvider(1, '#000', '#AAAA');
     }
-
-
 }

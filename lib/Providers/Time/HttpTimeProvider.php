@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace RobThree\Auth\Providers\Time;
 
 use DateTime;
+use Exception;
 
 /**
  * Takes the time from any webserver by doing a HEAD request on the specified URL and extracting the 'Date:' header
@@ -38,9 +39,9 @@ class HttpTimeProvider implements ITimeProvider
                     'header' => array(
                         'Connection: close',
                         'User-agent: TwoFactorAuth HttpTimeProvider (https://github.com/RobThree/TwoFactorAuth)',
-                        'Cache-Control: no-cache'
-                    )
-                )
+                        'Cache-Control: no-cache',
+                    ),
+                ),
             );
         }
         $this->options = $options;
@@ -62,10 +63,9 @@ class HttpTimeProvider implements ITimeProvider
                     return DateTime::createFromFormat($this->expectedtimeformat, trim(substr($h, 5)))->getTimestamp();
                 }
             }
-            throw new \Exception('Invalid or no "Date:" header found');
-        } catch (\Exception $ex) {
+            throw new Exception('Invalid or no "Date:" header found');
+        } catch (Exception $ex) {
             throw new TimeException(sprintf('Unable to retrieve time from %s (%s)', $this->url, $ex->getMessage()));
         }
-
     }
 }

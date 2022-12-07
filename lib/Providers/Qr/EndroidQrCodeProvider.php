@@ -14,8 +14,11 @@ use Endroid\QrCode\Writer\PngWriter;
 class EndroidQrCodeProvider implements IQRCodeProvider
 {
     public $bgcolor;
+
     public $color;
+
     public $margin;
+
     public $errorcorrectionlevel;
 
     protected $endroid4 = false;
@@ -65,7 +68,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $g = hexdec($split[1]);
         $b = hexdec($split[2]);
 
-        return $this->endroid4 ? new Color($r, $g, $b, 0) : ['r' => $r, 'g' => $g, 'b' => $b, 'a' => 0];
+        return $this->endroid4 ? new Color($r, $g, $b, 0) : array('r' => $r, 'g' => $g, 'b' => $b, 'a' => 0);
     }
 
     private function handleErrorCorrectionLevel(string $level): string

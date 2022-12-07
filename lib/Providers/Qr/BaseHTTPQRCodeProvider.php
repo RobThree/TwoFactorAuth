@@ -17,7 +17,7 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
             CURLOPT_DNS_CACHE_TIMEOUT => 10,
             CURLOPT_TIMEOUT => 10,
             CURLOPT_SSL_VERIFYPEER => $this->verifyssl,
-            CURLOPT_USERAGENT => 'TwoFactorAuth'
+            CURLOPT_USERAGENT => 'TwoFactorAuth',
         ));
         $data = curl_exec($curlhandle);
 

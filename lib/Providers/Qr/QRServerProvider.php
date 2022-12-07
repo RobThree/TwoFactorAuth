@@ -34,11 +34,6 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
         return $this->getContent($this->getUrl($qrtext, $size));
     }
 
-    private function decodeColor(string $value): string
-    {
-        return vsprintf('%d-%d-%d', sscanf($value, "%02x%02x%02x"));
-    }
-
     public function getUrl(string $qrtext, int $size): string
     {
         return 'https://api.qrserver.com/v1/create-qr-code/'
@@ -50,5 +45,10 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
             . '&color=' . $this->decodeColor($this->color)
             . '&format=' . strtolower($this->format)
             . '&data=' . rawurlencode($qrtext);
+    }
+
+    private function decodeColor(string $value): string
+    {
+        return vsprintf('%d-%d-%d', sscanf($value, '%02x%02x%02x'));
     }
 }
