@@ -41,6 +41,9 @@
         "lint": [
             "php-cs-fixer fix -v"
         ],
+        "lint-ci": [
+            "php-cs-fixer fix -v --dry-run --stop-on-violation"
+        ],
         "test": [
             "XDEBUG_MODE=coverage phpunit"
         ]
