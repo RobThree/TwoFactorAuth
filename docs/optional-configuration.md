@@ -24,9 +24,8 @@ Argument          | Default value | Use
 This library also comes with some [Random Number Generator (RNG)](https://en.wikipedia.org/wiki/Random_number_generation) providers. The RNG provider generates a number of random bytes and returns these bytes as a string. These values are then used to create the secret. By default (no RNG provider specified) TwoFactorAuth will try to determine the best available RNG provider to use in this order.
 
 1. [CSRNGProvider](https://github.com/RobThree/TwoFactorAuth/blob/master/lib/Providers/Rng/CSRNGProvider.php) for PHP7+
-2. [MCryptRNGProvider](https://github.com/RobThree/TwoFactorAuth/blob/master/lib/Providers/Rng/MCryptRNGProvider.php) where mcrypt is available
-3. [OpenSSLRNGProvider](https://github.com/RobThree/TwoFactorAuth/blob/master/lib/Providers/Rng/OpenSSLRNGProvider.php) where openssl is available
-4. [HashRNGProvider](https://github.com/RobThree/TwoFactorAuth/blob/master/lib/Providers/Rng/HashRNGProvider.php) **non-cryptographically secure** fallback
+2. [OpenSSLRNGProvider](https://github.com/RobThree/TwoFactorAuth/blob/master/lib/Providers/Rng/OpenSSLRNGProvider.php) where openssl is available
+3. [HashRNGProvider](https://github.com/RobThree/TwoFactorAuth/blob/master/lib/Providers/Rng/HashRNGProvider.php) **non-cryptographically secure** fallback
 
 Each of these RNG providers have some constructor arguments that allow you to tweak some of the settings to use when creating the random bytes.
 

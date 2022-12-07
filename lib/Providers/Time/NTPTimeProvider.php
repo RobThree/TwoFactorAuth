@@ -2,38 +2,23 @@
 
 namespace RobThree\Auth\Providers\Time;
 
+use function socket_create;
+use Exception;
+
 /**
  * Takes the time from any NTP server
  */
 class NTPTimeProvider implements ITimeProvider
 {
-    /** @var string */
-    public $host;
-
-    /** @var int */
-    public $port;
-
-    /** @var int */
-    public $timeout;
-
-    /**
-     * @param string $host
-     * @param int $port
-     * @param int $timeout
-     */
-    public function __construct($host = 'time.google.com', $port = 123, $timeout = 1)
+    public function __construct(public string $host = 'time.google.com', public int $port = 123, public int $timeout = 1)
     {
-        $this->host = $host;
-
-        if (!is_int($port) || $port <= 0 || $port > 65535) {
+        if ($this->port <= 0 || $this->port > 65535) {
             throw new TimeException('Port must be 0 < port < 65535');
         }
-        $this->port = $port;
 
-        if (!is_int($timeout) || $timeout < 0) {
+        if ($this->timeout < 0) {
             throw new TimeException('Timeout must be >= 0');
         }
-        $this->timeout = $timeout;
     }
 
     /**
@@ -63,7 +48,7 @@ class NTPTimeProvider implements ITimeProvider
 
             /* NTP is number of seconds since 0000 UT on 1 January 1900 Unix time is seconds since 0000 UT on 1 January 1970 */
             return $timestamp - 2208988800;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             throw new TimeException(sprintf('Unable to retrieve time from %s (%s)', $this->host, $ex->getMessage()));
         }
     }

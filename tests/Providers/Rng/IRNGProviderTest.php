@@ -5,52 +5,41 @@ namespace Tests\Providers\Rng;
 use PHPUnit\Framework\TestCase;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
+use RobThree\Auth\Algorithm;
 
 class IRNGProviderTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateSecretThrowsOnInsecureRNGProvider()
+    public function testCreateSecretThrowsOnInsecureRNGProvider(): void
     {
         $rng = new TestRNGProvider();
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
 
         $this->expectException(TwoFactorAuthException::class);
         $tfa->createSecret();
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateSecretOverrideSecureDoesNotThrowOnInsecureRNG()
+    public function testCreateSecretOverrideSecureDoesNotThrowOnInsecureRNG(): void
     {
         $rng = new TestRNGProvider();
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
         $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret(80, false));
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateSecretDoesNotThrowOnSecureRNGProvider()
+    public function testCreateSecretDoesNotThrowOnSecureRNGProvider(): void
     {
         $rng = new TestRNGProvider(true);
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
         $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret());
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateSecretGeneratesDesiredAmountOfEntropy()
+    public function testCreateSecretGeneratesDesiredAmountOfEntropy(): void
     {
         $rng = new TestRNGProvider(true);
 
-        $tfa = new TwoFactorAuth('Test', 6, 30, 'sha1', null, $rng);
+        $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
         $this->assertEquals('A', $tfa->createSecret(5));
         $this->assertEquals('AB', $tfa->createSecret(6));
         $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $tfa->createSecret(128));
