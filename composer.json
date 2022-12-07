@@ -21,7 +21,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
-        "php-parallel-lint/php-parallel-lint": "^1.2",
         "friendsofphp/php-cs-fixer": "^3.13"
     },
     "suggest": {
@@ -40,7 +39,7 @@
     },
     "scripts": {
         "lint": [
-            "parallel-lint --exclude vendor ."
+            "php-cs-fixer fix -v"
         ],
         "test": [
             "XDEBUG_MODE=coverage phpunit"
