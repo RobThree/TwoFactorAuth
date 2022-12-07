@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace RobThree\Auth\Providers\Qr;
 
 use Endroid\QrCode\Color\Color;
@@ -29,12 +30,12 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $this->errorcorrectionlevel = $this->handleErrorCorrectionLevel($errorcorrectionlevel);
     }
 
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return 'image/png';
     }
 
-    public function getQRCodeImage($qrtext, $size)
+    public function getQRCodeImage(string $qrtext, int $size): string
     {
         if (!$this->endroid4) {
             return $this->qrCodeInstance($qrtext, $size)->writeString();
@@ -44,7 +45,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $writer->write($this->qrCodeInstance($qrtext, $size))->getString();
     }
 
-    protected function qrCodeInstance($qrtext, $size)
+    protected function qrCodeInstance(string $qrtext, int $size): QrCode
     {
         $qrCode = new QrCode($qrtext);
         $qrCode->setSize($size);
@@ -57,7 +58,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $qrCode;
     }
 
-    private function handleColor($color)
+    private function handleColor(string $color): string
     {
         $split = str_split($color, 2);
         $r = hexdec($split[0]);
@@ -67,7 +68,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $this->endroid4 ? new Color($r, $g, $b, 0) : ['r' => $r, 'g' => $g, 'b' => $b, 'a' => 0];
     }
 
-    private function handleErrorCorrectionLevel($level)
+    private function handleErrorCorrectionLevel(string $level): string
     {
         switch ($level) {
             case 'L':

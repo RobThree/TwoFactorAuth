@@ -1,15 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace RobThree\Auth\Providers\Qr;
 
+use function preg_match;
+use function base64_decode;
+
 trait HandlesDataUri
 {
-	/**
-     * @param string $datauri
-     *
-     * @return null|array
-     */
-    private function DecodeDataUri($datauri)
+    private function DecodeDataUri(string $datauri): ?array
     {
         if (preg_match('/data:(?P<mimetype>[\w\.\-\+\/]+);(?P<encoding>\w+),(?P<data>.*)/', $datauri, $m) === 1) {
             return array(

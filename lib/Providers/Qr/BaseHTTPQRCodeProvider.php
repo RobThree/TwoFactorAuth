@@ -1,18 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace RobThree\Auth\Providers\Qr;
 
 abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
 {
-    /** @var bool */
-    protected $verifyssl;
+    protected bool $verifyssl;
 
-    /**
-     * @param string $url
-     *
-     * @return string|bool
-     */
-    protected function getContent($url)
+    protected function getContent(string $url): string|bool
     {
         $curlhandle = curl_init();
 

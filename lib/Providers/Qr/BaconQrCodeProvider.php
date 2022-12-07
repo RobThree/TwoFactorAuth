@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace RobThree\Auth\Providers\Qr;
 
@@ -13,39 +13,28 @@ use BaconQrCode\Renderer\Image\EpsImageBackEnd;
 use BaconQrCode\Renderer\Image\ImageBackEndInterface;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use RuntimeException;
 
 class BaconQrCodeProvider implements IQRCodeProvider
 {
-    private $borderWidth = 4; // default from Bacon QR Code
-    private $backgroundColour;
-    private $foregroundColour;
-    private $format;
-
     /**
      * Ensure we using the latest Bacon QR Code and specify default options
-     *
-     * @param int $borderWidth space around the QR code, 4 is the default from Bacon QR Code
-     * @param string $backgroundColour hex reference for the background colour
-     * @param string $foregroundColour hex reference for the foreground colour
-     * @param string $format the desired output, png or svg
      */
-    public function __construct($borderWidth = 4, $backgroundColour = '#ffffff', $foregroundColour = '#000000', $format = 'png')
+    public function __construct(private int $borderWidth = 4, private string $backgroundColour = '#ffffff', private string $foregroundColour = '#000000', private string $format = 'png')
     {
         if (! class_exists(ImagickImageBackEnd::class)) {
-            throw new \RuntimeException('Make sure you are using version 2 of Bacon QR Code');
+            throw new RuntimeException('Make sure you are using version 2 of Bacon QR Code');
         }
 
-        $this->borderWidth = $borderWidth;
-        $this->backgroundColour = $this->handleColour($backgroundColour);
-        $this->foregroundColour = $this->handleColour($foregroundColour);
-        $this->format = strtolower($format);
+        $this->backgroundColour = $this->handleColour($this->backgroundColour);
+        $this->foregroundColour = $this->handleColour($this->foregroundColour);
+        $this->format = strtolower($this->format);
     }
 
     /**
      * Standard functions from IQRCodeProvider
      */
-
-    public function getMimeType()
+    public function getMimeType(): string
     {
         switch ($this->format) {
             case 'png':
@@ -61,10 +50,10 @@ class BaconQrCodeProvider implements IQRCodeProvider
                 return 'application/postscript';
         }
 
-        throw new \RuntimeException(sprintf('Unknown MIME-type: %s', $this->format));
+        throw new RuntimeException(sprintf('Unknown MIME-type: %s', $this->format));
     }
 
-    public function getQRCodeImage($qrText, $size)
+    public function getQRCodeImage(string $qrText, int $size): string
     {
         switch ($this->format) {
             case 'svg':
@@ -121,9 +110,9 @@ class BaconQrCodeProvider implements IQRCodeProvider
      * Ensure colour is an array of three values but also
      * accept a string and assume its a 3 or 6 character hex
      */
-    private function handleColour($colour)
+    private function handleColour(string $colour): string
     {
-        if (is_string($colour) && $colour[0] == '#') {
+        if ($colour[0] == '#') {
             $hexToRGB = function ($input) {
                 // ensure input no longer has a # for more predictable division
                 // PHP 8.1 does not like implicitly casting a float to an int
@@ -154,6 +143,6 @@ class BaconQrCodeProvider implements IQRCodeProvider
             return $colour;
         }
 
-        throw new \RuntimeException('Invalid colour value');
+        throw new RuntimeException('Invalid colour value');
     }
 }
