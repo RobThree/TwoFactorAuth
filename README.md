@@ -38,6 +38,6 @@ If you need more in-depth information about the configuration available then you
 
 ## License
 
-Licensed under MIT license. See [LICENSE](https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/LICENSE) for details.
+Licensed under MIT license. See [LICENSE](./LICENSE) for details.
 
 [Logo / icon](http://www.iconmay.com/Simple/Travel_and_Tourism_Part_2/luggage_lock_safety_baggage_keys_cylinder_lock_hotel_travel_tourism_luggage_lock_icon_465) under  CC0 1.0 Universal (CC0 1.0) Public Domain Dedication  ([Archived page](http://riii.nl/tm7ap))
