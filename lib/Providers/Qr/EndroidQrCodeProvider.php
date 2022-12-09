@@ -71,7 +71,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $this->endroid4 ? new Color($r, $g, $b, 0) : array('r' => $r, 'g' => $g, 'b' => $b, 'a' => 0);
     }
 
-    private function handleErrorCorrectionLevel(string $level): string
+    private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevel
     {
         switch ($level) {
             case 'L':
