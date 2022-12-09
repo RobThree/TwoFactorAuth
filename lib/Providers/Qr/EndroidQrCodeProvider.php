@@ -61,7 +61,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $qrCode;
     }
 
-    private function handleColor(string $color): string
+    private function handleColor(string $color): Color
     {
         $split = str_split($color, 2);
         $r = hexdec($split[0]);
