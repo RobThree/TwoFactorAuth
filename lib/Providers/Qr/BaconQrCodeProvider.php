@@ -20,7 +20,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
     /**
      * Ensure we using the latest Bacon QR Code and specify default options
      */
-    public function __construct(private int $borderWidth = 4, private string $backgroundColour = '#ffffff', private string $foregroundColour = '#000000', private string $format = 'png')
+    public function __construct(private int $borderWidth = 4, private string|array $backgroundColour = '#ffffff', private string|array $foregroundColour = '#000000', private string $format = 'png')
     {
         if (!class_exists(ImagickImageBackEnd::class)) {
             throw new RuntimeException('Make sure you are using version 2 of Bacon QR Code');
