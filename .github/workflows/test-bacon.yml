@@ -26,5 +26,5 @@ jobs:
 
     - run: composer require bacon/bacon-qr-code
 
-    - run: composer lint
+    - run: composer lint-ci
     - run: composer test testsDependency/BaconQRCodeTest.php

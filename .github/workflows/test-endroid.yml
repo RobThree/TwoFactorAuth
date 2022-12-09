@@ -27,4 +27,5 @@ jobs:
 
     - run: composer require endroid/qrcode:${{ matrix.endroid-version }}
 
+    - run: composer lint-ci
     - run: composer test testsDependency/EndroidQRCodeTest.php
