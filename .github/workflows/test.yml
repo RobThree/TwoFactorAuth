@@ -25,4 +25,5 @@ jobs:
     - uses: ramsey/composer-install@v1
 
     - run: composer lint-ci
+    - run: composer phpstan
     - run: composer test
