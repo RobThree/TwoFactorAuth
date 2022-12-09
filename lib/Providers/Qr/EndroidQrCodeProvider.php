@@ -5,6 +5,7 @@ namespace RobThree\Auth\Providers\Qr;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelInterface;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelQuartile;
@@ -71,7 +72,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $this->endroid4 ? new Color($r, $g, $b, 0) : array('r' => $r, 'g' => $g, 'b' => $b, 'a' => 0);
     }
 
-    private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevel
+    private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface
     {
         switch ($level) {
             case 'L':
