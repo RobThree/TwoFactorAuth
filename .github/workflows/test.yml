@@ -13,7 +13,7 @@ jobs:
         php-version: ['8.1']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - uses: shivammathur/setup-php@v2
       with:
@@ -22,7 +22,7 @@ jobs:
         coverage: xdebug
         ini-values: error_reporting=E_ALL
 
-    - uses: ramsey/composer-install@v1
+    - uses: ramsey/composer-install@v2
 
     - run: composer lint-ci
     - run: composer phpstan
