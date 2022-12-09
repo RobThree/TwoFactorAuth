@@ -110,9 +110,9 @@ class BaconQrCodeProvider implements IQRCodeProvider
      * Ensure colour is an array of three values but also
      * accept a string and assume its a 3 or 6 character hex
      */
-    private function handleColour(string $colour): string
+    private function handleColour(array|string $colour): array|string
     {
-        if ($colour[0] == '#') {
+        if (is_string($colour) && $colour[0] == '#') {
             $hexToRGB = function ($input) {
                 // ensure input no longer has a # for more predictable division
                 // PHP 8.1 does not like implicitly casting a float to an int
