@@ -6,19 +6,15 @@ namespace Tests\Providers\Rng;
 
 use PHPUnit\Framework\TestCase;
 use RobThree\Auth\Providers\Rng\CSRNGProvider;
-use Tests\MightNotMakeAssertions;
 
 class CSRNGProviderTest extends TestCase
 {
     use NeedsRngLengths;
-    use MightNotMakeAssertions;
 
     /**
      * @requires function random_bytes
-     *
-     * @return void
      */
-    public function testCSRNGProvidersReturnExpectedNumberOfBytes()
+    public function testCSRNGProvidersReturnExpectedNumberOfBytes(): void
     {
         if (function_exists('random_bytes')) {
             $rng = new CSRNGProvider();
@@ -27,7 +23,7 @@ class CSRNGProviderTest extends TestCase
             }
             $this->assertTrue($rng->isCryptographicallySecure());
         } else {
-            $this->noAssertionsMade();
+            $this->expectNotToPerformAssertions();
         }
     }
 }

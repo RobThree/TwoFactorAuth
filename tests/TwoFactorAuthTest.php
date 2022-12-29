@@ -12,8 +12,6 @@ use RobThree\Auth\TwoFactorAuthException;
 
 class TwoFactorAuthTest extends TestCase
 {
-    use MightNotMakeAssertions;
-
     public function testConstructorThrowsOnInvalidDigits(): void
     {
         $this->expectException(TwoFactorAuthException::class);
@@ -45,7 +43,7 @@ class TwoFactorAuthTest extends TestCase
             //new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),  // github.com will periodically report times that are off by more than 5 sec
             new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://yahoo.com'),
         ));
-        $this->noAssertionsMade();
+        $this->expectNotToPerformAssertions();
     }
 
     public function testVerifyCodeWorksCorrectly(): void
