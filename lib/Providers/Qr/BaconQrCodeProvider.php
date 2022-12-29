@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RobThree\Auth\Providers\Qr;
 
@@ -57,10 +59,10 @@ class BaconQrCodeProvider implements IQRCodeProvider
     {
         switch ($this->format) {
             case 'svg':
-                $backend = new SvgImageBackEnd;
+                $backend = new SvgImageBackEnd();
                 break;
             case 'eps':
-                $backend = new EpsImageBackEnd;
+                $backend = new EpsImageBackEnd();
                 break;
             default:
                 $backend = new ImagickImageBackEnd($this->format);

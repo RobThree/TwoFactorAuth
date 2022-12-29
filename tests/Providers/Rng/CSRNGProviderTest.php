@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Providers\Rng;
 
@@ -8,7 +10,8 @@ use Tests\MightNotMakeAssertions;
 
 class CSRNGProviderTest extends TestCase
 {
-    use NeedsRngLengths, MightNotMakeAssertions;
+    use NeedsRngLengths;
+    use MightNotMakeAssertions;
 
     /**
      * @requires function random_bytes
