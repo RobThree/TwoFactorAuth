@@ -33,9 +33,6 @@ class BaconQrCodeProvider implements IQRCodeProvider
         $this->format = strtolower($this->format);
     }
 
-    /**
-     * Standard functions from IQRCodeProvider
-     */
     public function getMimeType(): string
     {
         switch ($this->format) {
