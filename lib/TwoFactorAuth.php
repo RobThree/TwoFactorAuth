@@ -19,8 +19,10 @@ class TwoFactorAuth
 {
     private static string $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
 
+    /** @var array<string> */
     private static array $_base32;
 
+    /** @var array<string, int> */
     private static array $_base32lookup = array();
 
     public function __construct(
@@ -118,6 +120,7 @@ class TwoFactorAuth
 
     /**
      * Compare default timeprovider with specified timeproviders and ensure the time is within the specified number of seconds (leniency)
+     * @param array<ITimeProvider> $timeproviders
      */
     public function ensureCorrectTime(?array $timeproviders = null, int $leniency = 5): void
     {

@@ -10,22 +10,17 @@ use Exception;
  */
 class HttpTimeProvider implements ITimeProvider
 {
-    /** @var string */
-    public $url;
-
-    /** @var string */
-    public $expectedtimeformat;
-
-    /** @var array */
-    public $options;
+    /** @var array<string, mixed> */
+    public array $options;
 
     /**
-     * @param string $url
-     * @param string $expectedtimeformat
-     * @param array $options
+     * @param array<string, mixed> $options
      */
-    public function __construct($url = 'https://google.com', $expectedtimeformat = 'D, d M Y H:i:s O+', array $options = null)
-    {
+    public function __construct(
+        public string $url = 'https://google.com',
+        public string $expectedtimeformat = 'D, d M Y H:i:s O+',
+        array $options = null,
+    ) {
         $this->url = $url;
         $this->expectedtimeformat = $expectedtimeformat;
         if ($options === null) {

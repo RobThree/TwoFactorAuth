@@ -4,6 +4,6 @@ namespace Tests\Providers\Rng;
 
 trait NeedsRngLengths
 {
-    /** @var array */
+    /** @var array<int> */
     protected $rngTestLengths = array(1, 16, 32, 256);
 }

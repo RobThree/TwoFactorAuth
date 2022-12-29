@@ -7,6 +7,9 @@ use function preg_match;
 
 trait HandlesDataUri
 {
+    /**
+     * @return array<string, string>
+     */
     private function DecodeDataUri(string $datauri): ?array
     {
         if (preg_match('/data:(?P<mimetype>[\w\.\-\+\/]+);(?P<encoding>\w+),(?P<data>.*)/', $datauri, $m) === 1) {
