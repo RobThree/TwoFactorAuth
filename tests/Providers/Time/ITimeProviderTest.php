@@ -38,6 +38,5 @@ class ITimeProviderTest extends TestCase
         $this->expectNotToPerformAssertions();
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1);
         $tfa->ensureCorrectTime(array(new TestTimeProvider(time())), 1);    // Use a leniency of 1, should the time change between both time() calls
-
     }
 }
