@@ -30,7 +30,7 @@
         "php": ">=8.1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "@stable",
+        "phpunit/phpunit": "^9",
         "friendsofphp/php-cs-fixer": "^3.13",
         "phpstan/phpstan": "^1.9"
     },
