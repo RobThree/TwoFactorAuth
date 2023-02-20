@@ -10,6 +10,11 @@
             "name": "Rob Janssen",
             "homepage": "http://robiii.me",
             "role": "Developer"
+        },
+        {
+            "name": "Nicolas CARPi",
+            "homepage": "https://github.com/NicolasCARPi",
+            "role": "Developer"
         }
     ],
     "support": {
