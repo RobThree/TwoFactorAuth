@@ -28,10 +28,6 @@ class BaconQrCodeProvider implements IQRCodeProvider
         private string|array $foregroundColour = '#000000',
         private string $format = 'png',
     ) {
-        if (!class_exists(ImagickImageBackEnd::class)) {
-            throw new RuntimeException('Make sure you are using version 2 of Bacon QR Code');
-        }
-
         $this->backgroundColour = $this->handleColour($this->backgroundColour);
         $this->foregroundColour = $this->handleColour($this->foregroundColour);
         $this->format = strtolower($this->format);
