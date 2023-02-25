@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Providers\Rng;
 
 use PHPUnit\Framework\TestCase;

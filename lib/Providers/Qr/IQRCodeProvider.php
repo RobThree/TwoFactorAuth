@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RobThree\Auth\Providers\Qr;
 
 interface IQRCodeProvider
@@ -12,13 +14,11 @@ interface IQRCodeProvider
      *
      * @return string file contents of the QR code
      */
-    public function getQRCodeImage($qrtext, $size);
+    public function getQRCodeImage(string $qrtext, int $size): string;
 
     /**
      * Returns the appropriate mime type for the QR code
      * that will be generated
-     *
-     * @return string
      */
-    public function getMimeType();
+    public function getMimeType(): string;
 }
