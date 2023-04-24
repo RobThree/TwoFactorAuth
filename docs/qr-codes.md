@@ -20,7 +20,7 @@ You can also specify a size as a third argument which is 200 by default.
 
 ## Online Providers
 
-[QRServerProvider](qr-codes/qr-server.html) (default)
+[QRServerProvider](qr-codes/qr-server.html)
 
 [ImageChartsQRCodeProvider](qr-codes/image-charts.html)
 
@@ -28,7 +28,7 @@ You can also specify a size as a third argument which is 200 by default.
 
 ## Offline Providers
 
-[EndroidQrCodeProvider](qr-codes/endroid.html) and EndroidQrCodeWithLogoProvider
+[EndroidQrCodeProvider](qr-codes/endroid.html) and EndroidQrCodeWithLogoProvider (default)
 
 [BaconQRCodeProvider](qr-codes/bacon.html)
 

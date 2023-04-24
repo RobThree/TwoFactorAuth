@@ -11,13 +11,13 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 ## Requirements
 
 * Requires PHP version >=8.1
-* [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
+* [endroid/qr-code](https://github.com/endroid/qr-code) when using the provided `EndroidQrCodeProvider` (default) or `EndroidQrCodeWithLogoProvider`.
 * [random_bytes()](http://php.net/manual/en/function.random-bytes.php), [OpenSSL](http://php.net/manual/en/book.openssl.php) or [Hash](http://php.net/manual/en/book.hash.php) depending on which built-in RNG you use (TwoFactorAuth will try to 'autodetect' and use the best available); however: feel free to provide your own (CS)RNG.
 
 Optionally, you may need:
 
+* [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 * [sockets](https://www.php.net/manual/en/book.sockets.php) if you are using `NTPTimeProvider`
-* [endroid/qr-code](https://github.com/endroid/qr-code) if using `EndroidQrCodeProvider` or `EndroidQrCodeWithLogoProvider`.
 * [bacon/bacon-qr-code](https://github.com/Bacon/BaconQrCode) if using `BaconQrCodeProvider`.
 
 ## Installation

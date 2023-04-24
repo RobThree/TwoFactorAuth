@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace RobThree\Auth;
 
+use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
-use RobThree\Auth\Providers\Qr\QRServerProvider;
 use RobThree\Auth\Providers\Rng\CSRNGProvider;
 use RobThree\Auth\Providers\Rng\HashRNGProvider;
 use RobThree\Auth\Providers\Rng\IRNGProvider;
@@ -169,7 +169,7 @@ class TwoFactorAuth
     {
         // Set default QR Code provider if none was specified
         if (null === $this->qrcodeprovider) {
-            return $this->qrcodeprovider = new QRServerProvider();
+            return $this->qrcodeprovider = new EndroidQrCodeProvider();
         }
         return $this->qrcodeprovider;
     }
