@@ -8,6 +8,13 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 <img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/multifactorauthforeveryone.png">
 </p>
 
+## Warning:
+
+By default, this package uses the `lib/Providers/QRServerProvider.php` as QR code generator. This provider is __not__ suggested for applications where absolute security is needed, because it uses an external service for the QR code generation.
+
+
+You can make use of the included [Endroid](https://robthree.github.io/TwoFactorAuth/qr-codes/endroid.html) or [Bacon](https://robthree.github.io/TwoFactorAuth/qr-codes/bacon.html) providers which generate locally.
+
 ## Requirements
 
 * Requires PHP version >=8.1
