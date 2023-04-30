@@ -22,6 +22,8 @@ You can also specify a size as a third argument which is 200 by default.
 
 [QRServerProvider](qr-codes/qr-server.html) (default)
 
+**Warning:** Whilst it is the default, this provider is not suggested for applications where absolute security is needed, because it uses an external service for the QR code generation. You can make use of the included offline providers listed below which generate locally.
+
 [ImageChartsQRCodeProvider](qr-codes/image-charts.html)
 
 [QRicketProvider](qr-codes/qrickit.html)
