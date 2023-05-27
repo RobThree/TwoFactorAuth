@@ -10,7 +10,6 @@ use BaconQrCode\Renderer\Image\ImageBackEndInterface;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
-
 use BaconQrCode\Renderer\RendererStyle\EyeFill;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -23,10 +22,10 @@ class BaconQrCodeProvider implements IQRCodeProvider
      * Ensure we using the latest Bacon QR Code and specify default options
      */
     public function __construct(
-        private int $borderWidth = 4,
+        private readonly int $borderWidth = 4,
         private string|array $backgroundColour = '#ffffff',
         private string|array $foregroundColour = '#000000',
-        private string $format = 'png',
+        private string       $format = 'png',
     ) {
         $this->backgroundColour = $this->handleColour($this->backgroundColour);
         $this->foregroundColour = $this->handleColour($this->foregroundColour);
