@@ -242,7 +242,7 @@ class TwoFactorAuth
             return '';
         }
 
-        if (preg_match('/[^' . preg_quote(self::$_base32dict) . ']/', $value) !== 0) {
+        if (preg_match('/[^' . preg_quote(self::$_base32dict, '/') . ']/', $value) !== 0) {
             throw new TwoFactorAuthException('Invalid base32 string');
         }
 
