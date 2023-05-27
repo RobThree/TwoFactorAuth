@@ -21,10 +21,8 @@ class HttpTimeProvider implements ITimeProvider
     public function __construct(
         public string $url = 'https://google.com',
         public string $expectedtimeformat = 'D, d M Y H:i:s O+',
-        array|null    $options = null,
+        ?array        $options = null,
     ) {
-        $this->url = $url;
-        $this->expectedtimeformat = $expectedtimeformat;
         if ($options === null) {
             $options = array(
                 'http' => array(
