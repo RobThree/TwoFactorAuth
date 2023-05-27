@@ -64,7 +64,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $qrCode;
     }
 
-    private function handleColor(string $color): Color
+    private function handleColor(string $color): Color|array
     {
         $split = str_split($color, 2);
         $r = hexdec($split[0]);
@@ -74,18 +74,13 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return $this->endroid4 ? new Color($r, $g, $b, 0) : array('r' => $r, 'g' => $g, 'b' => $b, 'a' => 0);
     }
 
-    private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface
+    private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface|ErrorCorrectionLevel
     {
-        switch ($level) {
-            case 'L':
-                return $this->endroid4 ? new ErrorCorrectionLevelLow() : ErrorCorrectionLevel::LOW();
-            case 'M':
-                return $this->endroid4 ? new ErrorCorrectionLevelMedium() : ErrorCorrectionLevel::MEDIUM();
-            case 'Q':
-                return $this->endroid4 ? new ErrorCorrectionLevelQuartile() : ErrorCorrectionLevel::QUARTILE();
-            case 'H':
-            default:
-                return $this->endroid4 ? new ErrorCorrectionLevelHigh() : ErrorCorrectionLevel::HIGH();
-        }
+        return match ($level) {
+            'L' => $this->endroid4 ? new ErrorCorrectionLevelLow() : ErrorCorrectionLevel::LOW(),
+            'M' => $this->endroid4 ? new ErrorCorrectionLevelMedium() : ErrorCorrectionLevel::MEDIUM(),
+            'Q' => $this->endroid4 ? new ErrorCorrectionLevelQuartile() : ErrorCorrectionLevel::QUARTILE(),
+            default => $this->endroid4 ? new ErrorCorrectionLevelHigh() : ErrorCorrectionLevel::HIGH(),
+        };
     }
 }
