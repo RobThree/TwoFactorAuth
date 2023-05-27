@@ -239,7 +239,7 @@ class TwoFactorAuth
 
     private function base32Decode(string $value): string
     {
-        if (strlen($value) == 0) {
+        if ($value === '') {
             return '';
         }
 
