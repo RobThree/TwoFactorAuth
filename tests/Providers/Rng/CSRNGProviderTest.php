@@ -19,7 +19,7 @@ class CSRNGProviderTest extends TestCase
         if (function_exists('random_bytes')) {
             $rng = new CSRNGProvider();
             foreach ($this->rngTestLengths as $l) {
-                $this->assertEquals($l, strlen($rng->getRandomBytes($l)));
+                $this->assertSame($l, strlen($rng->getRandomBytes($l)));
             }
             $this->assertTrue($rng->isCryptographicallySecure());
         } else {

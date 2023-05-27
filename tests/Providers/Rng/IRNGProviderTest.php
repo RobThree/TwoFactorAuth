@@ -26,7 +26,7 @@ class IRNGProviderTest extends TestCase
         $rng = new TestRNGProvider();
 
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
-        $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret(80, false));
+        $this->assertSame('ABCDEFGHIJKLMNOP', $tfa->createSecret(80, false));
     }
 
     public function testCreateSecretDoesNotThrowOnSecureRNGProvider(): void
@@ -34,7 +34,7 @@ class IRNGProviderTest extends TestCase
         $rng = new TestRNGProvider(true);
 
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
-        $this->assertEquals('ABCDEFGHIJKLMNOP', $tfa->createSecret());
+        $this->assertSame('ABCDEFGHIJKLMNOP', $tfa->createSecret());
     }
 
     public function testCreateSecretGeneratesDesiredAmountOfEntropy(): void
@@ -42,11 +42,11 @@ class IRNGProviderTest extends TestCase
         $rng = new TestRNGProvider(true);
 
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
-        $this->assertEquals('A', $tfa->createSecret(5));
-        $this->assertEquals('AB', $tfa->createSecret(6));
-        $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $tfa->createSecret(128));
-        $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', $tfa->createSecret(160));
-        $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', $tfa->createSecret(320));
-        $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567A', $tfa->createSecret(321));
+        $this->assertSame('A', $tfa->createSecret(5));
+        $this->assertSame('AB', $tfa->createSecret(6));
+        $this->assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $tfa->createSecret(128));
+        $this->assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', $tfa->createSecret(160));
+        $this->assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', $tfa->createSecret(320));
+        $this->assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567A', $tfa->createSecret(321));
     }
 }
