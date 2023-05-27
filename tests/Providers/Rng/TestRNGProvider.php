@@ -8,7 +8,7 @@ use RobThree\Auth\Providers\Rng\IRNGProvider;
 
 class TestRNGProvider implements IRNGProvider
 {
-    public function __construct(private bool $isSecure = false)
+    public function __construct(private readonly bool $isSecure = false)
     {
     }
 
