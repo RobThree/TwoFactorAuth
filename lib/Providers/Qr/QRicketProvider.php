@@ -34,12 +34,14 @@ class QRicketProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrtext, int $size): string
     {
-        return 'http://qrickit.com/api/qr'
-            . '?qrsize=' . $size
-            . '&e=' . strtolower($this->errorcorrectionlevel)
-            . '&bgdcolor=' . $this->bgcolor
-            . '&fgdcolor=' . $this->color
-            . '&t=' . strtolower($this->format)
-            . '&d=' . rawurlencode($qrtext);
+        return sprintf(
+            'http://qrickit.com/api/qr?qrsize=%s&e=%s&bgdcolor=%s&fgdcolor=%s&t=%s&d=%s',
+            $size,
+            strtolower($this->errorcorrectionlevel),
+            $this->bgcolor,
+            $this->color,
+            strtolower($this->format),
+            rawurlencode($qrtext)
+        );
     }
 }

@@ -38,15 +38,17 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrtext, int $size): string
     {
-        return 'https://api.qrserver.com/v1/create-qr-code/'
-            . '?size=' . $size . 'x' . $size
-            . '&ecc=' . strtoupper($this->errorcorrectionlevel)
-            . '&margin=' . $this->margin
-            . '&qzone=' . $this->qzone
-            . '&bgcolor=' . $this->decodeColor($this->bgcolor)
-            . '&color=' . $this->decodeColor($this->color)
-            . '&format=' . strtolower($this->format)
-            . '&data=' . rawurlencode($qrtext);
+        return sprintf(
+            'https://api.qrserver.com/v1/create-qr-code/?size=%1$sx%1$s&ecc=%2$s&margin=%3$s&qzone=%4$s&bgcolor=%5$s&color=%6$s&format=%7$s&data=%8$s',
+            $size,
+            strtoupper($this->errorcorrectionlevel),
+            $this->margin,
+            $this->qzone,
+            $this->decodeColor($this->bgcolor),
+            $this->decodeColor($this->color),
+            strtolower($this->format),
+            rawurlencode($qrtext)
+        );
     }
 
     private function decodeColor(string $value): string
