@@ -168,10 +168,7 @@ class TwoFactorAuth
     public function getQrCodeProvider(): IQRCodeProvider
     {
         // Set default QR Code provider if none was specified
-        if ($this->qrcodeprovider === null) {
-            return $this->qrcodeprovider = new QRServerProvider();
-        }
-        return $this->qrcodeprovider;
+        return $this->qrcodeprovider ?? ($this->qrcodeprovider = new QRServerProvider());
     }
 
     /**
@@ -200,10 +197,7 @@ class TwoFactorAuth
     public function getTimeProvider(): ITimeProvider
     {
         // Set default time provider if none was specified
-        if ($this->timeprovider === null) {
-            return $this->timeprovider = new LocalMachineTimeProvider();
-        }
-        return $this->timeprovider;
+        return $this->timeprovider ?? ($this->timeprovider = new LocalMachineTimeProvider());
     }
 
     /**
@@ -229,7 +223,7 @@ class TwoFactorAuth
 
     private function getTime(?int $time = null): int
     {
-        return ($time === null) ? $this->getTimeProvider()->getTime() : $time;
+        return $time ?? $this->getTimeProvider()->getTime();
     }
 
     private function getTimeSlice(?int $time = null, int $offset = 0): int
