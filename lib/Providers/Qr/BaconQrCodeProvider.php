@@ -66,7 +66,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
 
         $output = $this->getQRCodeByBackend($qrtext, $size, $backend);
 
-        if ($this->format == 'svg') {
+        if ($this->format === 'svg') {
             $svg = explode("\n", $output);
             return $svg[1];
         }
