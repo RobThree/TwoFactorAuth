@@ -56,7 +56,7 @@ class TwoFactorAuthTest extends TestCase
         $this->assertFalse($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 + 30));    //Test discrepancy
         $this->assertFalse($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 - 1));    //Test discrepancy
 
-        $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847205 + 0));    //Test discrepancy
+        $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847205));    //Test discrepancy
         $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847205 + 35));    //Test discrepancy
         $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847205 - 35));    //Test discrepancy
 
