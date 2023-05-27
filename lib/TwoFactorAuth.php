@@ -123,6 +123,7 @@ class TwoFactorAuth
     /**
      * Compare default timeprovider with specified timeproviders and ensure the time is within the specified number of seconds (leniency)
      * @param array<ITimeProvider> $timeproviders
+     * @throws TwoFactorAuthException
      */
     public function ensureCorrectTime(?array $timeproviders = null, int $leniency = 5): void
     {
