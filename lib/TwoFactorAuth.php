@@ -168,7 +168,7 @@ class TwoFactorAuth
     public function getQrCodeProvider(): IQRCodeProvider
     {
         // Set default QR Code provider if none was specified
-        if (null === $this->qrcodeprovider) {
+        if ($this->qrcodeprovider === null) {
             return $this->qrcodeprovider = new QRServerProvider();
         }
         return $this->qrcodeprovider;
@@ -179,7 +179,7 @@ class TwoFactorAuth
      */
     public function getRngProvider(): IRNGProvider
     {
-        if (null !== $this->rngprovider) {
+        if ($this->rngprovider !== null) {
             return $this->rngprovider;
         }
         if (function_exists('random_bytes')) {
@@ -200,7 +200,7 @@ class TwoFactorAuth
     public function getTimeProvider(): ITimeProvider
     {
         // Set default time provider if none was specified
-        if (null === $this->timeprovider) {
+        if ($this->timeprovider === null) {
             return $this->timeprovider = new LocalMachineTimeProvider();
         }
         return $this->timeprovider;
