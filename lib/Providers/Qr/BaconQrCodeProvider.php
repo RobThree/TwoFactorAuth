@@ -106,7 +106,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
     private function handleColour(array|string $colour): array|string
     {
         if (is_string($colour) && $colour[0] == '#') {
-            $hexToRGB = function ($input) {
+            $hexToRGB = static function ($input) {
                 // ensure input no longer has a # for more predictable division
                 // PHP 8.1 does not like implicitly casting a float to an int
                 $input = trim($input, '#');
@@ -120,7 +120,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
 
                 // cope with three character hex reference
                 if (strlen($input) == 3) {
-                    array_walk($split, function (&$character) {
+                    array_walk($split, static function (&$character) {
                         $character = str_repeat($character, 2);
                     });
                 }
