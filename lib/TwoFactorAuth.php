@@ -218,7 +218,8 @@ class TwoFactorAuth
         // we don't leak information about the difference of the two strings.
         if (strlen($safe) === strlen($user)) {
             $result = 0;
-            for ($i = 0; $i < strlen($safe); $i++) {
+            $strlen = strlen($safe);
+            for ($i = 0; $i < $strlen; $i++) {
                 $result |= (ord($safe[$i]) ^ ord($user[$i]));
             }
             return $result === 0;
