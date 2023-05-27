@@ -21,7 +21,7 @@ class HttpTimeProvider implements ITimeProvider
     public function __construct(
         public string $url = 'https://google.com',
         public string $expectedtimeformat = 'D, d M Y H:i:s O+',
-        array $options = null,
+        array         $options = null,
     ) {
         $this->url = $url;
         $this->expectedtimeformat = $expectedtimeformat;
@@ -50,7 +50,7 @@ class HttpTimeProvider implements ITimeProvider
     public function getTime()
     {
         try {
-            $context  = stream_context_create($this->options);
+            $context = stream_context_create($this->options);
             $fd = fopen($this->url, 'rb', false, $context);
             $headers = stream_get_meta_data($fd);
             fclose($fd);

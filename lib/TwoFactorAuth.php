@@ -28,13 +28,13 @@ class TwoFactorAuth
     private static array $_base32lookup = array();
 
     public function __construct(
-        private ?string $issuer = null,
-        private int $digits = 6,
-        private int $period = 30,
-        private Algorithm $algorithm = Algorithm::Sha1,
+        private ?string          $issuer = null,
+        private int              $digits = 6,
+        private int              $period = 30,
+        private Algorithm        $algorithm = Algorithm::Sha1,
         private ?IQRCodeProvider $qrcodeprovider = null,
-        private ?IRNGProvider $rngprovider = null,
-        private ?ITimeProvider $timeprovider = null
+        private ?IRNGProvider    $rngprovider = null,
+        private ?ITimeProvider   $timeprovider = null
     ) {
         if ($this->digits <= 0) {
             throw new TwoFactorAuthException('Digits must be > 0');
@@ -54,7 +54,7 @@ class TwoFactorAuth
     public function createSecret(int $bits = 80, bool $requirecryptosecure = true): string
     {
         $secret = '';
-        $bytes = (int) ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
+        $bytes = (int)ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
         $rngprovider = $this->getRngProvider();
         if ($requirecryptosecure && !$rngprovider->isCryptographicallySecure()) {
             throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
@@ -79,7 +79,7 @@ class TwoFactorAuth
         $value = unpack('N', $hashpart);                                                   // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
 
-        return str_pad((string) ($value % 10** $this->digits), $this->digits, '0', STR_PAD_LEFT);
+        return str_pad((string)($value % 10 ** $this->digits), $this->digits, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -233,7 +233,7 @@ class TwoFactorAuth
 
     private function getTimeSlice(?int $time = null, int $offset = 0): int
     {
-        return (int) floor($time / $this->period) + ($offset * $this->period);
+        return (int)floor($time / $this->period) + ($offset * $this->period);
     }
 
     private function base32Decode(string $value): string

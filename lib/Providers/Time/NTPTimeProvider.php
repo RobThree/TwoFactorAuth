@@ -47,7 +47,7 @@ class NTPTimeProvider implements ITimeProvider
 
             // Interpret response
             $data = unpack('N12', $recv);
-            $timestamp = (int) sprintf('%u', $data[9]);
+            $timestamp = (int)sprintf('%u', $data[9]);
 
             // NTP is number of seconds since 0000 UT on 1 January 1900 Unix time is seconds since 0000 UT on 1 January 1970
             return $timestamp - 2208988800;
