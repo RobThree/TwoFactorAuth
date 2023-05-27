@@ -10,7 +10,7 @@ use function preg_match;
 trait HandlesDataUri
 {
     /**
-     * @return array<string, string>
+     * @return array<string, string>|null
      */
     private function DecodeDataUri(string $datauri): ?array
     {
