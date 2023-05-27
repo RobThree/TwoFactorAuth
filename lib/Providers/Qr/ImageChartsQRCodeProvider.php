@@ -25,12 +25,13 @@ class ImageChartsQRCodeProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrtext, int $size): string
     {
-        return sprintf(
-            'https://image-charts.com/chart?cht=qr&chs=%1$dx%1$d&chld=%2$s|%3$s&chl=%4$s',
-            ceil($size / 2),
-            $this->errorcorrectionlevel,
-            $this->margin,
-            rawurlencode($qrtext)
+        $queryParameters = array(
+            'cht' => 'qr',
+            'chs' => ceil($size / 2) . 'x' . ceil($size / 2),
+            'chld' => $this->errorcorrectionlevel . '|' . $this->margin,
+            'chl' => $qrtext,
         );
+
+        return 'https://image-charts.com/chart?' . http_build_query($queryParameters);
     }
 }

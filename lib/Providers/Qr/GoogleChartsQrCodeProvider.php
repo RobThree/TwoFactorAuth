@@ -23,12 +23,14 @@ class GoogleChartsQrCodeProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrtext, int $size): string
     {
-        return sprintf(
-            'https://chart.googleapis.com/chart?chs=%1$sx%1$s&chld=%2$s&cht=qr&choe=%3$s&chl=%4$s',
-            $size,
-            urlencode(strtoupper($this->errorcorrectionlevel) . '|' . $this->margin),
-            $this->encoding,
-            rawurlencode($qrtext)
+        $queryParameters = array(
+            'chs' => $size . 'x' . $size,
+            'chld' => strtoupper($this->errorcorrectionlevel) . '|' . $this->margin,
+            'cht' => 'qr',
+            'choe' => $this->encoding,
+            'chl' => $qrtext,
         );
+
+        return 'https://chart.googleapis.com/chart?' . http_build_query($queryParameters);
     }
 }
