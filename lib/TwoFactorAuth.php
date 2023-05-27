@@ -157,9 +157,9 @@ class TwoFactorAuth
         return 'otpauth://totp/' . rawurlencode($label)
             . '?secret=' . rawurlencode($secret)
             . '&issuer=' . rawurlencode((string)$this->issuer)
-            . '&period=' . intval($this->period)
+            . '&period=' . $this->period
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm->value))
-            . '&digits=' . intval($this->digits);
+            . '&digits=' . $this->digits;
     }
 
     /**
