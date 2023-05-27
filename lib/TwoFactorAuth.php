@@ -162,9 +162,6 @@ class TwoFactorAuth
             . '&digits=' . $this->digits;
     }
 
-    /**
-     * @throws TwoFactorAuthException
-     */
     public function getQrCodeProvider(): IQRCodeProvider
     {
         // Set default QR Code provider if none was specified
@@ -191,9 +188,6 @@ class TwoFactorAuth
         throw new TwoFactorAuthException('Unable to find a suited RNGProvider');
     }
 
-    /**
-     * @throws TwoFactorAuthException
-     */
     public function getTimeProvider(): ITimeProvider
     {
         // Set default time provider if none was specified
