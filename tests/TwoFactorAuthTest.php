@@ -127,7 +127,6 @@ class TwoFactorAuthTest extends TestCase
         $tfa = new TwoFactorAuth('Test');
 
         $method = new ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
-        $method->setAccessible(true);
 
         // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
         $this->assertSame('', $method->invoke($tfa, ''));
@@ -148,7 +147,6 @@ class TwoFactorAuthTest extends TestCase
         $tfa = new TwoFactorAuth('Test');
 
         $method = new ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
-        $method->setAccessible(true);
 
         // Test vectors from: https://tools.ietf.org/html/rfc4648#page-12
         $this->assertSame('', $method->invoke($tfa, ''));
