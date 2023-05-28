@@ -41,19 +41,19 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         return 'image/png';
     }
 
-    public function getQRCodeImage(string $qrtext, int $size): string
+    public function getQRCodeImage(string $qrText, int $size): string
     {
         if (!$this->endroid4) {
-            return $this->qrCodeInstance($qrtext, $size)->writeString();
+            return $this->qrCodeInstance($qrText, $size)->writeString();
         }
 
         $writer = new PngWriter();
-        return $writer->write($this->qrCodeInstance($qrtext, $size))->getString();
+        return $writer->write($this->qrCodeInstance($qrText, $size))->getString();
     }
 
-    protected function qrCodeInstance(string $qrtext, int $size): QrCode
+    protected function qrCodeInstance(string $qrText, int $size): QrCode
     {
-        $qrCode = new QrCode($qrtext);
+        $qrCode = new QrCode($qrText);
         $qrCode->setSize($size);
 
         $qrCode->setErrorCorrectionLevel($this->errorcorrectionlevel);

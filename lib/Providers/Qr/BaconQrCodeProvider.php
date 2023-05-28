@@ -51,7 +51,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
         throw new RuntimeException(sprintf('Unknown MIME-type: %s', $this->format));
     }
 
-    public function getQRCodeImage(string $qrtext, int $size): string
+    public function getQRCodeImage(string $qrText, int $size): string
     {
         $backend = match ($this->format) {
             'svg' => new SvgImageBackEnd(),
@@ -59,7 +59,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
             default => new ImagickImageBackEnd($this->format),
         };
 
-        $output = $this->getQRCodeByBackend($qrtext, $size, $backend);
+        $output = $this->getQRCodeByBackend($qrText, $size, $backend);
 
         if ($this->format === 'svg') {
             $svg = explode("\n", $output);

@@ -8,9 +8,9 @@ use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 
 class TestQrProvider implements IQRCodeProvider
 {
-    public function getQRCodeImage(string $qrtext, int $size): string
+    public function getQRCodeImage(string $qrText, int $size): string
     {
-        return $qrtext . '@' . $size;
+        return $qrText . '@' . $size;
     }
 
     public function getMimeType(): string

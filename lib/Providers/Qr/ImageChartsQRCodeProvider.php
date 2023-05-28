@@ -18,18 +18,18 @@ class ImageChartsQRCodeProvider extends BaseHTTPQRCodeProvider
         return 'image/png';
     }
 
-    public function getQRCodeImage(string $qrtext, int $size): string
+    public function getQRCodeImage(string $qrText, int $size): string
     {
-        return $this->getContent($this->getUrl($qrtext, $size));
+        return $this->getContent($this->getUrl($qrText, $size));
     }
 
-    public function getUrl(string $qrtext, int $size): string
+    public function getUrl(string $qrText, int $size): string
     {
         $queryParameters = array(
             'cht' => 'qr',
             'chs' => ceil($size / 2) . 'x' . ceil($size / 2),
             'chld' => $this->errorcorrectionlevel . '|' . $this->margin,
-            'chl' => $qrtext,
+            'chl' => $qrText,
         );
 
         return 'https://image-charts.com/chart?' . http_build_query($queryParameters);
