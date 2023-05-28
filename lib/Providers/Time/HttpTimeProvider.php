@@ -12,19 +12,16 @@ use Exception;
  */
 class HttpTimeProvider implements ITimeProvider
 {
-    /** @var array<string, mixed> */
-    public array $options;
-
     /**
      * @param array<string, mixed> $options
      */
     public function __construct(
         public string $url = 'https://google.com',
         public string $expectedtimeformat = 'D, d M Y H:i:s O+',
-        ?array        $options = null,
+        public ?array $options = null,
     ) {
-        if ($options === null) {
-            $options = array(
+        if ($this->options === null) {
+            $this->options = array(
                 'http' => array(
                     'method' => 'HEAD',
                     'follow_location' => false,
@@ -39,7 +36,6 @@ class HttpTimeProvider implements ITimeProvider
                 ),
             );
         }
-        $this->options = $options;
     }
 
     /**
