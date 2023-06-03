@@ -16,18 +16,21 @@ class GoogleChartsQrCodeProvider extends BaseHTTPQRCodeProvider
         return 'image/png';
     }
 
-    public function getQRCodeImage(string $qrtext, int $size): string
+    public function getQRCodeImage(string $qrText, int $size): string
     {
-        return $this->getContent($this->getUrl($qrtext, $size));
+        return $this->getContent($this->getUrl($qrText, $size));
     }
 
-    public function getUrl(string $qrtext, int $size): string
+    public function getUrl(string $qrText, int $size): string
     {
-        return 'https://chart.googleapis.com/chart'
-            . '?chs=' . $size . 'x' . $size
-            . '&chld=' . urlencode(strtoupper($this->errorcorrectionlevel) . '|' . $this->margin)
-            . '&cht=' . 'qr'
-            . '&choe=' . $this->encoding
-            . '&chl=' . rawurlencode($qrtext);
+        $queryParameters = array(
+            'chs' => $size . 'x' . $size,
+            'chld' => strtoupper($this->errorcorrectionlevel) . '|' . $this->margin,
+            'cht' => 'qr',
+            'choe' => $this->encoding,
+            'chl' => $qrText,
+        );
+
+        return 'https://chart.googleapis.com/chart?' . http_build_query($queryParameters);
     }
 }

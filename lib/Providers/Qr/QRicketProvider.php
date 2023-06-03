@@ -27,19 +27,22 @@ class QRicketProvider extends BaseHTTPQRCodeProvider
         throw new QRException(sprintf('Unknown MIME-type: %s', $this->format));
     }
 
-    public function getQRCodeImage(string $qrtext, int $size): string
+    public function getQRCodeImage(string $qrText, int $size): string
     {
-        return $this->getContent($this->getUrl($qrtext, $size));
+        return $this->getContent($this->getUrl($qrText, $size));
     }
 
-    public function getUrl(string $qrtext, int $size): string
+    public function getUrl(string $qrText, int $size): string
     {
-        return 'http://qrickit.com/api/qr'
-            . '?qrsize=' . (string) $size
-            . '&e=' . strtolower($this->errorcorrectionlevel)
-            . '&bgdcolor=' . $this->bgcolor
-            . '&fgdcolor=' . $this->color
-            . '&t=' . strtolower($this->format)
-            . '&d=' . rawurlencode($qrtext);
+        $queryParameters = array(
+            'qrsize' => $size,
+            'e' => strtolower($this->errorcorrectionlevel),
+            'bgdcolor' => $this->bgcolor,
+            'fgdcolor' => $this->color,
+            't' => strtolower($this->format),
+            'd' => $qrText,
+        );
+
+        return 'http://qrickit.com/api/qr?' . http_build_query($queryParameters);
     }
 }

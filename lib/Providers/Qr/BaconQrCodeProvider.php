@@ -10,7 +10,6 @@ use BaconQrCode\Renderer\Image\ImageBackEndInterface;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
-
 use BaconQrCode\Renderer\RendererStyle\EyeFill;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -23,10 +22,10 @@ class BaconQrCodeProvider implements IQRCodeProvider
      * Ensure we using the latest Bacon QR Code and specify default options
      */
     public function __construct(
-        private int $borderWidth = 4,
+        private readonly int $borderWidth = 4,
         private string|array $backgroundColour = '#ffffff',
         private string|array $foregroundColour = '#000000',
-        private string $format = 'png',
+        private string       $format = 'png',
     ) {
         $this->backgroundColour = $this->handleColour($this->backgroundColour);
         $this->foregroundColour = $this->handleColour($this->foregroundColour);
@@ -54,20 +53,15 @@ class BaconQrCodeProvider implements IQRCodeProvider
 
     public function getQRCodeImage(string $qrText, int $size): string
     {
-        switch ($this->format) {
-            case 'svg':
-                $backend = new SvgImageBackEnd();
-                break;
-            case 'eps':
-                $backend = new EpsImageBackEnd();
-                break;
-            default:
-                $backend = new ImagickImageBackEnd($this->format);
-        }
+        $backend = match ($this->format) {
+            'svg' => new SvgImageBackEnd(),
+            'eps' => new EpsImageBackEnd(),
+            default => new ImagickImageBackEnd($this->format),
+        };
 
         $output = $this->getQRCodeByBackend($qrText, $size, $backend);
 
-        if ($this->format == 'svg') {
+        if ($this->format === 'svg') {
             $svg = explode("\n", $output);
             return $svg[1];
         }
@@ -84,7 +78,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
         $rendererStyleArgs = array($size, $this->borderWidth);
 
         if (is_array($this->foregroundColour) && is_array($this->backgroundColour)) {
-            $rendererStyleArgs = array_merge($rendererStyleArgs, array(
+            $rendererStyleArgs = array(...$rendererStyleArgs, ...array(
                 null,
                 null,
                 Fill::withForegroundColor(
@@ -112,7 +106,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
     private function handleColour(array|string $colour): array|string
     {
         if (is_string($colour) && $colour[0] == '#') {
-            $hexToRGB = function ($input) {
+            $hexToRGB = static function ($input) {
                 // ensure input no longer has a # for more predictable division
                 // PHP 8.1 does not like implicitly casting a float to an int
                 $input = trim($input, '#');
@@ -126,7 +120,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
 
                 // cope with three character hex reference
                 if (strlen($input) == 3) {
-                    array_walk($split, function (&$character) {
+                    array_walk($split, static function (&$character) {
                         $character = str_repeat($character, 2);
                     });
                 }

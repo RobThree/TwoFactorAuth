@@ -28,13 +28,13 @@ class TwoFactorAuth
     private static array $_base32lookup = array();
 
     public function __construct(
-        private ?string $issuer = null,
-        private int $digits = 6,
-        private int $period = 30,
-        private Algorithm $algorithm = Algorithm::Sha1,
-        private ?IQRCodeProvider $qrcodeprovider = null,
-        private ?IRNGProvider $rngprovider = null,
-        private ?ITimeProvider $timeprovider = null
+        private readonly ?string   $issuer = null,
+        private readonly int       $digits = 6,
+        private readonly int       $period = 30,
+        private readonly Algorithm $algorithm = Algorithm::Sha1,
+        private ?IQRCodeProvider   $qrcodeprovider = null,
+        private ?IRNGProvider      $rngprovider = null,
+        private ?ITimeProvider     $timeprovider = null
     ) {
         if ($this->digits <= 0) {
             throw new TwoFactorAuthException('Digits must be > 0');
@@ -54,7 +54,7 @@ class TwoFactorAuth
     public function createSecret(int $bits = 80, bool $requirecryptosecure = true): string
     {
         $secret = '';
-        $bytes = (int) ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
+        $bytes = (int)ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
         $rngprovider = $this->getRngProvider();
         if ($requirecryptosecure && !$rngprovider->isCryptographicallySecure()) {
             throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
@@ -79,7 +79,7 @@ class TwoFactorAuth
         $value = unpack('N', $hashpart);                                                   // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
 
-        return str_pad((string) ($value % 10** $this->digits), $this->digits, '0', STR_PAD_LEFT);
+        return str_pad((string)($value % 10 ** $this->digits), $this->digits, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -123,6 +123,7 @@ class TwoFactorAuth
     /**
      * Compare default timeprovider with specified timeproviders and ensure the time is within the specified number of seconds (leniency)
      * @param array<ITimeProvider> $timeproviders
+     * @throws TwoFactorAuthException
      */
     public function ensureCorrectTime(?array $timeproviders = null, int $leniency = 5): void
     {
@@ -157,21 +158,15 @@ class TwoFactorAuth
         return 'otpauth://totp/' . rawurlencode($label)
             . '?secret=' . rawurlencode($secret)
             . '&issuer=' . rawurlencode((string)$this->issuer)
-            . '&period=' . intval($this->period)
+            . '&period=' . $this->period
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm->value))
-            . '&digits=' . intval($this->digits);
+            . '&digits=' . $this->digits;
     }
 
-    /**
-     * @throws TwoFactorAuthException
-     */
     public function getQrCodeProvider(): IQRCodeProvider
     {
         // Set default QR Code provider if none was specified
-        if (null === $this->qrcodeprovider) {
-            return $this->qrcodeprovider = new QRServerProvider();
-        }
-        return $this->qrcodeprovider;
+        return $this->qrcodeprovider ??= new QRServerProvider();
     }
 
     /**
@@ -179,7 +174,7 @@ class TwoFactorAuth
      */
     public function getRngProvider(): IRNGProvider
     {
-        if (null !== $this->rngprovider) {
+        if ($this->rngprovider !== null) {
             return $this->rngprovider;
         }
         if (function_exists('random_bytes')) {
@@ -194,16 +189,10 @@ class TwoFactorAuth
         throw new TwoFactorAuthException('Unable to find a suited RNGProvider');
     }
 
-    /**
-     * @throws TwoFactorAuthException
-     */
     public function getTimeProvider(): ITimeProvider
     {
         // Set default time provider if none was specified
-        if (null === $this->timeprovider) {
-            return $this->timeprovider = new LocalMachineTimeProvider();
-        }
-        return $this->timeprovider;
+        return $this->timeprovider ??= new LocalMachineTimeProvider();
     }
 
     /**
@@ -218,7 +207,8 @@ class TwoFactorAuth
         // we don't leak information about the difference of the two strings.
         if (strlen($safe) === strlen($user)) {
             $result = 0;
-            for ($i = 0; $i < strlen($safe); $i++) {
+            $strlen = strlen($safe);
+            for ($i = 0; $i < $strlen; $i++) {
                 $result |= (ord($safe[$i]) ^ ord($user[$i]));
             }
             return $result === 0;
@@ -228,21 +218,21 @@ class TwoFactorAuth
 
     private function getTime(?int $time = null): int
     {
-        return ($time === null) ? $this->getTimeProvider()->getTime() : $time;
+        return $time ?? $this->getTimeProvider()->getTime();
     }
 
     private function getTimeSlice(?int $time = null, int $offset = 0): int
     {
-        return (int) floor($time / $this->period) + ($offset * $this->period);
+        return (int)floor($time / $this->period) + ($offset * $this->period);
     }
 
     private function base32Decode(string $value): string
     {
-        if (strlen($value) == 0) {
+        if ($value === '') {
             return '';
         }
 
-        if (preg_match('/[^' . preg_quote(self::$_base32dict) . ']/', $value) !== 0) {
+        if (preg_match('/[^' . preg_quote(self::$_base32dict, '/') . ']/', $value) !== 0) {
             throw new TwoFactorAuthException('Invalid base32 string');
         }
 

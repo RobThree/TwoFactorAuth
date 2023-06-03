@@ -22,7 +22,7 @@ class BaconQRCodeTest extends TestCase
         $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, Algorithm::Sha1, $qr);
 
         $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
-        $this->assertEquals('image/svg+xml', $data['mimetype']);
+        $this->assertSame('image/svg+xml', $data['mimetype']);
     }
 
     public function testBadTextColour(): void

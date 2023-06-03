@@ -8,7 +8,7 @@ use function in_array;
 
 class HashRNGProvider implements IRNGProvider
 {
-    public function __construct(private string $algorithm = 'sha256')
+    public function __construct(private readonly string $algorithm = 'sha256')
     {
         $algos = array_values(hash_algos());
         if (!in_array($this->algorithm, $algos, true)) {
