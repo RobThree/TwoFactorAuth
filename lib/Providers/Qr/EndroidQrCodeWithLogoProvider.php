@@ -22,12 +22,12 @@ class EndroidQrCodeWithLogoProvider extends EndroidQrCodeProvider
     public function setLogo($path, $size = null)
     {
         $this->logoPath = $path;
-        $this->logoSize = (array)$size;
+        $this->logoSize = (array) $size;
     }
 
     public function getQRCodeImage(string $qrText, int $size): string
     {
-        if (!$this->endroid4) {
+        if (! $this->endroid4) {
             return $this->qrCodeInstance($qrText, $size)->writeString();
         }
 
@@ -49,7 +49,7 @@ class EndroidQrCodeWithLogoProvider extends EndroidQrCodeProvider
     {
         $qrCode = parent::qrCodeInstance($qrText, $size);
 
-        if (!$this->endroid4 && $this->logoPath) {
+        if (! $this->endroid4 && $this->logoPath) {
             $qrCode->setLogoPath($this->logoPath);
             if ($this->logoSize) {
                 $qrCode->setLogoSize($this->logoSize[0], $this->logoSize[1] ?? null);

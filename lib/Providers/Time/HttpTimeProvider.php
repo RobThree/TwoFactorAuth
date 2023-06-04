@@ -21,26 +21,23 @@ class HttpTimeProvider implements ITimeProvider
         public ?array $options = null,
     ) {
         if ($this->options === null) {
-            $this->options = array(
-                'http' => array(
+            $this->options = [
+                'http' => [
                     'method' => 'HEAD',
                     'follow_location' => false,
                     'ignore_errors' => true,
                     'max_redirects' => 0,
                     'request_fulluri' => true,
-                    'header' => array(
+                    'header' => [
                         'Connection: close',
                         'User-agent: TwoFactorAuth HttpTimeProvider (https://github.com/RobThree/TwoFactorAuth)',
                         'Cache-Control: no-cache',
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTime()
     {
         try {

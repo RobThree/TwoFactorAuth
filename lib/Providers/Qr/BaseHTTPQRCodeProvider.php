@@ -12,7 +12,7 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
     {
         $curlhandle = curl_init();
 
-        curl_setopt_array($curlhandle, array(
+        curl_setopt_array($curlhandle, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CONNECTTIMEOUT => 10,
@@ -20,7 +20,7 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
             CURLOPT_TIMEOUT => 10,
             CURLOPT_SSL_VERIFYPEER => $this->verifyssl,
             CURLOPT_USERAGENT => 'TwoFactorAuth',
-        ));
+        ]);
         $data = curl_exec($curlhandle);
 
         curl_close($curlhandle);

@@ -8,17 +8,15 @@ use function in_array;
 
 class HashRNGProvider implements IRNGProvider
 {
-    public function __construct(private readonly string $algorithm = 'sha256')
-    {
+    public function __construct(
+        private readonly string $algorithm = 'sha256'
+    ) {
         $algos = array_values(hash_algos());
-        if (!in_array($this->algorithm, $algos, true)) {
+        if (! in_array($this->algorithm, $algos, true)) {
             throw new RNGException('Unsupported algorithm specified');
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRandomBytes(int $bytecount): string
     {
         $result = '';
@@ -30,9 +28,6 @@ class HashRNGProvider implements IRNGProvider
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isCryptographicallySecure(): bool
     {
         return false;

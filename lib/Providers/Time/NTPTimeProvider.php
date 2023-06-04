@@ -13,8 +13,11 @@ use function socket_create;
  */
 class NTPTimeProvider implements ITimeProvider
 {
-    public function __construct(public string $host = 'time.google.com', public int $port = 123, public int $timeout = 1)
-    {
+    public function __construct(
+        public string $host = 'time.google.com',
+        public int $port = 123,
+        public int $timeout = 1
+    ) {
         if ($this->port <= 0 || $this->port > 65535) {
             throw new TimeException('Port must be 0 < port < 65535');
         }
@@ -24,15 +27,15 @@ class NTPTimeProvider implements ITimeProvider
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTime()
     {
         try {
             // Create a socket and connect to NTP server
             $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-            socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $this->timeout, 'usec' => 0));
+            socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, [
+                'sec' => $this->timeout,
+                'usec' => 0,
+            ]);
             socket_connect($sock, $this->host, $this->port);
 
             // Send request
@@ -47,7 +50,7 @@ class NTPTimeProvider implements ITimeProvider
 
             // Interpret response
             $data = unpack('N12', $recv);
-            $timestamp = (int)sprintf('%u', $data[9]);
+            $timestamp = (int) sprintf('%u', $data[9]);
 
             // NTP is number of seconds since 0000 UT on 1 January 1900 Unix time is seconds since 0000 UT on 1 January 1970
             return $timestamp - 2208988800;

@@ -31,8 +31,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9",
-        "friendsofphp/php-cs-fixer": "^3.13",
-        "phpstan/phpstan": "^1.9"
+        "phpstan/phpstan": "^1.9",
+        "symplify/easy-coding-standard": "^11.3"
     },
     "suggest": {
         "bacon/bacon-qr-code": "Needed for BaconQrCodeProvider provider",
@@ -53,10 +53,10 @@
             "phpstan analyze"
         ],
         "lint": [
-            "php-cs-fixer fix -v"
+            "ecs --fix"
         ],
         "lint-ci": [
-            "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -v --dry-run --stop-on-violation"
+            "ecs"
         ],
         "test": [
             "XDEBUG_MODE=coverage phpunit"

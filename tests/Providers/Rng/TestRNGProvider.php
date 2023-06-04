@@ -8,13 +8,11 @@ use RobThree\Auth\Providers\Rng\IRNGProvider;
 
 class TestRNGProvider implements IRNGProvider
 {
-    public function __construct(private readonly bool $isSecure = false)
-    {
+    public function __construct(
+        private readonly bool $isSecure = false
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRandomBytes(int $bytecount): string
     {
         $result = '';
@@ -26,9 +24,6 @@ class TestRNGProvider implements IRNGProvider
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isCryptographicallySecure(): bool
     {
         return $this->isSecure;

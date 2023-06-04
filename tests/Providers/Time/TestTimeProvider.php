@@ -8,21 +8,13 @@ use RobThree\Auth\Providers\Time\ITimeProvider;
 
 class TestTimeProvider implements ITimeProvider
 {
-    /** @var int */
-    private $time;
-
-    /**
-     * @param int $time
-     */
-    public function __construct($time)
-    {
+    public function __construct(
+        private int $time
+    ) {
         $this->time = $time;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTime()
+    public function getTime(): int
     {
         return $this->time;
     }
