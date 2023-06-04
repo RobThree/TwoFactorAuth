@@ -31,6 +31,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9",
+        "php-parallel-lint/php-parallel-lint": "^1.3",
         "phpstan/phpstan": "^1.9",
         "symplify/easy-coding-standard": "^11.3"
     },
@@ -53,9 +54,11 @@
             "phpstan analyze"
         ],
         "lint": [
+            "parallel-lint --exclude vendor .",
             "ecs --fix"
         ],
         "lint-ci": [
+            "parallel-lint --exclude vendor .",
             "ecs"
         ],
         "test": [
