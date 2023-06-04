@@ -50,7 +50,7 @@
     },
     "scripts": {
         "phpstan": [
-            "phpstan analyze --xdebug lib tests testsDependency"
+            "phpstan analyze"
         ],
         "lint": [
             "php-cs-fixer fix -v"
