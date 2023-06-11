@@ -12,7 +12,7 @@ Argument          | Default value     | Use
 `$issuer`         | `null`            | Will be displayed in the users app as the default issuer name when using QR code to import the secret
 `$digits`         | `6`               | The number of digits the resulting codes will be
 `$period`         | `30`              | The number of seconds a code will be valid
-`$algorithm`      | `Algorithm::Sha1` | The algorithm used (one of `Algorithm::Sha1`, `Algorithm::Sha256`, `Algorithm::Sha512`, `Algorithm::md5`)
+`$algorithm`      | `Algorithm::Sha1` | The algorithm used (one of `Algorithm::Sha1`, `Algorithm::Sha256`, `Algorithm::Sha512`, `Algorithm::Md5`)
 `$qrcodeprovider` | `null`            | QR-code provider
 `$rngprovider`    | `null`            | Random Number Generator provider
 `$timeprovider`   | `null`            | Time provider
