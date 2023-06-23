@@ -49,6 +49,8 @@ If you do not want to use the default QR code provider, you can specify the one 
 ```php
 use RobThree\Auth\TwoFactorAuth;
 
+$qrCodeProvider = new YourChosenProvider();
+
 $tfa = new TwoFactorAuth(
 	issuer: "Your Company Or App Name",
  	qrcodeprovider: $qrCodeProvider
