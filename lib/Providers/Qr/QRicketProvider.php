@@ -9,8 +9,12 @@ namespace RobThree\Auth\Providers\Qr;
  */
 class QRicketProvider extends BaseHTTPQRCodeProvider
 {
-    public function __construct(public string $errorcorrectionlevel = 'L', public string $bgcolor = 'ffffff', public string $color = '000000', public string $format = 'p')
-    {
+    public function __construct(
+        public string $errorcorrectionlevel = 'L',
+        public string $bgcolor = 'ffffff',
+        public string $color = '000000',
+        public string $format = 'p'
+    ) {
         $this->verifyssl = false;
     }
 
@@ -34,14 +38,14 @@ class QRicketProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrText, int $size): string
     {
-        $queryParameters = array(
+        $queryParameters = [
             'qrsize' => $size,
             'e' => strtolower($this->errorcorrectionlevel),
             'bgdcolor' => $this->bgcolor,
             'fgdcolor' => $this->color,
             't' => strtolower($this->format),
             'd' => $qrText,
-        );
+        ];
 
         return 'http://qrickit.com/api/qr?' . http_build_query($queryParameters);
     }

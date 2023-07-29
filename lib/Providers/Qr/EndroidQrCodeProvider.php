@@ -43,7 +43,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     public function getQRCodeImage(string $qrText, int $size): string
     {
-        if (!$this->endroid4) {
+        if (! $this->endroid4) {
             return $this->qrCodeInstance($qrText, $size)->writeString();
         }
 
@@ -71,7 +71,14 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $g = hexdec($split[1]);
         $b = hexdec($split[2]);
 
-        return $this->endroid4 ? new Color($r, $g, $b, 0) : array('r' => $r, 'g' => $g, 'b' => $b, 'a' => 0);
+        return $this->endroid4
+            ? new Color($r, $g, $b, 0)
+            : [
+                'r' => $r,
+                'g' => $g,
+                'b' => $b,
+                'a' => 0,
+            ];
     }
 
     private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface|ErrorCorrectionLevel

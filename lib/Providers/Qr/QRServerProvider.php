@@ -9,8 +9,15 @@ namespace RobThree\Auth\Providers\Qr;
  */
 class QRServerProvider extends BaseHTTPQRCodeProvider
 {
-    public function __construct(protected bool $verifyssl = false, public string $errorcorrectionlevel = 'L', public int $margin = 4, public int $qzone = 1, public string $bgcolor = 'ffffff', public string $color = '000000', public string $format = 'png')
-    {
+    public function __construct(
+        protected bool $verifyssl = false,
+        public string $errorcorrectionlevel = 'L',
+        public int $margin = 4,
+        public int $qzone = 1,
+        public string $bgcolor = 'ffffff',
+        public string $color = '000000',
+        public string $format = 'png'
+    ) {
     }
 
     public function getMimeType(): string
@@ -38,7 +45,7 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrText, int $size): string
     {
-        $queryParameters = array(
+        $queryParameters = [
             'size' => $size . 'x' . $size,
             'ecc' => strtoupper($this->errorcorrectionlevel),
             'margin' => $this->margin,
@@ -47,7 +54,7 @@ class QRServerProvider extends BaseHTTPQRCodeProvider
             'color' => $this->decodeColor($this->color),
             'format' => strtolower($this->format),
             'data' => $qrText,
-        );
+        ];
 
         return 'https://api.qrserver.com/v1/create-qr-code/?' . http_build_query($queryParameters);
     }

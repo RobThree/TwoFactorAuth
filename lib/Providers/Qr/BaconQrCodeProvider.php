@@ -25,7 +25,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
         private readonly int $borderWidth = 4,
         private string|array $backgroundColour = '#ffffff',
         private string|array $foregroundColour = '#000000',
-        private string       $format = 'png',
+        private string $format = 'png',
     ) {
         $this->backgroundColour = $this->handleColour($this->backgroundColour);
         $this->foregroundColour = $this->handleColour($this->foregroundColour);
@@ -75,10 +75,10 @@ class BaconQrCodeProvider implements IQRCodeProvider
      */
     private function getQRCodeByBackend($qrText, $size, ImageBackEndInterface $backend)
     {
-        $rendererStyleArgs = array($size, $this->borderWidth);
+        $rendererStyleArgs = [$size, $this->borderWidth];
 
         if (is_array($this->foregroundColour) && is_array($this->backgroundColour)) {
-            $rendererStyleArgs = array(...$rendererStyleArgs, ...array(
+            $rendererStyleArgs = [...$rendererStyleArgs, ...[
                 null,
                 null,
                 Fill::withForegroundColor(
@@ -88,7 +88,7 @@ class BaconQrCodeProvider implements IQRCodeProvider
                     new EyeFill(null, null),
                     new EyeFill(null, null)
                 ),
-            ));
+            ]];
         }
 
         $writer = new Writer(new ImageRenderer(

@@ -18,7 +18,7 @@ class ITimeProviderTest extends TestCase
         $tpr2 = new TestTimeProvider(128);
 
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, null, $tpr1);
-        $tfa->ensureCorrectTime(array($tpr2));   // 128 - 123 = 5 => within default leniency
+        $tfa->ensureCorrectTime([$tpr2]);   // 128 - 123 = 5 => within default leniency
     }
 
     public function testEnsureCorrectTimeThrowsOnIncorrectTime(): void
@@ -30,13 +30,13 @@ class ITimeProviderTest extends TestCase
 
         $this->expectException(TwoFactorAuthException::class);
 
-        $tfa->ensureCorrectTime(array($tpr2), 0);    // We force a leniency of 0, 124-123 = 1 so this should throw
+        $tfa->ensureCorrectTime([$tpr2], 0);    // We force a leniency of 0, 124-123 = 1 so this should throw
     }
 
     public function testEnsureDefaultTimeProviderReturnsCorrectTime(): void
     {
         $this->expectNotToPerformAssertions();
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1);
-        $tfa->ensureCorrectTime(array(new TestTimeProvider(time())), 1);    // Use a leniency of 1, should the time change between both time() calls
+        $tfa->ensureCorrectTime([new TestTimeProvider(time())], 1);    // Use a leniency of 1, should the time change between both time() calls
     }
 }

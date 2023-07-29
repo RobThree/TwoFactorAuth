@@ -21,20 +21,24 @@ class TwoFactorAuth
 {
     private static string $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
 
-    /** @var array<string> */
+    /**
+     * @var array<string>
+     */
     private static array $_base32;
 
-    /** @var array<string, int> */
-    private static array $_base32lookup = array();
+    /**
+     * @var array<string, int>
+     */
+    private static array $_base32lookup = [];
 
     public function __construct(
-        private readonly ?string   $issuer = null,
-        private readonly int       $digits = 6,
-        private readonly int       $period = 30,
+        private readonly ?string $issuer = null,
+        private readonly int $digits = 6,
+        private readonly int $period = 30,
         private readonly Algorithm $algorithm = Algorithm::Sha1,
-        private ?IQRCodeProvider   $qrcodeprovider = null,
-        private ?IRNGProvider      $rngprovider = null,
-        private ?ITimeProvider     $timeprovider = null
+        private ?IQRCodeProvider $qrcodeprovider = null,
+        private ?IRNGProvider $rngprovider = null,
+        private ?ITimeProvider $timeprovider = null
     ) {
         if ($this->digits <= 0) {
             throw new TwoFactorAuthException('Digits must be > 0');
@@ -54,9 +58,9 @@ class TwoFactorAuth
     public function createSecret(int $bits = 80, bool $requirecryptosecure = true): string
     {
         $secret = '';
-        $bytes = (int)ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
+        $bytes = (int) ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
         $rngprovider = $this->getRngProvider();
-        if ($requirecryptosecure && !$rngprovider->isCryptographicallySecure()) {
+        if ($requirecryptosecure && ! $rngprovider->isCryptographicallySecure()) {
             throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
         }
         $rnd = $rngprovider->getRandomBytes($bytes);
@@ -79,7 +83,7 @@ class TwoFactorAuth
         $value = unpack('N', $hashpart);                                                   // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
 
-        return str_pad((string)($value % 10 ** $this->digits), $this->digits, '0', STR_PAD_LEFT);
+        return str_pad((string) ($value % 10 ** $this->digits), $this->digits, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -128,10 +132,10 @@ class TwoFactorAuth
     public function ensureCorrectTime(?array $timeproviders = null, int $leniency = 5): void
     {
         if ($timeproviders === null) {
-            $timeproviders = array(
+            $timeproviders = [
                 new NTPTimeProvider(),
                 new HttpTimeProvider(),
-            );
+            ];
         }
 
         // Get default time provider
@@ -139,7 +143,7 @@ class TwoFactorAuth
 
         // Iterate specified time providers
         foreach ($timeproviders as $t) {
-            if (!($t instanceof ITimeProvider)) {
+            if (! ($t instanceof ITimeProvider)) {
                 throw new TwoFactorAuthException('Object does not implement ITimeProvider');
             }
 
@@ -157,7 +161,7 @@ class TwoFactorAuth
     {
         return 'otpauth://totp/' . rawurlencode($label)
             . '?secret=' . rawurlencode($secret)
-            . '&issuer=' . rawurlencode((string)$this->issuer)
+            . '&issuer=' . rawurlencode((string) $this->issuer)
             . '&period=' . $this->period
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm->value))
             . '&digits=' . $this->digits;
@@ -223,7 +227,7 @@ class TwoFactorAuth
 
     private function getTimeSlice(?int $time = null, int $offset = 0): int
     {
-        return (int)floor($time / $this->period) + ($offset * $this->period);
+        return (int) floor($time / $this->period) + ($offset * $this->period);
     }
 
     private function base32Decode(string $value): string

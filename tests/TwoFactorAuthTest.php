@@ -38,13 +38,13 @@ class TwoFactorAuthTest extends TestCase
     public function testEnsureAllTimeProvidersReturnCorrectTime(): void
     {
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1);
-        $tfa->ensureCorrectTime(array(
+        $tfa->ensureCorrectTime([
             new NTPTimeProvider(),                         // Uses pool.ntp.org by default
             //new \RobThree\Auth\Providers\Time\NTPTimeProvider('time.google.com'),      // Somehow time.google.com and time.windows.com make travis timeout??
             new HttpTimeProvider(),                        // Uses google.com by default
             //new \RobThree\Auth\Providers\Time\HttpTimeProvider('https://github.com'),  // github.com will periodically report times that are off by more than 5 sec
             new HttpTimeProvider('https://yahoo.com'),
-        ));
+        ]);
         $this->expectNotToPerformAssertions();
     }
 
@@ -158,7 +158,7 @@ class TwoFactorAuthTest extends TestCase
         $this->assertSame('foobar', $method->invoke($tfa, 'MZXW6YTBOI'));
     }
 
-    public function testKnownTestVectors_sha1(): void
+    public function testKnownTestVectorsSha1(): void
     {
         //Known test vectors for SHA1: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';   //== base32encode('12345678901234567890')
@@ -171,7 +171,7 @@ class TwoFactorAuthTest extends TestCase
         $this->assertSame('65353130', $tfa->getCode($secret, 20000000000));
     }
 
-    public function testKnownTestVectors_sha256(): void
+    public function testKnownTestVectorsSha256(): void
     {
         //Known test vectors for SHA256: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA';   //== base32encode('12345678901234567890123456789012')
@@ -184,7 +184,7 @@ class TwoFactorAuthTest extends TestCase
         $this->assertSame('77737706', $tfa->getCode($secret, 20000000000));
     }
 
-    public function testKnownTestVectors_sha512(): void
+    public function testKnownTestVectorsSha512(): void
     {
         //Known test vectors for SHA512: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA';   //== base32encode('1234567890123456789012345678901234567890123456789012345678901234')

@@ -9,8 +9,11 @@ namespace RobThree\Auth\Providers\Qr;
  */
 class ImageChartsQRCodeProvider extends BaseHTTPQRCodeProvider
 {
-    public function __construct(protected bool $verifyssl = false, public string $errorcorrectionlevel = 'L', public int $margin = 1)
-    {
+    public function __construct(
+        protected bool $verifyssl = false,
+        public string $errorcorrectionlevel = 'L',
+        public int $margin = 1
+    ) {
     }
 
     public function getMimeType(): string
@@ -25,12 +28,12 @@ class ImageChartsQRCodeProvider extends BaseHTTPQRCodeProvider
 
     public function getUrl(string $qrText, int $size): string
     {
-        $queryParameters = array(
+        $queryParameters = [
             'cht' => 'qr',
             'chs' => ceil($size / 2) . 'x' . ceil($size / 2),
             'chld' => $this->errorcorrectionlevel . '|' . $this->margin,
             'chl' => $qrText,
-        );
+        ];
 
         return 'https://image-charts.com/chart?' . http_build_query($queryParameters);
     }
