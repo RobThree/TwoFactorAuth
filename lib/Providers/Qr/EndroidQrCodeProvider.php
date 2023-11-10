@@ -79,7 +79,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface|ErrorCorrectionLevel
     {
-        // First check for version 5 (using consts)
+        // First check for version 5 (using enums)
         if ($this->endroid5) {
             return match ($level) {
                 'L' => ErrorCorrectionLevel::Low,
