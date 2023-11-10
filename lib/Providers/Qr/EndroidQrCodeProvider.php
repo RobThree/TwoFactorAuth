@@ -79,15 +79,7 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface|ErrorCorrectionLevel
     {
-        if ($this->endroid4) {
-            return match ($level) {
-                'L' => new ErrorCorrectionLevelLow(),
-                'M' => new ErrorCorrectionLevelMedium(),
-                'Q' => new ErrorCorrectionLevelQuartile(),
-                default => new ErrorCorrectionLevelHigh(),
-            };
-        }
-
+        // First check for version 5 (using consts)
         if ($this->endroid5) {
             return match ($level) {
                 'L' => ErrorCorrectionLevel::Low,
@@ -97,7 +89,17 @@ class EndroidQrCodeProvider implements IQRCodeProvider
             };
         }
 
-        // Assuming this is for version EndroidQR < 4
+        // If not check for version 4 (using classes)
+        if ($this->endroid4) {
+            return match ($level) {
+                'L' => new ErrorCorrectionLevelLow(),
+                'M' => new ErrorCorrectionLevelMedium(),
+                'Q' => new ErrorCorrectionLevelQuartile(),
+                default => new ErrorCorrectionLevelHigh(),
+            };
+        }
+
+        // Any other version will be using strings
         return match ($level) {
             'L' => ErrorCorrectionLevel::LOW(),
             'M' => ErrorCorrectionLevel::MEDIUM(),
