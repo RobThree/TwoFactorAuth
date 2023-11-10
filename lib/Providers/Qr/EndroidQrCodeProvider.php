@@ -26,9 +26,12 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     protected $endroid4 = false;
 
+    protected $endroid5 = false;
+
     public function __construct($bgcolor = 'ffffff', $color = '000000', $margin = 0, $errorcorrectionlevel = 'H')
     {
         $this->endroid4 = method_exists(QrCode::class, 'create');
+        $this->endroid5 = enum_exists(ErrorCorrectionLevel::class);
 
         $this->bgcolor = $this->handleColor($bgcolor);
         $this->color = $this->handleColor($color);
@@ -76,11 +79,30 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     private function handleErrorCorrectionLevel(string $level): ErrorCorrectionLevelInterface|ErrorCorrectionLevel
     {
+        if ($this->endroid4) {
+            return match ($level) {
+                'L' => new ErrorCorrectionLevelLow(),
+                'M' => new ErrorCorrectionLevelMedium(),
+                'Q' => new ErrorCorrectionLevelQuartile(),
+                default => new ErrorCorrectionLevelHigh(),
+            };
+        }
+
+        if ($this->endroid5) {
+            return match ($level) {
+                'L' => ErrorCorrectionLevel::Low,
+                'M' => ErrorCorrectionLevel::Medium,
+                'Q' => ErrorCorrectionLevel::Quartile,
+                default => ErrorCorrectionLevel::High,
+            };
+        }
+
+        // Assuming this is for version EndroidQR < 4
         return match ($level) {
-            'L' => $this->endroid4 ? new ErrorCorrectionLevelLow() : ErrorCorrectionLevel::LOW(),
-            'M' => $this->endroid4 ? new ErrorCorrectionLevelMedium() : ErrorCorrectionLevel::MEDIUM(),
-            'Q' => $this->endroid4 ? new ErrorCorrectionLevelQuartile() : ErrorCorrectionLevel::QUARTILE(),
-            default => $this->endroid4 ? new ErrorCorrectionLevelHigh() : ErrorCorrectionLevel::HIGH(),
+            'L' => ErrorCorrectionLevel::LOW(),
+            'M' => ErrorCorrectionLevel::MEDIUM(),
+            'Q' => ErrorCorrectionLevel::QUARTILE(),
+            default => ErrorCorrectionLevel::HIGH(),
         };
     }
 }
