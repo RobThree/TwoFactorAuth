@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.1', '8.2']
-        endroid-version: ["^4"]
+        endroid-version: ["^3","^4","^5"]
 
     steps:
     - uses: actions/checkout@v3
@@ -25,7 +25,7 @@ jobs:
 
     - uses: ramsey/composer-install@v2
 
-    - run: composer require endroid/qrcode:${{ matrix.endroid-version }}
+    - run: composer require endroid/qrcode:${{ matrix.endroid-version }} -W
 
     - run: composer lint-ci
     - run: composer test testsDependency/EndroidQRCodeTest.php
