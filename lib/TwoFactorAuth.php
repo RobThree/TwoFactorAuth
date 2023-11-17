@@ -155,8 +155,8 @@ class TwoFactorAuth
      */
     public function getQRText(string $label, string $secret): string
     {
-        return 'otpauth://totp/' . rawurlencode($label)
-            . '?secret=' . rawurlencode($secret)
+        return 'otpauth://totp/' . rawurlencode((string)$label)
+            . '?secret=' . rawurlencode((string)$secret)
             . '&issuer=' . rawurlencode((string)$this->issuer)
             . '&period=' . $this->period
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm->value))
