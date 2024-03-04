@@ -34,7 +34,7 @@ class IRNGProviderTest extends TestCase
         $rng = new TestRNGProvider(true);
 
         $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, null, $rng);
-        $this->assertSame('ABCDEFGHIJKLMNOP', $tfa->createSecret());
+        $this->assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', $tfa->createSecret());
     }
 
     public function testCreateSecretGeneratesDesiredAmountOfEntropy(): void
