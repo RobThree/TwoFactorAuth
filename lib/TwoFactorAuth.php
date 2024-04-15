@@ -7,9 +7,7 @@ namespace RobThree\Auth;
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use RobThree\Auth\Providers\Qr\QRServerProvider;
 use RobThree\Auth\Providers\Rng\CSRNGProvider;
-use RobThree\Auth\Providers\Rng\HashRNGProvider;
 use RobThree\Auth\Providers\Rng\IRNGProvider;
-use RobThree\Auth\Providers\Rng\OpenSSLRNGProvider;
 use RobThree\Auth\Providers\Time\HttpTimeProvider;
 use RobThree\Auth\Providers\Time\ITimeProvider;
 use RobThree\Auth\Providers\Time\LocalMachineTimeProvider;
@@ -51,14 +49,11 @@ class TwoFactorAuth
     /**
      * Create a new secret
      */
-    public function createSecret(int $bits = 80, bool $requirecryptosecure = true): string
+    public function createSecret(int $bits = 80): string
     {
         $secret = '';
         $bytes = (int)ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
         $rngprovider = $this->getRngProvider();
-        if ($requirecryptosecure && !$rngprovider->isCryptographicallySecure()) {
-            throw new TwoFactorAuthException('RNG provider is not cryptographically secure');
-        }
         $rnd = $rngprovider->getRandomBytes($bytes);
         for ($i = 0; $i < $bytes; $i++) {
             $secret .= self::$_base32[ord($rnd[$i]) & 31];  //Mask out left 3 bits for 0-31 values
@@ -174,19 +169,7 @@ class TwoFactorAuth
      */
     public function getRngProvider(): IRNGProvider
     {
-        if ($this->rngprovider !== null) {
-            return $this->rngprovider;
-        }
-        if (function_exists('random_bytes')) {
-            return $this->rngprovider = new CSRNGProvider();
-        }
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            return $this->rngprovider = new OpenSSLRNGProvider();
-        }
-        if (function_exists('hash')) {
-            return $this->rngprovider = new HashRNGProvider();
-        }
-        throw new TwoFactorAuthException('Unable to find a suited RNGProvider');
+        return $this->rngprovider ?? new CSRNGProvider();
     }
 
     public function getTimeProvider(): ITimeProvider

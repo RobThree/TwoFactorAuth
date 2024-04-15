@@ -25,12 +25,4 @@ class TestRNGProvider implements IRNGProvider
 
         return $result;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isCryptographicallySecure(): bool
-    {
-        return $this->isSecure;
-    }
 }

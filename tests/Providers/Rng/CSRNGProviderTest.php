@@ -21,7 +21,6 @@ class CSRNGProviderTest extends TestCase
             foreach ($this->rngTestLengths as $l) {
                 $this->assertSame($l, strlen($rng->getRandomBytes($l)));
             }
-            $this->assertTrue($rng->isCryptographicallySecure());
         } else {
             $this->expectNotToPerformAssertions();
         }
