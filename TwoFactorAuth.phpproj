@@ -15,7 +15,7 @@
     <PHPDevHostName>localhost</PHPDevHostName>
     <IISProjectUrl>http://localhost:41315/</IISProjectUrl>
     <Runtime>PHP</Runtime>
-    <RuntimeVersion>8.1</RuntimeVersion>
+    <RuntimeVersion>8.2</RuntimeVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <IncludeDebugInformation>true</IncludeDebugInformation>

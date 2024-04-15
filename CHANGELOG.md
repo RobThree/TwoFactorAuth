@@ -1,5 +1,17 @@
 # RobThree\TwoFactorAuth changelog
 
+# Version 3.x
+
+## Breaking changes
+
+### PHP Version
+
+Version 3.x requires at least PHP 8.2.
+
+### Add SensitiveParameter
+
+The new attribute SensitiveParameter was added to the code, to prevent accidental leak of secrets in stack traces.
+
 # Version 2.x
 
 ## Breaking changes
