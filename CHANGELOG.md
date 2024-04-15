@@ -8,9 +8,9 @@
 
 Version 3.x requires at least PHP 8.2.
 
-### Add SensitiveParameter
+## Other changes
 
-The new attribute SensitiveParameter was added to the code, to prevent accidental leak of secrets in stack traces.
+* The new PHP attribute SensitiveParameter was added to the code, to prevent accidental leak of secrets in stack traces.
 
 # Version 2.x
 
