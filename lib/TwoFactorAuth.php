@@ -14,6 +14,7 @@ use RobThree\Auth\Providers\Time\HttpTimeProvider;
 use RobThree\Auth\Providers\Time\ITimeProvider;
 use RobThree\Auth\Providers\Time\LocalMachineTimeProvider;
 use RobThree\Auth\Providers\Time\NTPTimeProvider;
+use SensitiveParameter;
 
 // Based on / inspired by: https://github.com/PHPGangsta/GoogleAuthenticator
 // Algorithms, digits, period etc. explained: https://github.com/google/google-authenticator/wiki/Key-Uri-Format
@@ -69,7 +70,7 @@ class TwoFactorAuth
     /**
      * Calculate the code with given secret and point in time
      */
-    public function getCode(#[\SensitiveParameter] string $secret, ?int $time = null): string
+    public function getCode(#[SensitiveParameter] string $secret, ?int $time = null): string
     {
         $secretkey = $this->base32Decode($secret);
 
@@ -107,7 +108,7 @@ class TwoFactorAuth
     /**
      * Get data-uri of QRCode
      */
-    public function getQRCodeImageAsDataUri(string $label, #[\SensitiveParameter] string $secret, int $size = 200): string
+    public function getQRCodeImageAsDataUri(string $label, #[SensitiveParameter] string $secret, int $size = 200): string
     {
         if ($size <= 0) {
             throw new TwoFactorAuthException('Size must be > 0');
@@ -153,7 +154,7 @@ class TwoFactorAuth
     /**
      * Builds a string to be encoded in a QR code
      */
-    public function getQRText(string $label, #[\SensitiveParameter] string $secret): string
+    public function getQRText(string $label, #[SensitiveParameter] string $secret): string
     {
         return 'otpauth://totp/' . rawurlencode($label)
             . '?secret=' . rawurlencode($secret)
