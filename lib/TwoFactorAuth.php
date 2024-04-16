@@ -169,7 +169,7 @@ class TwoFactorAuth
      */
     public function getRngProvider(): IRNGProvider
     {
-        return $this->rngprovider ?? new CSRNGProvider();
+        return $this->rngprovider ??= new CSRNGProvider();
     }
 
     public function getTimeProvider(): ITimeProvider
