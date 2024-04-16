@@ -41,6 +41,7 @@ If you need more in-depth information about the configuration available then you
 ## Integrations
 
 - [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth)
+- [CI4-Auth: a user, group, role and permission management library for Codeigniter 4](https://github.com/glewe/ci4-auth)
 
 ## License
 
