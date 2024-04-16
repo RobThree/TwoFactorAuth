@@ -72,9 +72,7 @@
             "/.gitignore",
             "/logo.png",
             "/multifactorauthforeveryone.png",
-            "/phpunit.xml",
-            "/TwoFactorAuth.phpproj",
-            "/TwoFactorAuth.sln"
+            "/phpunit.xml"
         ]
     }
 }
