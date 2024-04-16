@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace RobThree\Auth;
 
+use function hash_equals;
+
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use RobThree\Auth\Providers\Qr\QRServerProvider;
 use RobThree\Auth\Providers\Rng\CSRNGProvider;
@@ -93,7 +95,7 @@ class TwoFactorAuth
         for ($i = -$discrepancy; $i <= $discrepancy; $i++) {
             $ts = $timestamp + ($i * $this->period);
             $slice = $this->getTimeSlice($ts);
-            $timeslice = $this->codeEquals($this->getCode($secret, $ts), $code) ? $slice : $timeslice;
+            $timeslice = hash_equals($this->getCode($secret, $ts), $code) ? $slice : $timeslice;
         }
 
         return $timeslice > 0;
@@ -176,27 +178,6 @@ class TwoFactorAuth
     {
         // Set default time provider if none was specified
         return $this->timeprovider ??= new LocalMachineTimeProvider();
-    }
-
-    /**
-     * Timing-attack safe comparison of 2 codes (see http://blog.ircmaxell.com/2014/11/its-all-about-time.html)
-     */
-    private function codeEquals(string $safe, string $user): bool
-    {
-        if (function_exists('hash_equals')) {
-            return hash_equals($safe, $user);
-        }
-        // In general, it's not possible to prevent length leaks. So it's OK to leak the length. The important part is that
-        // we don't leak information about the difference of the two strings.
-        if (strlen($safe) === strlen($user)) {
-            $result = 0;
-            $strlen = strlen($safe);
-            for ($i = 0; $i < $strlen; $i++) {
-                $result |= (ord($safe[$i]) ^ ord($user[$i]));
-            }
-            return $result === 0;
-        }
-        return false;
     }
 
     private function getTime(?int $time = null): int
