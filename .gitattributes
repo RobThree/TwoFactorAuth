@@ -10,5 +10,3 @@
 /multifactorauthforeveryone.png export-ignore
 /phpstan.neon export-ignore
 /phpunit.xml export-ignore
-/TwoFactorAuth.phpproj export-ignore
-/TwoFactorAuth.sln export-ignore
