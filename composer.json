@@ -61,18 +61,5 @@
         "test": [
             "XDEBUG_MODE=coverage phpunit"
         ]
-    },
-    "archive": {
-        "exclude": [
-            "/.github/",
-            "/demo/",
-            "/docs/",
-            "/tests/",
-            "/testsDependency/",
-            "/.gitignore",
-            "/logo.png",
-            "/multifactorauthforeveryone.png",
-            "/phpunit.xml"
-        ]
     }
 }
