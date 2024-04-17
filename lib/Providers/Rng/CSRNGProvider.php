@@ -13,12 +13,4 @@ class CSRNGProvider implements IRNGProvider
     {
         return random_bytes($bytecount);    // PHP7+
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isCryptographicallySecure(): bool
-    {
-        return true;
-    }
 }

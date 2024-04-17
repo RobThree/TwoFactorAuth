@@ -17,9 +17,8 @@ You can make use of the included [Endroid](https://robthree.github.io/TwoFactorA
 
 ## Requirements
 
-* Requires PHP version >=8.1
+* Requires PHP version >=8.2
 * [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
-* [random_bytes()](http://php.net/manual/en/function.random-bytes.php), [OpenSSL](http://php.net/manual/en/book.openssl.php) or [Hash](http://php.net/manual/en/book.hash.php) depending on which built-in RNG you use (TwoFactorAuth will try to 'autodetect' and use the best available); however: feel free to provide your own (CS)RNG.
 
 Optionally, you may need:
 
@@ -42,6 +41,7 @@ If you need more in-depth information about the configuration available then you
 ## Integrations
 
 - [CakePHP 3](https://github.com/andrej-griniuk/cakephp-two-factor-auth)
+- [CI4-Auth: a user, group, role and permission management library for Codeigniter 4](https://github.com/glewe/ci4-auth)
 
 ## License
 
