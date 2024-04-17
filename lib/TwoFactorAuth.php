@@ -52,7 +52,7 @@ class TwoFactorAuth
     /**
      * Create a new secret
      */
-    public function createSecret(int $bits = 80): string
+    public function createSecret(int $bits = 160): string
     {
         $secret = '';
         $bytes = (int)ceil($bits / 5);   // We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
