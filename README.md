@@ -17,7 +17,7 @@ You can make use of the included [Endroid](https://robthree.github.io/TwoFactorA
 
 ## Requirements
 
-* Requires PHP version >=8.1
+* Requires PHP version >=8.2
 * [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 
 Optionally, you may need:
