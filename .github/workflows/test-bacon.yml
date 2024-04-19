@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         php-version: ['8.2', '8.3']
+        bacon-version: ['^2', '^3']
 
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +25,7 @@ jobs:
 
     - uses: ramsey/composer-install@v2
 
-    - run: composer require bacon/bacon-qr-code
+    - run: composer require bacon/bacon-qr-code:${{ matrix.bacon-version }}
 
     - run: composer lint-ci
     - run: composer test testsDependency/BaconQRCodeTest.php
