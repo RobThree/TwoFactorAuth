@@ -23,7 +23,7 @@ jobs:
         coverage: xdebug
         ini-values: error_reporting=E_ALL
 
-    - uses: ramsey/composer-install@v2
+    - uses: ramsey/composer-install@v3
 
     - run: composer require bacon/bacon-qr-code:${{ matrix.bacon-version }}
 
