@@ -23,7 +23,7 @@ composer require robthree/twofactorauth
 
 `TwoFactorAuth` constructor requires an object able to provide a QR Code image. It is the only mandatory argument. This lets you select your preferred QR Code generator/library.
 
-See [QR code providers documentation](docs/qr-codes.md) for more information about the different possibilites.
+See [QR code providers documentation](qr-codes.md) for more information about the different possibilites.
 
 Example code:
 
@@ -36,7 +36,7 @@ use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider; // if using Endroid
 $tfa = new TwoFactorAuth(new BaconQrCodeProvider());
 // using Endroid
 $tfa = new TwoFactorAuth(new EndroidQrCodeProvider());
-// using a custom object
+// using a custom object implementing IQRCodeProvider interface
 $tfa = new TwoFactorAuth(new MyQrCodeProvider());
 // using named argument and a variable
 $tfa = new TwoFactorAuth(qrcodeprovider: $qrGenerator);
