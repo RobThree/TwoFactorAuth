@@ -7,7 +7,7 @@ title: QR Server
 
 Argument                | Default value
 ------------------------|---------------
-`$verifyssl`            | `false`
+`$verifyssl`            | `true`
 `$errorcorrectionlevel` | `'L'`
 `$margin`               | `4`
 `$qzone`                | `1`

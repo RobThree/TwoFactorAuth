@@ -9,9 +9,8 @@ namespace RobThree\Auth\Providers\Qr;
  */
 class QRicketProvider extends BaseHTTPQRCodeProvider
 {
-    public function __construct(public string $errorcorrectionlevel = 'L', public string $bgcolor = 'ffffff', public string $color = '000000', public string $format = 'p')
+    public function __construct(protected bool $verifyssl = true, public string $errorcorrectionlevel = 'L', public string $bgcolor = 'ffffff', public string $color = '000000', public string $format = 'p')
     {
-        $this->verifyssl = false;
     }
 
     public function getMimeType(): string

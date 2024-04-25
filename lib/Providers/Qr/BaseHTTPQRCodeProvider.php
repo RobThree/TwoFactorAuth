@@ -6,7 +6,7 @@ namespace RobThree\Auth\Providers\Qr;
 
 abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
 {
-    protected bool $verifyssl;
+    protected bool $verifyssl = true;
 
     protected function getContent(string $url): string|bool
     {
