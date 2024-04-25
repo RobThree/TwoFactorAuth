@@ -11,6 +11,7 @@ use RobThree\Auth\Providers\Time\HttpTimeProvider;
 use RobThree\Auth\Providers\Time\NTPTimeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
+use Tests\Providers\Qr\TestQrProvider;
 
 class TwoFactorAuthTest extends TestCase
 {
@@ -18,26 +19,26 @@ class TwoFactorAuthTest extends TestCase
     {
         $this->expectException(TwoFactorAuthException::class);
 
-        new TwoFactorAuth('Test', 0);
+        new TwoFactorAuth(new TestQrProvider(), 'Test', 0);
     }
 
     public function testConstructorThrowsOnInvalidPeriod(): void
     {
         $this->expectException(TwoFactorAuthException::class);
 
-        new TwoFactorAuth('Test', 6, 0);
+        new TwoFactorAuth(new TestQrProvider(), 'Test', 6, 0);
     }
 
     public function testGetCodeReturnsCorrectResults(): void
     {
-        $tfa = new TwoFactorAuth('Test');
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test');
         $this->assertSame('543160', $tfa->getCode('VMR466AB62ZBOKHE', 1426847216));
         $this->assertSame('538532', $tfa->getCode('VMR466AB62ZBOKHE', 0));
     }
 
     public function testEnsureAllTimeProvidersReturnCorrectTime(): void
     {
-        $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1);
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test', 6, 30, Algorithm::Sha1);
         $tfa->ensureCorrectTime(array(
             new NTPTimeProvider(),                         // Uses pool.ntp.org by default
             //new \RobThree\Auth\Providers\Time\NTPTimeProvider('time.google.com'),      // Somehow time.google.com and time.windows.com make travis timeout??
@@ -50,7 +51,7 @@ class TwoFactorAuthTest extends TestCase
 
     public function testVerifyCodeWorksCorrectly(): void
     {
-        $tfa = new TwoFactorAuth('Test', 6, 30);
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test', 6, 30);
         $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 1, 1426847190));
         $this->assertTrue($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 + 29));    //Test discrepancy
         $this->assertFalse($tfa->verifyCode('VMR466AB62ZBOKHE', '543160', 0, 1426847190 + 30));    //Test discrepancy
@@ -69,7 +70,7 @@ class TwoFactorAuthTest extends TestCase
 
     public function testVerifyCorrectTimeSliceIsReturned(): void
     {
-        $tfa = new TwoFactorAuth('Test', 6, 30);
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test', 6, 30);
 
         // We test with discrepancy 3 (so total of 7 codes: c-3, c-2, c-1, c, c+1, c+2, c+3
         // Ensure each corresponding timeslice is returned correctly
@@ -95,7 +96,7 @@ class TwoFactorAuthTest extends TestCase
 
     public function testGetCodeThrowsOnInvalidBase32String1(): void
     {
-        $tfa = new TwoFactorAuth('Test');
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test');
 
         $this->expectException(TwoFactorAuthException::class);
 
@@ -104,7 +105,7 @@ class TwoFactorAuthTest extends TestCase
 
     public function testGetCodeThrowsOnInvalidBase32String2(): void
     {
-        $tfa = new TwoFactorAuth('Test');
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test');
 
         $this->expectException(TwoFactorAuthException::class);
 
@@ -124,7 +125,7 @@ class TwoFactorAuthTest extends TestCase
         // "In general, you don't want to break any encapsulation for the sake of testing (or as Mom used to say, "don't
         // expose your privates!"). Most of the time, you should be able to test a class by exercising its public methods."
         //                                                           Dave Thomas and Andy Hunt -- "Pragmatic Unit Testing
-        $tfa = new TwoFactorAuth('Test');
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test');
 
         $method = new ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
 
@@ -144,7 +145,7 @@ class TwoFactorAuthTest extends TestCase
         // This test ensures that strings without the padding-char ('=') are also decoded correctly.
         // https://tools.ietf.org/html/rfc4648#page-4:
         //   "In some circumstances, the use of padding ("=") in base-encoded data is not required or used."
-        $tfa = new TwoFactorAuth('Test');
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test');
 
         $method = new ReflectionMethod(TwoFactorAuth::class, 'base32Decode');
 
@@ -162,7 +163,7 @@ class TwoFactorAuthTest extends TestCase
     {
         //Known test vectors for SHA1: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';   //== base32encode('12345678901234567890')
-        $tfa = new TwoFactorAuth('Test', 8, 30, Algorithm::Sha1);
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test', 8, 30, Algorithm::Sha1);
         $this->assertSame('94287082', $tfa->getCode($secret, 59));
         $this->assertSame('07081804', $tfa->getCode($secret, 1111111109));
         $this->assertSame('14050471', $tfa->getCode($secret, 1111111111));
@@ -175,7 +176,7 @@ class TwoFactorAuthTest extends TestCase
     {
         //Known test vectors for SHA256: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA';   //== base32encode('12345678901234567890123456789012')
-        $tfa = new TwoFactorAuth('Test', 8, 30, Algorithm::Sha256);
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test', 8, 30, Algorithm::Sha256);
         $this->assertSame('46119246', $tfa->getCode($secret, 59));
         $this->assertSame('68084774', $tfa->getCode($secret, 1111111109));
         $this->assertSame('67062674', $tfa->getCode($secret, 1111111111));
@@ -188,7 +189,7 @@ class TwoFactorAuthTest extends TestCase
     {
         //Known test vectors for SHA512: https://tools.ietf.org/html/rfc6238#page-15
         $secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA';   //== base32encode('1234567890123456789012345678901234567890123456789012345678901234')
-        $tfa = new TwoFactorAuth('Test', 8, 30, Algorithm::Sha512);
+        $tfa = new TwoFactorAuth(new TestQrProvider(), 'Test', 8, 30, Algorithm::Sha512);
         $this->assertSame('90693936', $tfa->getCode($secret, 59));
         $this->assertSame('25091201', $tfa->getCode($secret, 1111111109));
         $this->assertSame('99943326', $tfa->getCode($secret, 1111111111));
