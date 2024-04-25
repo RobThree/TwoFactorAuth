@@ -5,7 +5,7 @@ title: QR Codes
 
 An alternative way of communicating the secret to the user is through the use of [QR Codes](http://en.wikipedia.org/wiki/QR_code) which most if not all authenticator mobile apps can scan.
 
-This can avoid accidental typing errors and also pre-set some text values within the users app.
+This can avoid accidental typing errors and also pre-set some text values within the two factor authentication mobile application.
 
 You can display the QR Code as a base64 encoded image using the instance as follows, supplying the users name or other public identifier as the first argument
 
@@ -15,8 +15,6 @@ You can display the QR Code as a base64 encoded image using the instance as foll
 ````
 
 You can also specify a size as a third argument which is 200 by default.
-
-**Note:** by default, the QR code returned by the instance is generated from a third party across the internet. If the third party is encountering problems or is not available from where you have hosted your code, your user will likely experience a delay in seeing the QR code, if it even loads at all. This can be overcome with offline providers configured when you create the instance.
 
 ## Offline Providers
 
