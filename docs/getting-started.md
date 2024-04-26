@@ -8,16 +8,8 @@ title: Getting Started
 The best way of making use of this project is by installing it with [composer](https://getcomposer.org/doc/01-basic-usage.md).
 
 ```
-php composer.phar require robthree/twofactorauth
-```
-
-or if you have composer installed globally
-
-```
 composer require robthree/twofactorauth
 ```
-
-**Note:** If you are not using a composer-aware framework, you should [include the composer loader yourself](https://getcomposer.org/doc/01-basic-usage.md#autoloading).
 
 ## 2. Create an instance
 
