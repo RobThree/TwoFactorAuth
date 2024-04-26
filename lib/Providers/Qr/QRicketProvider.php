@@ -43,6 +43,6 @@ class QRicketProvider extends BaseHTTPQRCodeProvider
             'd' => $qrText,
         );
 
-        return 'http://qrickit.com/api/qr?' . http_build_query($queryParameters);
+        return 'https://qrickit.com/api/qr?' . http_build_query($queryParameters);
     }
 }
