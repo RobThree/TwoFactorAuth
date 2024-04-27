@@ -20,7 +20,7 @@ use RobThree\Auth\Providers\Qr\QRServerProvider;
 $tfa = new TwoFactorAuth(new QRServerProvider());
 ~~~
 
-If you provided one before, the order of the parameters have been changed, so simply move the QRCodeProvider argument to the first place.
+If you provided one before, the order of the parameters have been changed, so simply move the QRCodeProvider argument to the first place or use named arguments.
 
 Documentation on selecting a QR Code Provider is available here: [QR Code Provider documentation](https://robthree.github.io/TwoFactorAuth/qr-codes.html).
 
