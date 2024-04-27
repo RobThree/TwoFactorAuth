@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\Providers\Qr\HandlesDataUri;
+use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RuntimeException;
 
@@ -15,11 +16,17 @@ class BaconQRCodeTest extends TestCase
 {
     use HandlesDataUri;
 
+    protected IQRCodeProvider $qr;
+
+    protected function setUp(): void
+    {
+        $this->qr = new BaconQrCodeProvider(1, '#000', '#FFF', 'svg');
+        ;
+    }
+
     public function testDependency(): void
     {
-        $qr = new BaconQrCodeProvider(1, '#000', '#FFF', 'svg');
-
-        $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, Algorithm::Sha1, $qr);
+        $tfa = new TwoFactorAuth($this->qr, 'Test&Issuer', 6, 30, Algorithm::Sha1);
 
         $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
         $this->assertSame('image/svg+xml', $data['mimetype']);

@@ -7,6 +7,7 @@ namespace Tests\Providers\Qr;
 use PHPUnit\Framework\TestCase;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\HandlesDataUri;
+use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
 
@@ -14,11 +15,16 @@ class IQRCodeProviderTest extends TestCase
 {
     use HandlesDataUri;
 
+    protected IQRCodeProvider $qr;
+
+    protected function setUp(): void
+    {
+        $this->qr = new TestQrProvider();
+    }
+
     public function testTotpUriIsCorrect(): void
     {
-        $qr = new TestQrProvider();
-
-        $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, Algorithm::Sha1, $qr);
+        $tfa = new TwoFactorAuth($this->qr, 'Test&Issuer', 6, 30, Algorithm::Sha1);
         $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
         $this->assertSame('test/test', $data['mimetype']);
         $this->assertSame('base64', $data['encoding']);
@@ -27,14 +33,12 @@ class IQRCodeProviderTest extends TestCase
 
     public function testTotpUriIsCorrectNoIssuer(): void
     {
-        $qr = new TestQrProvider();
-
         /**
          * The library specifies the issuer is null by default however in PHP 8.1
          * there is a deprecation warning for passing null as a string argument to rawurlencode
          */
 
-        $tfa = new TwoFactorAuth(null, 6, 30, Algorithm::Sha1, $qr);
+        $tfa = new TwoFactorAuth($this->qr, null, 6, 30, Algorithm::Sha1);
         $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
         $this->assertSame('test/test', $data['mimetype']);
         $this->assertSame('base64', $data['encoding']);
@@ -43,9 +47,7 @@ class IQRCodeProviderTest extends TestCase
 
     public function testGetQRCodeImageAsDataUriThrowsOnInvalidSize(): void
     {
-        $qr = new TestQrProvider();
-
-        $tfa = new TwoFactorAuth('Test', 6, 30, Algorithm::Sha1, $qr);
+        $tfa = new TwoFactorAuth($this->qr, 'Test', 6, 30, Algorithm::Sha1);
 
         $this->expectException(TwoFactorAuthException::class);
 

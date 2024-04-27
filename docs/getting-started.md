@@ -8,26 +8,31 @@ title: Getting Started
 The best way of making use of this project is by installing it with [composer](https://getcomposer.org/doc/01-basic-usage.md).
 
 ```
-php composer.phar require robthree/twofactorauth
-```
-
-or if you have composer installed globally
-
-```
 composer require robthree/twofactorauth
 ```
 
 ## 2. Create an instance
 
-Now you can create an instance for use with your code
+`TwoFactorAuth` constructor requires an object able to provide a QR Code image. It is the only mandatory argument. This lets you select your preferred QR Code generator/library.
+
+See [QR code providers documentation](qr-codes.md) for more information about the different possibilites.
+
+Example code:
 
 ```php
 use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\Providers\Qr\BaconQrCodeProvider; // if using Bacon
+use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider; // if using Endroid
 
-$tfa = new TwoFactorAuth();
+// using Bacon
+$tfa = new TwoFactorAuth(new BaconQrCodeProvider());
+// using Endroid
+$tfa = new TwoFactorAuth(new EndroidQrCodeProvider());
+// using a custom object implementing IQRCodeProvider interface
+$tfa = new TwoFactorAuth(new MyQrCodeProvider());
+// using named argument and a variable
+$tfa = new TwoFactorAuth(qrcodeprovider: $qrGenerator);
 ```
-
-**Note:** if you are not using a framework that uses composer, you should [include the composer loader yourself](https://getcomposer.org/doc/01-basic-usage.md#autoloading)
 
 ## 3. Shared secrets
 

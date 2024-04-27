@@ -17,7 +17,7 @@ class EndroidQRCodeTest extends TestCase
     public function testDependency(): void
     {
         $qr = new EndroidQrCodeProvider();
-        $tfa = new TwoFactorAuth('Test&Issuer', 6, 30, Algorithm::Sha1, $qr);
+        $tfa = new TwoFactorAuth($qr, 'Test&Issuer', 6, 30, Algorithm::Sha1);
         $data = $this->DecodeDataUri($tfa->getQRCodeImageAsDataUri('Test&Label', 'VMR466AB62ZBOKHE'));
         $this->assertSame('image/png', $data['mimetype']);
         $this->assertSame('base64', $data['encoding']);

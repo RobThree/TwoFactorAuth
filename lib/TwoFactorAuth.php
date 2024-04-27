@@ -7,7 +7,6 @@ namespace RobThree\Auth;
 use function hash_equals;
 
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
-use RobThree\Auth\Providers\Qr\QRServerProvider;
 use RobThree\Auth\Providers\Rng\CSRNGProvider;
 use RobThree\Auth\Providers\Rng\IRNGProvider;
 use RobThree\Auth\Providers\Time\HttpTimeProvider;
@@ -29,11 +28,11 @@ class TwoFactorAuth
     private static array $_base32lookup = array();
 
     public function __construct(
+        private IQRCodeProvider    $qrcodeprovider,
         private readonly ?string   $issuer = null,
         private readonly int       $digits = 6,
         private readonly int       $period = 30,
         private readonly Algorithm $algorithm = Algorithm::Sha1,
-        private ?IQRCodeProvider   $qrcodeprovider = null,
         private ?IRNGProvider      $rngprovider = null,
         private ?ITimeProvider     $timeprovider = null
     ) {
@@ -111,11 +110,10 @@ class TwoFactorAuth
             throw new TwoFactorAuthException('Size must be > 0');
         }
 
-        $qrcodeprovider = $this->getQrCodeProvider();
         return 'data:'
-            . $qrcodeprovider->getMimeType()
+            . $this->qrcodeprovider->getMimeType()
             . ';base64,'
-            . base64_encode($qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
+            . base64_encode($this->qrcodeprovider->getQRCodeImage($this->getQRText($label, $secret), $size));
     }
 
     /**
@@ -159,12 +157,6 @@ class TwoFactorAuth
             . '&period=' . $this->period
             . '&algorithm=' . rawurlencode(strtoupper($this->algorithm->value))
             . '&digits=' . $this->digits;
-    }
-
-    public function getQrCodeProvider(): IQRCodeProvider
-    {
-        // Set default QR Code provider if none was specified
-        return $this->qrcodeprovider ??= new QRServerProvider();
     }
 
     /**
