@@ -30,7 +30,7 @@ The default secret length has been increased from 80 bits to 160 bits (RFC4226) 
 
 Previously a secret was 16 characters, now it needs to be stored in a 32 characters width column.
 
-You can keep the old behavior by setting `80` as argument to `createSecret()` (not recommended).
+You can keep the old behavior by setting `80` as argument to `createSecret()` (not recommended, see [#117](https://github.com/RobThree/TwoFactorAuth/pull/117) for further discussion).
 
 ## Other changes
 
