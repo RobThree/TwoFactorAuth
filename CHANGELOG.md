@@ -10,9 +10,9 @@ Version 3.x requires at least PHP 8.2.
 
 ### Constructor signature change
 
-In order to ensure users of this library make a conscious choice of QR Code Provider, the QR Code Provider is now a mandatory argument.
+In order to ensure users of this library make a conscious choice of QR Code Provider, the QR Code Provider is now a mandatory argument, in first place.
 
-If you didn't provide one explicitely before, you can get the old behavior with:
+If you didn't provide one explicitly before, you can get the old behavior with:
 
 ~~~php
 use RobThree\Auth\TwoFactorAuth;
@@ -20,7 +20,7 @@ use RobThree\Auth\Providers\Qr\QRServerProvider;
 $tfa = new TwoFactorAuth(new QRServerProvider());
 ~~~
 
-If you provided one before, the order of the paramaters have been changed, so simply move the QRCodeProvider argument to the first place.
+If you provided one before, the order of the parameters have been changed, so simply move the QRCodeProvider argument to the first place.
 
 Documentation on selecting a QR Code Provider is available here: [QR Code Provider documentation](https://robthree.github.io/TwoFactorAuth/qr-codes.html).
 
