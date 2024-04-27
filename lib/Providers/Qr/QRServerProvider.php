@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace RobThree\Auth\Providers\Qr;
 
 /**
- * Use http://goqr.me/api/doc/create-qr-code/ to get QR code
+ * Use https://goqr.me/api/doc/create-qr-code/ to get QR code
  */
 class QRServerProvider extends BaseHTTPQRCodeProvider
 {
-    public function __construct(protected bool $verifyssl = false, public string $errorcorrectionlevel = 'L', public int $margin = 4, public int $qzone = 1, public string $bgcolor = 'ffffff', public string $color = '000000', public string $format = 'png')
+    public function __construct(protected bool $verifyssl = true, public string $errorcorrectionlevel = 'L', public int $margin = 4, public int $qzone = 1, public string $bgcolor = 'ffffff', public string $color = '000000', public string $format = 'png')
     {
     }
 

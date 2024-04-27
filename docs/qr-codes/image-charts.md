@@ -7,7 +7,7 @@ title: Image-Charts
 
 Argument                | Default value
 ------------------------|---------------
-`$verifyssl`            | `false`
+`$verifyssl`            | `true`
 `$errorcorrectionlevel` | `'L'`
 `$margin`               | `4`
 

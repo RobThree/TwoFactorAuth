@@ -9,7 +9,7 @@ namespace RobThree\Auth\Providers\Qr;
  */
 class ImageChartsQRCodeProvider extends BaseHTTPQRCodeProvider
 {
-    public function __construct(protected bool $verifyssl = false, public string $errorcorrectionlevel = 'L', public int $margin = 1)
+    public function __construct(protected bool $verifyssl = true, public string $errorcorrectionlevel = 'L', public int $margin = 1)
     {
     }
 
