@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace RobThree\Auth\Providers\Qr;
 
+use RobThree\Auth\TwoFactorAuthException;
+
 abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
 {
     protected bool $verifyssl = true;
@@ -22,6 +24,9 @@ abstract class BaseHTTPQRCodeProvider implements IQRCodeProvider
             CURLOPT_USERAGENT => 'TwoFactorAuth',
         ));
         $data = curl_exec($curlhandle);
+        if ($data === false) {
+            throw new TwoFactorAuthException(curl_error($curlhandle));
+        }
 
         curl_close($curlhandle);
         return $data;
