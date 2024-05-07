@@ -12,7 +12,7 @@
             });
 
             // substitute your company or app name here
-            $tfa = new RobThree\Auth\TwoFactorAuth('RobThree TwoFactorAuth');
+            $tfa = new RobThree\Auth\TwoFactorAuth(new RobThree\Auth\Providers\Qr\QRServerProvider());
         ?>
         <li>First create a secret and associate it with a user</li>
         <?php
