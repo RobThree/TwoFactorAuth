@@ -37,6 +37,7 @@ You can keep the old behavior by setting `80` as argument to `createSecret()` (n
 * The new PHP attribute [SensitiveParameter](https://www.php.net/manual/en/class.sensitiveparameter.php) was added to the code, to prevent accidental leak of secrets in stack traces.
 * Likely not breaking anything, but now all external QR Code providers use HTTPS with a verified certificate, see #126.
 * The CSPRNG is now exclusively using `random_bytes()` PHP function. Previously a fallback to `openssl` or non cryptographically secure PRNG existed, they have been removed (#122)
+* If an external QR code provider is used and the HTTP request results in an error, it will throw a `QRException`. Previously the error was ignored. PR #130 fix #129.
 
 # Version 2.x
 
