@@ -26,7 +26,7 @@ Documentation on selecting a QR Code Provider is available here: [QR Code Provid
 
 ### Default secret length
 
-The default secret length has been increased from 80 bits to 160 bits (RFC4226) PR #117. This might cause an issue in your application if you were previously storing secrets in a column with restricted size. This change doesn't impact existing secrets, only new ones will get longer.
+The default secret length has been increased from 80 bits to 160 bits (RFC4226) PR [#117](https://github.com/RobThree/TwoFactorAuth/pull/117). This might cause an issue in your application if you were previously storing secrets in a column with restricted size. This change doesn't impact existing secrets, only new ones will get longer.
 
 Previously a secret was 16 characters, now it needs to be stored in a 32 characters width column.
 
@@ -35,9 +35,9 @@ You can keep the old behavior by setting `80` as argument to `createSecret()` (n
 ## Other changes
 
 * The new PHP attribute [SensitiveParameter](https://www.php.net/manual/en/class.sensitiveparameter.php) was added to the code, to prevent accidental leak of secrets in stack traces.
-* Likely not breaking anything, but now all external QR Code providers use HTTPS with a verified certificate, see #126.
-* The CSPRNG is now exclusively using `random_bytes()` PHP function. Previously a fallback to `openssl` or non cryptographically secure PRNG existed, they have been removed (#122)
-* If an external QR code provider is used and the HTTP request results in an error, it will throw a `QRException`. Previously the error was ignored. PR #130 fix #129.
+* Likely not breaking anything, but now all external QR Code providers use HTTPS with a verified certificate. PR [#126](https://github.com/RobThree/TwoFactorAuth/pull/126).
+* The CSPRNG is now exclusively using `random_bytes()` PHP function. Previously a fallback to `openssl` or non cryptographically secure PRNG existed, they have been removed. PR [#122](https://github.com/RobThree/TwoFactorAuth/pull/122).
+* If an external QR code provider is used and the HTTP request results in an error, it will throw a `QRException`. Previously the error was ignored. PR [#130](https://github.com/RobThree/TwoFactorAuth/pull/130), fixes [#129](https://github.com/RobThree/TwoFactorAuth/issues/129).
 
 # Version 2.x
 
