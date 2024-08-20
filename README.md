@@ -8,23 +8,16 @@ PHP library for [two-factor (or multi-factor) authentication](http://en.wikipedi
 <img src="https://raw.githubusercontent.com/RobThree/TwoFactorAuth/master/multifactorauthforeveryone.png">
 </p>
 
-## Warning:
-
-By default, this package uses the `lib/Providers/QRServerProvider.php` as QR code generator. This provider is __not__ suggested for applications where absolute security is needed, because it uses an external service for the QR code generation.
-
-
-You can make use of the included [Endroid](https://robthree.github.io/TwoFactorAuth/qr-codes/endroid.html) or [Bacon](https://robthree.github.io/TwoFactorAuth/qr-codes/bacon.html) providers which generate locally.
-
 ## Requirements
 
 * Requires PHP version >=8.2
-* [cURL](http://php.net/manual/en/book.curl.php) when using the provided `QRServerProvider` (default), `ImageChartsQRCodeProvider` or `QRicketProvider` but you can also provide your own QR-code provider.
 
 Optionally, you may need:
 
 * [sockets](https://www.php.net/manual/en/book.sockets.php) if you are using `NTPTimeProvider`
 * [endroid/qr-code](https://github.com/endroid/qr-code) if using `EndroidQrCodeProvider` or `EndroidQrCodeWithLogoProvider`.
 * [bacon/bacon-qr-code](https://github.com/Bacon/BaconQrCode) if using `BaconQrCodeProvider`.
+* [php-curl library](http://php.net/manual/en/book.curl.php) when using an external QR Code provider such as `QRServerProvider`, `ImageChartsQRCodeProvider`, `QRicketProvider` or any other custom provider connecting to an external service.
 
 ## Installation
 
