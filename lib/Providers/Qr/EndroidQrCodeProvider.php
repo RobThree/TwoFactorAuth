@@ -59,25 +59,25 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     protected function qrCodeInstance(string $qrText, int $size): QrCode
     {
-        if (!$this->endroid6) {
-            $qrCode = new QrCode($qrText);
-            $qrCode->setSize($size);
-
-            $qrCode->setErrorCorrectionLevel($this->errorcorrectionlevel);
-            $qrCode->setMargin($this->margin);
-            $qrCode->setBackgroundColor($this->bgcolor);
-            $qrCode->setForegroundColor($this->color);
-            return $qrCode;
+        if ($this->endroid6) {
+            return new QrCode(
+                data: $qrText,
+                errorCorrectionLevel: $this->errorcorrectionlevel,
+                size: $size,
+                margin: $this->margin,
+                foregroundColor: $this->color,
+                backgroundColor: $this->bgcolor
+            );
         }
 
-        return new QrCode(
-            data: $qrText,
-            errorCorrectionLevel: $this->errorcorrectionlevel,
-            size: $size,
-            margin: $this->margin,
-            foregroundColor: $this->color,
-            backgroundColor: $this->bgcolor
-        );
+        $qrCode = new QrCode($qrText);
+        $qrCode->setSize($size);
+
+        $qrCode->setErrorCorrectionLevel($this->errorcorrectionlevel);
+        $qrCode->setMargin($this->margin);
+        $qrCode->setBackgroundColor($this->bgcolor);
+        $qrCode->setForegroundColor($this->color);
+        return $qrCode;
     }
 
     private function handleColor(string $color): Color|array
