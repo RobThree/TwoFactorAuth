@@ -33,11 +33,15 @@ class EndroidQrCodeWithLogoProvider extends EndroidQrCodeProvider
 
         $logo = null;
         if ($this->logoPath) {
-            $logo = Logo::create($this->logoPath);
-            if ($this->logoSize) {
-                $logo->setResizeToWidth($this->logoSize[0]);
-                if (isset($this->logoSize[1])) {
-                    $logo->setResizeToHeight($this->logoSize[1]);
+            if ($this->endroid6) {
+                $logo = new Logo($this->logoPath, ...$this->logoSize);
+            } else {
+                $logo = Logo::create($this->logoPath);
+                if ($this->logoSize) {
+                    $logo->setResizeToWidth($this->logoSize[0]);
+                    if (isset($this->logoSize[1])) {
+                        $logo->setResizeToHeight($this->logoSize[1]);
+                    }
                 }
             }
         }
