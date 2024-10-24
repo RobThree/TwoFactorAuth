@@ -28,10 +28,13 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     protected $endroid5 = false;
 
+    protected $endroid6 = false;
+
     public function __construct($bgcolor = 'ffffff', $color = '000000', $margin = 0, $errorcorrectionlevel = 'H')
     {
-        $this->endroid4 = method_exists(QrCode::class, 'create');
         $this->endroid5 = enum_exists(ErrorCorrectionLevel::class);
+        $this->endroid6 = $this->endroid5 && !method_exists(QrCode::class, 'setSize');
+        $this->endroid4 = $this->endroid6 || method_exists(QrCode::class, 'create');
 
         $this->bgcolor = $this->handleColor($bgcolor);
         $this->color = $this->handleColor($color);
@@ -56,6 +59,17 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     protected function qrCodeInstance(string $qrText, int $size): QrCode
     {
+        if ($this->endroid6) {
+            return new QrCode(
+                data: $qrText,
+                errorCorrectionLevel: $this->errorcorrectionlevel,
+                size: $size,
+                margin: $this->margin,
+                foregroundColor: $this->color,
+                backgroundColor: $this->bgcolor
+            );
+        }
+
         $qrCode = new QrCode($qrText);
         $qrCode->setSize($size);
 
@@ -63,7 +77,6 @@ class EndroidQrCodeProvider implements IQRCodeProvider
         $qrCode->setMargin($this->margin);
         $qrCode->setBackgroundColor($this->bgcolor);
         $qrCode->setForegroundColor($this->color);
-
         return $qrCode;
     }
 
