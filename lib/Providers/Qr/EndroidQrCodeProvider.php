@@ -82,6 +82,10 @@ class EndroidQrCodeProvider implements IQRCodeProvider
 
     private function handleColor(string $color): Color|array
     {
+        if ($color === 'transparent') {
+            return $this->endroid4 ? new Color(255, 255, 255, 127) : array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 127);
+        }
+
         $split = str_split($color, 2);
         $r = hexdec($split[0]);
         $g = hexdec($split[1]);
