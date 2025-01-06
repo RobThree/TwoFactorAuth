@@ -76,7 +76,7 @@ class TwoFactorAuth
         $value = unpack('N', $hashpart);                                                   // Unpack binary value
         $value = $value[1] & 0x7FFFFFFF;                                                   // Drop MSB, keep only 31 bits
 
-        return str_pad((string)($value % 10 ** $this->digits), $this->digits, '0', STR_PAD_LEFT);
+        return str_pad(bcmod((string)$value, bcpow('10', (string)$this->digits)), $this->digits, '0', STR_PAD_LEFT);
     }
 
     /**
