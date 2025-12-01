@@ -11,8 +11,10 @@
                 include_once str_replace(array('RobThree\\Auth', '\\'), array(__DIR__.'/../lib', '/'), $className) . '.php';
             });
 
-            // substitute your company or app name here
-            $tfa = new RobThree\Auth\TwoFactorAuth(new RobThree\Auth\Providers\Qr\QRServerProvider());
+            $tfa = new RobThree\Auth\TwoFactorAuth(
+                new RobThree\Auth\Providers\Qr\QRServerProvider(),
+                "Acme Corp" // substitute your company or app name here
+            );
         ?>
         <li>First create a secret and associate it with a user</li>
         <?php
