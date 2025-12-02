@@ -21,17 +21,20 @@ Example code:
 
 ```php
 use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\Providers\Qr\QRServerProvider; // if using library's provider
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider; // if using Bacon
 use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider; // if using Endroid
 
+// using the default Qr Code provider from the library
+$tfa = new TwoFactorAuth(new QRServerProvider(), "Your app name");
 // using Bacon
-$tfa = new TwoFactorAuth(new BaconQrCodeProvider());
+$tfa = new TwoFactorAuth(new BaconQrCodeProvider(), "Your app name");
 // using Endroid
-$tfa = new TwoFactorAuth(new EndroidQrCodeProvider());
+$tfa = new TwoFactorAuth(new EndroidQrCodeProvider(), "Your app name");
 // using a custom object implementing IQRCodeProvider interface
-$tfa = new TwoFactorAuth(new MyQrCodeProvider());
+$tfa = new TwoFactorAuth(new MyQrCodeProvider(), "Your app name");
 // using named argument and a variable
-$tfa = new TwoFactorAuth(qrcodeprovider: $qrGenerator);
+$tfa = new TwoFactorAuth(qrcodeprovider: $qrGenerator, issuer: "Your app name");
 ```
 
 ## 3. Shared secrets
