@@ -12,6 +12,19 @@ jobs:
       matrix:
         php-version: [8.2, 8.3, 8.4, 8.5]
         endroid-version: ["^3", "^4", "^5", "^6"]
+        exclude:
+          - php-version: 8.4
+            endroid-version: "^3"
+          - php-version: 8.4
+            endroid-version: "^4"
+          - php-version: 8.4
+            endroid-version: "^5"
+          - php-version: 8.5
+            endroid-version: "^3"
+          - php-version: 8.5
+            endroid-version: "^4"
+          - php-version: 8.5
+            endroid-version: "^5"
 
     steps:
     - uses: actions/checkout@v5
